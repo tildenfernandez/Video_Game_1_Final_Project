@@ -84,7 +84,20 @@ class enemyModel {
  * Function to interpret a tilemap
  */
 function makeTileMap() {
-
+    for (var i = 0; i < tile_map[0].length; i++) {
+        for (var j = 0; j < tile_map.length; j++) {
+            if (tile_map[i][j] === "p") {
+                // add player model
+            }
+            else if (tile_map[i][j] === "e") {
+                // add enemy model
+            }
+            else if (tile_map[i][j] === "w") {
+                // add wall
+            }
+            // else, tile will be empty
+        }
+    }
 }
 
 /**
