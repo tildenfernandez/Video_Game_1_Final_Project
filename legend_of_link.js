@@ -15,7 +15,11 @@ tile_map = ["",
 var player;
 
 // Array of enemyModel objects
-var enemy = [];
+var enemies = [];
+
+// Array of where wall (x, y) positions
+var walls = [];
+
 
 function setup() {
   createCanvas(400, 400);
@@ -24,11 +28,27 @@ function setup() {
 function draw() {
     // Display start screen
     if (game_state === "start_screen") {
+        background(100, 125, 200);
 
+        fill(255);
+        stroke(0);
+        rect(75, 300, 100, 30);     // Start button rectangle
+        rect(200, 300, 100, 30);     // Instructions button
+
+
+        noStroke();
+        fill(0);
+        textSize(24);
+        text("Legend of Link", 100, 100);
+        
+        textSize(16);
+        text("Start", 110, 320);
+        text("Instructions", 210, 320);
     }
     // Display level 1
     else if (game_state === "playing_level_1") {
-
+        background(255);
+        text("This is the level 1", 100, 100);
     }
     // Display win screen
     else if (game_state === "win_screen") {
@@ -36,11 +56,12 @@ function draw() {
     }
     // Display lose screen
     else if (game_state === "lose_screen") {
-
+        
     }
     // Display instructions menu
     else if (game_state === "instructions") {
-
+        background(255);
+        text("This is the instructions menu", 100, 100);
     }
 }
 
@@ -50,6 +71,14 @@ function draw() {
 class playerModel {
     constructor(x, y) {
         this.pos = new p5.Vector(x, y);
+
+        // Player tools available
+        this.all_tools = [];
+
+        // Player information to be displayed
+        this.health = 3;
+        this.current_weapon = "";
+        this.ammo = 10;
     }
     draw() {
 
@@ -68,6 +97,9 @@ class playerModel {
 class enemyModel {
     constructor(x, y) {
         this.pos = new p5.Vector(x, y);
+
+        this.health = 3;
+        this.attack_damage = 1;
     }
     draw() {
 
@@ -113,10 +145,17 @@ function drawPlayerCharacter() {
 function mousePressed() {
     // Record player clicking buttons on start screen
     if (game_state === "start_screen") {
-
+        if (mouseX >= 75 && mouseX <= 175 &&
+            mouseY >= 300 && mouseY <= 330) {
+                game_state = "playing_level_1"
+        }
+        else if (mouseX >= 200 && mouseX <= 300 &&
+                 mouseY >= 300 && mouseY <= 330) {
+                    game_state = "isntructions"
+        }
     }
     // Record player clicking on instructions menu
     else if (game_state === "instructions") {
-
+        
     }
 }
