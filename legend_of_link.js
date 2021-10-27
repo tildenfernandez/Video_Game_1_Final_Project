@@ -50,6 +50,8 @@ var startScreen;
 // keep track of images
 var images = [];
 
+var gravity;
+
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
 }
@@ -64,6 +66,8 @@ function setup() {
     drawLink();
 
     startScreen  = new StartScreen();
+
+    gravity = new p5.Vector(0, 0.3);
 }
 
 function draw() {
@@ -150,7 +154,7 @@ class playerModel {
         noStroke();
         fill(255, 0, 255);
         // ellipse(0, 0, 20, 20);
-        image(images[0], 0, 0, 20, 20);
+        image(images[0], 0, 0, 40, 40);
         pop();
     }
     moveRight() {
@@ -290,18 +294,18 @@ function makeTileMap() {
 function mousePressed() {
     // Record player clicking buttons on start screen
     if (game_state === "start_screen") {
-        if (mouseX >= 25 && mouseX <= 125 &&
-            mouseY >= 300 && mouseY <= 330) {
+        if (mouseX >= 30 && mouseX <= 130 &&
+            mouseY >= 220 && mouseY <= 250) {
                 game_state = "playing_level_1"
         }
 
-        if (mouseX >= 150 && mouseX <= 250 &&
-            mouseY >= 300 && mouseY <= 330) {
+        if (mouseX >= 150 && mouseX <= 260 &&
+            mouseY >= 220 && mouseY <= 250) {
                 game_state = "instructions"
         }
 
         if (mouseX >= 275 && mouseX <= 375 &&
-            mouseY >= 300 && mouseY <= 330) {
+            mouseY >= 220 && mouseY <= 250) {
                 game_state = "level_select"
         }
     }
