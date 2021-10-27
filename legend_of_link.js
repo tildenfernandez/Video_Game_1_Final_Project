@@ -42,9 +42,17 @@ var enemies = [];
 // Array of where wall (x, y) positions
 var walls = [];
 
+// global var to keep track of font
+var font 
+
+function preload() {
+    font = loadFont('HyliaSerifBeta-Regular.otf');
+}
+
 
 function setup() {
     createCanvas(400, 400);
+    textFont(font);
 
     makeTileMap();
 }
