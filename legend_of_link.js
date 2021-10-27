@@ -45,6 +45,11 @@ var walls = [];
 // global var to keep track of font
 var font 
 
+var startScreen;
+
+// keep track of images
+var images = [];
+
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
 }
@@ -55,39 +60,16 @@ function setup() {
     textFont(font);
 
     makeTileMap();
+    
+    drawLink();
+
+    startScreen  = new StartScreen();
 }
 
 function draw() {
     // Display start screen
     if (game_state === "start_screen") {
-        background(248, 179, 173);
-        noStroke();
-
-        fill(255);
-        rect(25, 300, 100, 30);     // Start button rectangle
-        rect(150, 300, 100, 30);    // Instructions button
-        rect(275, 300, 100, 30);    // Levels button
-
-
-        // Title text
-        fill(0);
-        textSize(18);
-        textStyle(BOLD);
-        text("THE LEGEND OF", 60, 100);
-        
-        textSize(72);
-        scale(1.6, 1);
-        text("LINK", 47, 162);
-        fill(212, 62, 17);
-        text("LINK", 45, 160);
-        scale(0.625, 1);
-
-        // Button text
-        textSize(16);
-        fill(0);
-        text("Start", 60, 320);
-        text("Instructions", 155, 320);
-        text("Levels", 300, 320);
+        startScreen.draw();
     }
     // Display level 1
     else if (game_state === "playing_level_1") {
@@ -167,7 +149,8 @@ class playerModel {
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         noStroke();
         fill(255, 0, 255);
-        ellipse(0, 0, 20, 20);
+        // ellipse(0, 0, 20, 20);
+        image(images[0], 0, 0, 20, 20);
         pop();
     }
     moveRight() {
@@ -191,7 +174,7 @@ class playerModel {
 /**
  * Function to draw the art for the character model
  */
- function drawPlayerCharacter() {
+function drawPlayerCharacter() {
 
 }
 
