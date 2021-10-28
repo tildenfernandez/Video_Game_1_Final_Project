@@ -41,6 +41,7 @@ var enemies = [];
 
 // Array of where wall (x, y) positions
 var walls = [];
+var wall_img;
 
 // global var to keep track of font
 var font 
@@ -51,15 +52,19 @@ var startScreen;
 var images = [];
 
 var gravity;
+// var castle_img;
 
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
+    wall_img = loadImage('gray_rock.png');
+    // castle_img = loadImage('castle.png');
 }
 
 
 function setup() {
     createCanvas(400, 400);
     textFont(font);
+    
 
     makeTileMap();
     
@@ -260,9 +265,10 @@ class attackState {
  * @param y: y coordinate of the wall
  */
 function drawWall(x, y) {
-    noStroke();
-    fill(40);
-    rect(x+x_offset, y+y_offset, tile_width, tile_width);
+    //noStroke();
+    //fill(40);
+    //rect(x+x_offset, y+y_offset, tile_width, tile_width);
+    image(wall_img, x, y, tile_width, tile_width);
 }
 
 /**

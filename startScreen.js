@@ -15,11 +15,16 @@ class StartScreen {
         this.player = new StartScreenPlayer(150, height - 40, 40, 40);
         this.boss = new StartScreenBoss(50, height - 80, 80, 80);
         // this.link = new StartScreenLink(200, height - 40, 40, 40);
+
+        this.castle_img = loadImage('castle.png');
     }
 
     draw() {
         background(248, 179, 173);
         noStroke();
+
+        // Castle
+        image(this.castle_img, 60, 140, 500/(2), 428/(2));
 
         // mountains
         drawRange(117, 115, 4, 30);
