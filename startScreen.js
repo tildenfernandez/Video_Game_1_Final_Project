@@ -12,27 +12,14 @@ class StartScreen {
           }
         }
 
-        this.link = new StartScreenLink(200, height - 40, 40, 40);
+        this.player = new StartScreenPlayer(150, height - 40, 40, 40);
+        this.boss = new StartScreenBoss(50, height - 80, 80, 80);
+        // this.link = new StartScreenLink(200, height - 40, 40, 40);
     }
 
     draw() {
         background(248, 179, 173);
         noStroke();
-
-
-        // sky
-        // var n1 = this.a;
-        // for (var x=0; x<=400; x+=8) {
-        //     var n2 = 0;
-        //     for (var y=0; y<=250; y+=8) {
-        //         var c = map(noise(n1,n2),0,1,0,255);
-        //         fill(c, c, c+80,150);
-        //         rect(x,y,8,8);
-        //         n2 += 0.05; // step size in noise
-        //     }
-        //     n1 += 0.02; // step size in noise
-        // }
-        // this.a -= 0.01;  // speed of clouds
 
         // mountains
         drawRange(117, 115, 4, 30);
@@ -69,8 +56,11 @@ class StartScreen {
         text("Instructions", 157, 240);
         text("Levels", 300, 240);
 
-        this.link.update();
-        this.link.draw();
+        this.player.update();
+        this.player.draw();
+
+        this.boss.update();
+        this.boss.draw();
 
     }
 }
@@ -135,3 +125,62 @@ var drawRange = function(c1, c2, c3, offset) {
     }
     pop();
 };
+
+class StartScreenCharacter {
+    constructor(x, y, width, height) {
+        this.position = new p5.Vector(x, y);
+        this.velocity = new p5.Vector(0, 0);
+
+        this.startX = x;
+        
+        this.width = width;
+        this.height = height;
+
+        this.chasing = true;
+    }
+
+    update() {
+        // if chasing, then face left and move to the right 
+        // if not chasing, then face right and move to the left
+        if (this.chasing) {
+            this.velocity.x = 2;
+        } else {
+            this.velocity.x = -2;
+        }
+
+        this.position.add(this.velocity);
+     
+        // if you are off the right of the screen, turn around and start being chased
+        if (this.position.x > this.startX + 400) {
+            this.chasing = false;
+        } else if (this.position.x < this.startX - 200) {
+            this.chasing = true;
+        }
+    }
+}
+
+class StartScreenBoss extends StartScreenCharacter {
+    constructor(x, y, width, height) {
+        super(x, y, width, height);
+    }
+
+    draw() {
+        push();
+        translate(this.position.x, this.position.y);
+        image(images[0], 0, 0, this.width, this.height);
+        pop();
+    }
+}
+
+class StartScreenPlayer extends StartScreenCharacter {
+    constructor(x, y, width, height) {
+        super(x, y, width, height);
+    }
+
+    draw() {
+        push();
+        translate(this.position.x, this.position.y);
+        image(images[0], 0, 0, this.width, this.height);
+        pop();
+    }
+}
