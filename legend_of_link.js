@@ -47,26 +47,26 @@ var wall_img;
 var font 
 
 var startScreen;
+var instructionsScreen;
 
 // keep track of images
 var images = [];
 
 var gravity;
-// var castle_img;
 
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
     wall_img = loadImage('gray_rock.png');
-    // castle_img = loadImage('castle.png');
+
+    instructionsScreen = new InstructionsScreen();
+
+    makeTileMap();
 }
 
 
 function setup() {
     createCanvas(400, 400);
     textFont(font);
-    
-
-    makeTileMap();
     
     drawLink();
 
@@ -124,8 +124,7 @@ function draw() {
     }
     // Display instructions menu
     else if (game_state === "instructions") {
-        background(255);
-        text("This is the instructions menu", 100, 100);
+        instructionsScreen.draw();
     }
     else if (game_state === "level_select") {
         background(225);
