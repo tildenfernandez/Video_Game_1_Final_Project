@@ -47,6 +47,8 @@ var enemies = [];
 var walls = [];
 var wall_img;
 
+var bow_img;
+
 // global var to keep track of font
 var font 
 
@@ -54,21 +56,14 @@ var startScreen;
 var instructionsScreen;
 
 // keep track of images
-var images = [];
-var playerImages = [];
-
 var gravity;
 
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
     wall_img = loadImage('gray_rock.png');
+    bow_img = loadImage('sprites/weapons/bow.png');
 
     instructionsScreen = new InstructionsScreen();
-
-    playerImages = loadImageSequence('sprites/player/walk/walk', 9);
-
-    // do the same for other character images
-
 
     makeTileMap();
 }
@@ -78,9 +73,9 @@ function setup() {
     createCanvas(400, 400);
     textFont(font);
     
-    drawLink();
-
     startScreen  = new StartScreen();
+
+    player = new playerModel(0, 0);
 
     gravity = new p5.Vector(0, 0.3);
 }
@@ -159,6 +154,8 @@ class playerModel {
         // Player tools available
         this.all_tools = [];
 
+        this.images = loadImageSequence('sprites/player/walk/walk', 9);
+
         // Player information to be displayed
         this.health = 3;
         this.current_weapon = "";
@@ -170,7 +167,7 @@ class playerModel {
         noStroke();
         fill(255, 0, 255);
         // ellipse(0, 0, 20, 20);
-        image(images[0], 0, 0, 40, 40);
+        image(this.images[0], 0, 0, 40, 40);
         pop();
     }
     moveRight() {
