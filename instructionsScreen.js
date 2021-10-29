@@ -9,8 +9,8 @@
 
 class InstructionsScreen {
     constructor() {
-        this.playerChar = new StartScreenPlayer(30, 75, 40, 40);
-        this.boss = new StartScreenBoss(30, 225, 40, 40);
+        this.playerChar = new StartScreenPlayer(30, 75, 40, 40, playerImages);
+        this.boss = new StartScreenBoss(30, 225, 40, 40, playerImages);
     }
     draw() {
         background(248, 179, 173);

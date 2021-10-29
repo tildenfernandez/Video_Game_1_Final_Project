@@ -63,8 +63,6 @@ function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
     wall_img = loadImage('gray_rock.png');
 
-    instructionsScreen = new InstructionsScreen();
-
     playerImages = loadImageSequence('sprites/player/walk/walk', 9);
 
     // do the same for other character images
@@ -81,6 +79,7 @@ function setup() {
     drawLink();
 
     startScreen  = new StartScreen();
+    instructionsScreen = new InstructionsScreen();
 
     gravity = new p5.Vector(0, 0.3);
 }
