@@ -11,10 +11,10 @@ class StartScreen {
               this.a += 0.025;  // ruggedness
           }
         }
-
-        this.player = new StartScreenPlayer(150, height - 40, 40, 40, playerImages);
-        this.boss = new StartScreenBoss(50, height - 80, 80, 80, playerImages);
-        // this.link = new StartScreenLink(200, height - 40, 40, 40);
+    
+        this.player = new StartScreenPlayer(250, height - 80, 80, 80);
+        this.orc = new StartScreenOrc(150, height - 80, 80, 80);
+        this.skeleton = new StartScreenSkeleton(50, height - 80, 80, 80);
 
         this.castle_img = loadImage('castle.png');
     }
@@ -64,58 +64,12 @@ class StartScreen {
         this.player.update();
         this.player.draw();
 
-        this.boss.update();
-        this.boss.draw();
+        this.orc.update();
+        this.orc.draw();
 
-    }
-}
+        this.skeleton.update();
+        this.skeleton.draw();
 
-class StartScreenLink {
-    constructor(x, y, width, height) {
-        this.position = new p5.Vector(x, y);
-        this.velocity = new p5.Vector(0, 0);
-        this.acceleration = new p5.Vector(0, 0);
-
-        this.width = width;
-        this.height = height;
-
-        this.force = new p5.Vector(0, 0);
-
-        this.jump = 0;
-        this.jumpForce = new p5.Vector(0, -5);
-        this.jumpInterval = frameCount;
-    }
-
-    applyForce(force) {
-        this.acceleration.add(force);
-    }
-
-    update() {
-        // jump every 5 seconds
-        if (frameCount - this.jumpInterval > 300) {
-            this.jump = 1;
-            this.applyForce(this.jumpForce);
-            this.jumpInterval = frameCount;
-        }
-        if (this.jump > 0) {
-            this.applyForce(gravity);
-        }    
-        this.velocity.add(this.acceleration);
-        this.position.add(this.velocity);
-        this.acceleration.set(0, 0);
-
-        if (this.position.y + 40 >= height) {
-            this.position.y = height - 40;
-            this.velocity.y = 0;
-            this.jump = 0;
-        }
-    }
-
-    draw() {
-        push();
-        translate(this.position.x, this.position.y);
-        image(images[0], 0, 0, this.width, this.height);
-        pop();
     }
 }
 
@@ -141,7 +95,7 @@ function loadImageSequence(dir, length) {
 }
 
 class StartScreenCharacter {
-    constructor(x, y, width, height, images) {
+    constructor(x, y, width, height) {
         this.position = new p5.Vector(x, y);
         this.velocity = new p5.Vector(0, 0);
 
@@ -152,7 +106,7 @@ class StartScreenCharacter {
 
         this.chasing = true;
 
-        this.images = images;
+        this.images = [];
         this.imageFrameCount = frameCount;
         this.imageIndex = 0;
     }
@@ -171,7 +125,7 @@ class StartScreenCharacter {
         // if you are off the right of the screen, turn around and start being chased
         if (this.position.x > this.startX + 400) {
             this.chasing = false;
-        } else if (this.position.x < this.startX - 200) {
+        } else if (this.position.x < this.startX - 400) {
             this.chasing = true;
         }
 
@@ -196,18 +150,24 @@ class StartScreenCharacter {
     }
 }
 
-// probably don't need these classes anymore
-
-class StartScreenBoss extends StartScreenCharacter {
-    constructor(x, y, width, height,images) {
-        super(x, y, width, height, images);
+class StartScreenPlayer extends StartScreenCharacter{
+    constructor(x, y, width, height) {
+        super(x, y, width, height);
+        this.images = loadImageSequence('sprites/player/walk/walk', 9);
     }
-
 }
 
-class StartScreenPlayer extends StartScreenCharacter {
-    constructor(x, y, width, height, images) {
-        super(x, y, width, height, images);
+class StartScreenOrc extends StartScreenCharacter{
+    constructor(x, y, width, height) {
+        super(x, y, width, height);
+        this.images = loadImageSequence('sprites/orc/walk/walk', 9);
     }
-
 }
+
+class StartScreenSkeleton extends StartScreenCharacter{
+    constructor(x, y, width, height) {
+        super(x, y, width, height);
+        this.images = loadImageSequence('sprites/skeleton/walk/walk', 9);
+    }
+}
+
