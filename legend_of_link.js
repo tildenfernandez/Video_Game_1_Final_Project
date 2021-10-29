@@ -55,6 +55,7 @@ var instructionsScreen;
 
 // keep track of images
 var images = [];
+var playerImages = [];
 
 var gravity;
 
@@ -63,6 +64,11 @@ function preload() {
     wall_img = loadImage('gray_rock.png');
 
     instructionsScreen = new InstructionsScreen();
+
+    playerImages = loadImageSequence('sprites/player/walk/walk', 9);
+
+    // do the same for other character images
+
 
     makeTileMap();
 }

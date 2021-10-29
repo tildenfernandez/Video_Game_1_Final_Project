@@ -12,8 +12,8 @@ class StartScreen {
           }
         }
 
-        this.player = new StartScreenPlayer(150, height - 40, 40, 40);
-        this.boss = new StartScreenBoss(50, height - 80, 80, 80);
+        this.player = new StartScreenPlayer(150, height - 40, 40, 40, playerImages);
+        this.boss = new StartScreenBoss(50, height - 80, 80, 80, playerImages);
         // this.link = new StartScreenLink(200, height - 40, 40, 40);
 
         this.castle_img = loadImage('castle.png');
@@ -131,8 +131,17 @@ var drawRange = function(c1, c2, c3, offset) {
     pop();
 };
 
+function loadImageSequence(dir, length) {
+    // load images from directory and return array
+    var images = [];
+    for (var i = 0; i < length; i++) {
+        images[i] = loadImage(dir + i + '.png');
+    }
+    return images;
+}
+
 class StartScreenCharacter {
-    constructor(x, y, width, height) {
+    constructor(x, y, width, height, images) {
         this.position = new p5.Vector(x, y);
         this.velocity = new p5.Vector(0, 0);
 
@@ -142,6 +151,10 @@ class StartScreenCharacter {
         this.height = height;
 
         this.chasing = true;
+
+        this.images = images;
+        this.imageFrameCount = frameCount;
+        this.imageIndex = 0;
     }
 
     update() {
@@ -161,31 +174,37 @@ class StartScreenCharacter {
         } else if (this.position.x < this.startX - 200) {
             this.chasing = true;
         }
+
+        // update the image every 5 frames
+        if (frameCount - this.imageFrameCount > 5) {
+            this.imageIndex = (this.imageIndex + 1) % this.images.length;
+            this.imageFrameCount = frameCount;
+        }
     }
 }
 
 class StartScreenBoss extends StartScreenCharacter {
-    constructor(x, y, width, height) {
-        super(x, y, width, height);
+    constructor(x, y, width, height,images) {
+        super(x, y, width, height, images);
     }
 
     draw() {
         push();
         translate(this.position.x, this.position.y);
-        image(images[0], 0, 0, this.width, this.height);
+        image(this.images[this.imageIndex], 0, 0, this.width, this.height);
         pop();
     }
 }
 
 class StartScreenPlayer extends StartScreenCharacter {
-    constructor(x, y, width, height) {
-        super(x, y, width, height);
+    constructor(x, y, width, height, images) {
+        super(x, y, width, height, images);
     }
 
     draw() {
         push();
         translate(this.position.x, this.position.y);
-        image(images[0], 0, 0, this.width, this.height);
+        image(this.images[this.imageIndex], 0, 0, this.width, this.height);
         pop();
     }
 }
