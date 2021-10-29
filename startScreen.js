@@ -181,19 +181,28 @@ class StartScreenCharacter {
             this.imageFrameCount = frameCount;
         }
     }
+
+    draw() {
+        push();
+        translate(this.position.x, this.position.y);
+        if (this.velocity.x < 0) {
+            // flip the image horizontally
+            scale(-1, 1);
+            image(this.images[this.imageIndex], -this.width, 0, this.width, this.height);   
+        } else {
+            image(this.images[this.imageIndex], 0, 0, this.width, this.height);
+        }
+        pop();
+    }
 }
+
+// probably don't need these classes anymore
 
 class StartScreenBoss extends StartScreenCharacter {
     constructor(x, y, width, height,images) {
         super(x, y, width, height, images);
     }
 
-    draw() {
-        push();
-        translate(this.position.x, this.position.y);
-        image(this.images[this.imageIndex], 0, 0, this.width, this.height);
-        pop();
-    }
 }
 
 class StartScreenPlayer extends StartScreenCharacter {
@@ -201,10 +210,4 @@ class StartScreenPlayer extends StartScreenCharacter {
         super(x, y, width, height, images);
     }
 
-    draw() {
-        push();
-        translate(this.position.x, this.position.y);
-        image(this.images[this.imageIndex], 0, 0, this.width, this.height);
-        pop();
-    }
 }
