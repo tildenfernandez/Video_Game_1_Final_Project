@@ -74,6 +74,7 @@ function setup() {
     textFont(font);
     
     startScreen  = new StartScreen();
+    instructionsScreen = new InstructionsScreen();
 
     player = new playerModel(0, 0);
 
