@@ -10,7 +10,9 @@
 class InstructionsScreen {
     constructor() {
         this.playerChar = new StartScreenPlayer(30, 75, 40, 40);
-        this.boss = new StartScreenBoss(30, 225, 40, 40);
+        this.enemyChar = new StartScreenSkeleton(30, 150, 40, 40);
+        this.boss = new StartScreenOrc(30, 225, 40, 40);
+        this.weapon = new Bow(30, 300, 40, 40);
     }
     draw() {
         background(248, 179, 173);
@@ -64,7 +66,25 @@ class InstructionsScreen {
         rect(20, 290, 60, 60, 10);
 
         this.playerChar.draw();
+        this.enemyChar.draw();
         this.boss.draw();
+        this.weapon.draw();
+
+    }
+}
+
+class Bow {
+    constructor(x, y, w, h) {
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+    }
+
+    draw() {
+        push();
+        translate(this.x, this.y);
+        image(bow_img, 0, 0, this.w, this.h);
 
     }
 }
