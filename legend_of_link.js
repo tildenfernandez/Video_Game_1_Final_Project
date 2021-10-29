@@ -1,3 +1,7 @@
+// Paolo Fermin and Tilden Fernandez
+// ECE 4525 Video Game Design 1
+// Final Project
+
 /* Global variables to use for structuing game flow */
 
 // Control what part of the game is running 
@@ -127,11 +131,13 @@ function draw() {
         instructionsScreen.draw();
     }
     else if (game_state === "level_select") {
-        background(225);
-        text("This is the level select menu", 100, 100);
+        drawLevelSelect();
     }
     else {
+        // Provide clear debug if the state machine breaks
         background(225);
+        noStroke();
+        fill(0);
         text("This state should never be reached", 100, 100);
         text("Check updates to game state", 100, 130);
     }
@@ -212,13 +218,6 @@ class enemyModel {
     }
 }
 
-/**
- * Function to draw the art for an enemy model
- */
- function drawEnemyCharacter() {
-
-}
-
 class waitState {
     constructor() {
     }
@@ -258,15 +257,68 @@ class attackState {
 }
 
 /**
+ * Draw the level select screen
+ */
+function drawLevelSelect() {
+    background(225);
+    fill(color('teal'));
+    noStroke();
+    text("Select a Level", 30, 30);
+
+    fill(25);
+    noStroke();
+
+    rect(50, 100, 300, 30);
+    rect(50, 150, 300, 30);
+    rect(50, 200, 300, 30);
+    rect(50, 250, 300, 30);
+
+    rect(50, 350, 300, 30);
+
+
+    fill(255);
+    text("Level 1", 175, 120);
+    text("Level 2", 175, 170);
+    text("Level 3", 175, 220);
+    text("Level 4", 175, 270);
+    text("Return to Main Menu", 125, 370);
+
+    noFill();
+    stroke('yellow');
+    strokeWeight(3);
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 100 && mouseY <= 130) {
+            rect(50, 100, 300, 30);
+    }
+
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 150 && mouseY <= 180) {
+            rect(50, 150, 300, 30);
+    }
+
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 200 && mouseY <= 230) {
+            rect(50, 200, 300, 30);
+    }
+
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 250 && mouseY <= 280) {
+            rect(50, 250, 300, 30);
+    }
+
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 350 && mouseY <= 380) {
+            rect(50, 350, 300, 30);
+    }
+}
+
+/**
  * Draw a wall tile at the specified (x,y) coordinant
  * 
  * @param x: x coordinate of the wall 
  * @param y: y coordinate of the wall
  */
 function drawWall(x, y) {
-    //noStroke();
-    //fill(40);
-    //rect(x+x_offset, y+y_offset, tile_width, tile_width);
     image(wall_img, x, y, tile_width, tile_width);
 }
 
@@ -317,6 +369,32 @@ function mousePressed() {
     // Record player clicking on instructions menu
     else if (game_state === "instructions") {
         game_state = "start_screen";
+    }
+    else if (game_state === "level_select") {
+        if (mouseX >= 50 && mouseX <= 350 &&
+            mouseY >= 100 && mouseY <= 130) {
+                game_state = "playing_level_1";
+        }
+    
+        if (mouseX >= 50 && mouseX <= 350 &&
+            mouseY >= 150 && mouseY <= 180) {
+                game_state = "playing_level_2";
+        }
+    
+        if (mouseX >= 50 && mouseX <= 350 &&
+            mouseY >= 200 && mouseY <= 230) {
+                game_state = "playing_level_3";
+        }
+    
+        if (mouseX >= 50 && mouseX <= 350 &&
+            mouseY >= 250 && mouseY <= 280) {
+                game_state = "playing_level_4";
+        }
+    
+        if (mouseX >= 50 && mouseX <= 350 &&
+            mouseY >= 350 && mouseY <= 380) {
+                game_state = "start_screen";
+        }
     }
 }
 
