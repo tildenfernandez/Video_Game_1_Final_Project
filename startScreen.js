@@ -45,13 +45,13 @@ class StartScreen {
         fill(0);
         textSize(18);
         textStyle(BOLD);
-        text("THE LEGEND OF", 60, 90);
+        text("THE ADVENTURE OF", 60, 90);
         
         textSize(72);
         scale(1.6, 1);
-        text("LINK", 47, 162);
+        text("TAOLO", 15, 162);
         fill(212, 62, 17);
-        text("LINK", 45, 160);
+        text("TAOLO", 12, 160);
         scale(0.625, 1);
 
         // Button text
