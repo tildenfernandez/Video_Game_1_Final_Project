@@ -14,13 +14,13 @@ tile_map = ["wwwwwwwwwwwwwwwwwwww",
             "w--p---------------w",
             "w------------------w",
             "w------------------w",
-            "w------------------w",
-            "w------------------w",
-            "w--------------e---w",
-            "w------------------w",
-            "w------------------w",
-            "w------------------w",
-            "w------------------w",
+            "w-----wwwwwwwwwwwwww",
+            "w----------w-------w",
+            "wwwwwwwwww-w---e---w",
+            "w--------w-w-------w",
+            "w--------w-w-------w",
+            "w--------w-w-------w",
+            "w--------w-w-------w",
             "w------------------w",
             "w----e-------------w",
             "w------------------w",
@@ -32,6 +32,7 @@ tile_map = ["wwwwwwwwwwwwwwwwwwww",
 
 // Define the width of one tile
 let tile_width = 20;
+let half_tile = tile_width / 2;
 
 // Global offsets for scrolling game window
 var x_offset = 0;
@@ -55,8 +56,11 @@ var font
 var startScreen;
 var instructionsScreen;
 
-// keep track of images
+// gravity affects some items
 var gravity;
+
+// graph nodes for a* BFS
+var graph_nodes = [];
 
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
@@ -65,7 +69,24 @@ function preload() {
 
     instructionsScreen = new InstructionsScreen();
 
-    makeTileMap();
+    makeTileMap(tile_map);
+
+    // Note each node's adjacent nodes
+    for (var i = 0; i < graph_nodes.length; i++) {
+        for (var j = 0; j < graph_nodes.length; j++) {
+            // If the nodes are adjacent, note it
+            if (graph_nodes[i].pos.x - graph_nodes[j].pos.x === 0 &&
+                graph_nodes[i].pos.y - graph_nodes[j].pos.y != 0 &&
+                abs(graph_nodes[i].pos.y - graph_nodes[j].pos.y) <= 30) {
+                    graph_nodes[i].adjacent_nodes.push(graph_nodes[j]);
+            }
+            if (graph_nodes[i].pos.y - graph_nodes[j].pos.y === 0 &&
+                graph_nodes[i].pos.x - graph_nodes[j].pos.x != 0 &&
+                abs(graph_nodes[i].pos.x - graph_nodes[j].pos.x) <= 30) {
+                    graph_nodes[i].adjacent_nodes.push(graph_nodes[j]);
+            }
+        }
+    }
 }
 
 
@@ -76,7 +97,7 @@ function setup() {
     startScreen  = new StartScreen();
     instructionsScreen = new InstructionsScreen();
 
-    player = new playerModel(0, 0);
+    // player = new playerModel(0, 0);
 
     gravity = new p5.Vector(0, 0.3);
 }
@@ -91,7 +112,7 @@ function draw() {
         background(230);
 
         for (var i = 0; i < walls.length; i++) {
-            drawWall(walls[i][0], walls[i][1]);
+            walls[i].draw();
         }
 
         player.draw();
@@ -99,8 +120,7 @@ function draw() {
         for (var i = 0; i < enemies.length; i++) {
             enemies[i].draw();
             // Execute the current state of the enemy
-            (enemies[i].state[enemies[i].currState]).execute(enemies[i]);
-
+            enemies[i].update();
         }
 
         ///// PLAYER MOVEMENT   //////
@@ -167,33 +187,34 @@ class playerModel {
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         noStroke();
         fill(255, 0, 255);
-        // ellipse(0, 0, 20, 20);
-        image(this.images[0], 0, 0, 40, 40);
+        ellipse(-half_tile, -half_tile, 20, 20);
+        image(this.images[0], -half_tile-18, -half_tile-25, 40, 40);
         pop();
     }
     moveRight() {
-        player.pos.x++;
+        if (!detectWallCollision(this.pos.x+1, this.pos.y)) {
+            player.pos.x++;
+        }
     }
     moveLeft() {
-        player.pos.x--;
+        if (!detectWallCollision(this.pos.x-1, this.pos.y)) {
+            player.pos.x--;
+        }
     }
     moveDown() {
-        player.pos.y++;
+        if (!detectWallCollision(this.pos.x, this.pos.y+1)) {
+            player.pos.y++;
+        }
     }
     moveUp() {
-        player.pos.y--;
+        if (!detectWallCollision(this.pos.x, this.pos.y-1)) {
+            player.pos.y--;
+        }
     }
 
     attack() {
 
     }
-}
-
-/**
- * Function to draw the art for the character model
- */
-function drawPlayerCharacter() {
-
 }
 
 /**
@@ -208,6 +229,13 @@ class enemyModel {
 
         this.state = [new waitState(), new chaseState(), new attackState()];
         this.currState = 0;
+
+        // Member variables used for a star search chasing
+        this.currNode = 0;
+        this.targetNum = 0;
+        this.firstChaseLoop = false;
+        this.path = 0;
+        this.target = 0;
     }
     draw() {
         push();
@@ -216,6 +244,10 @@ class enemyModel {
         fill("blue");
         ellipse(0, 0, 20, 20);
         pop();
+    }
+    // encapsulate FSM behavior
+    update() {
+        this.state[this.currState].execute(this);
     }
     changeState(newState) {
         this.currState = newState;
@@ -227,7 +259,7 @@ class waitState {
     }
     execute(me) {
         // If the player gets near, change to chase state
-        if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) < 20) {
+        if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) < 20000) {
             me.changeState(1);
         }
     }
@@ -237,15 +269,69 @@ class chaseState {
     constructor() {
     }
     execute(me) {
-        var dist_to_player = squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y)
-        // If we chase close enough to the player, go to attack state
-        if (dist_to_player < 8) {
-            me.changeState(2);
+        // If this is my frame to search, or I just started chasing, calculate a path using a star search
+        if (!(frameCount & me.frameNum) || me.firstChaseLoop) {
+            me.path = astar_search(me);
+            me.targetNum = me.path.length - 2;
+            me.firstChaseLoop = false;
         }
-        // If the player gets too far away, go to the waiting state
-        if (dist_to_player > 20) {
-            me.changeState(0);
-        }
+
+        // If I have a path (should always have a path), travel along it
+        if (me.path != 0) {
+            // Draw magenta circle
+            // for (var x = 0; x < me.path.length; x++) {
+            //     fill(255, 0, 255);
+            //     noStroke();
+            //     ellipse(me.path[x].pos.x, me.path[x].pos.y, 10, 10);
+            // }
+
+            // Set my target to the correct node in the path
+            me.target = me.path[me.targetNum];
+
+            // If I haven't made it to my target yet, move towards it
+            if (me.target.pos.x != me.pos.x || me.pos.y != me.target.pos.y) {
+                var xDiff = me.target.pos.x - me.pos.x;
+                var yDiff = me.target.pos.y - me.pos.y;
+
+                if (xDiff < 0) {
+                    me.pos.x--;
+                    me.flipImage = true;
+                }
+                if (xDiff > 0) {
+                    me.pos.x++;
+                    me.flipImage = false;
+                }
+                if (yDiff < 0) {
+                    me.pos.y--;
+                }
+                if (yDiff > 0) {
+                    me.pos.y++;
+                }
+            }
+            // If I am at my target node, update to target the next node in the path
+            else {
+                me.currNode = me.target;
+                if (me.targetNum > 0) {
+                    me.targetNum--;
+                }
+                // If I have reached the end of my path, calculate a new path
+                else {
+                    me.firstChaseLoop = true;
+                }
+
+                // Can only change state when I am at a node to avoid going off the paths
+                var dist_to_player = squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y)
+
+                // If we chase close enough to the player, go to attack state
+                if (dist_to_player < 800) {
+                    me.changeState(2);
+                }
+                // If the player gets too far away, go to the waiting state
+                if (dist_to_player > 20000) {
+                    me.changeState(0);
+                }
+            }
+        }  
     }
 }
 
@@ -254,9 +340,33 @@ class attackState {
     }
     execute(me) {
         // If the player gets too far away, go to the chase state
-        if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) > 11) {
+        if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) > 800) {
             me.changeState(1);
         }
+    }
+}
+
+class wallModel {
+    constructor(x, y) {
+        this.pos = new p5.Vector(x, y);
+    }
+    draw() {
+        push();
+        translate(this.pos.x, this.pos.y);
+        image(wall_img, -half_tile, -half_tile, tile_width, tile_width);
+        pop();
+    }
+}
+
+/**
+ * Node object used for graph based search algorithm
+ */
+ class node {
+    constructor(x, y) {
+        this.pos = new p5.Vector(x, y);
+        this.parent_node = 0;
+        this.adjacent_nodes = [];
+        this.used = false;
     }
 }
 
@@ -317,34 +427,35 @@ function drawLevelSelect() {
 }
 
 /**
- * Draw a wall tile at the specified (x,y) coordinant
- * 
- * @param x: x coordinate of the wall 
- * @param y: y coordinate of the wall
- */
-function drawWall(x, y) {
-    image(wall_img, x, y, tile_width, tile_width);
-}
-
-/**
  * Function to interpret a tilemap
  */
-function makeTileMap() {
-    for (var i = 0; i < tile_map[0].length; i++) {
-        for (var j = 0; j < tile_map.length; j++) {
-            if (tile_map[i][j] === "p") {
-                // add player
-                player = new playerModel(i*tile_width, j*tile_width);
+ function makeTileMap(tmap) {
+    // For each row and column, check if the character if coded
+    var iNum = 0;
+    for (var i = 0; i < tmap[0].length; i++) {
+        for (var j = 0; j < tmap.length; j++) {
+            // 'w' is a wall
+            if (tmap[j][i] === 'w') {
+                walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile));
             }
-            else if (tile_map[i][j] === "e") {
-                // add enemy model
-                enemies.push(new enemyModel(i*tile_width, j*tile_width));
+            // Add all non-wall tiles to the graph for astar search
+            else {
+                graph_nodes.push(new node(tile_width*i + half_tile, tile_width*j + half_tile));
             }
-            else if (tile_map[i][j] === "w") {
-                // add wall
-                walls.push([i*tile_width, j*tile_width]);
+
+            // 'e' is an enemy
+            if (tmap[j][i] === 'e') {
+                enemies.push(new enemyModel(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
+                enemies[enemies.length - 1].frameNum = 50;      // Need to change
+                iNum++;
+                enemies[enemies.length - 1].currNode = graph_nodes[graph_nodes.length - 1];
+                enemies[enemies.length - 1].target = graph_nodes[graph_nodes.length - 1];
             }
-            // else, tile will be empty
+
+            // 'p' is the player model
+            if (tmap[j][i] === 'p') {
+                player =  new playerModel(tile_width*i + half_tile, tile_width*j + half_tile);
+            }
         }
     }
 }
@@ -413,4 +524,95 @@ function mousePressed() {
  */
 function squaredDist(x1, y1, x2, y2) {
     return (((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)))
+}
+
+// Calculate the a* search algorithm
+function astar_search(me) {
+    var node_path = [];     // path to return
+    var node_tree = [];     // tree of nodes
+
+    // Add my current node to the tree
+    node_tree.push([me.currNode]);
+
+    // Note that my current node is the root of the tree, and therefor has no parent node
+    me.currNode.parent_node = 0;
+
+    var done = false;
+
+    // Set all nodes except for my current node to be unused
+    for (var i = 0; i < graph_nodes.length; i++) {
+        graph_nodes[i].used = false;
+    }
+    me.currNode.used = true;
+
+    // Search until we find a node close to pacman
+    while (!done) {
+        // Initialize a list of new nodes to add to the tree
+        var new_leaf_nodes = [];
+
+        // for each leaf node in the tree
+        for (var j = 0; j < node_tree[node_tree.length - 1].length; j++) {
+            var curr_leaf_node = node_tree[node_tree.length - 1][j];
+
+            // check each node adjacent to the current node
+            for (var i = 0; i < curr_leaf_node.adjacent_nodes.length; i++) {
+
+                // If it is unsued:
+                if (!curr_leaf_node.adjacent_nodes[i].used) {
+                    // Add to list of next leaf nodes
+                    new_leaf_nodes.push(curr_leaf_node.adjacent_nodes[i]);
+
+                    // Update the parent of the node
+                    new_leaf_nodes[new_leaf_nodes.length - 1].parent_node = curr_leaf_node;
+                    
+                    // note that this node has been used
+                    curr_leaf_node.adjacent_nodes[i].used = true;
+
+                    fill(0, 255, 0);
+                    noStroke();
+                    ellipse(curr_leaf_node.adjacent_nodes[i].pos.x, curr_leaf_node.adjacent_nodes[i].pos.y, 10, 10);
+                }
+            }
+        }
+        // Add list of new leaf nodes to the tree
+        node_tree.push(new_leaf_nodes);
+
+        // check all lead nodes to see if one is close to pacman
+        for (var i = 0; i < new_leaf_nodes.length; i++) {
+            var d = squaredDist(new_leaf_nodes[i].pos.x, new_leaf_nodes[i].pos.y, player.pos.x, player.pos.y);
+            // if one is, find the path from it to the head node
+            if (d < 500) {
+                // Note we are done searching - exit the while loop
+                done = true;
+
+                // Add this node to the node path
+                node_path.push(new_leaf_nodes[i]);
+
+                // Exit the for loop
+                i = new_leaf_nodes.length;
+            }
+        }
+    }
+
+    // Backtrack to find the shortest path
+    // Go until we find the root node, which has no parent node
+    while (node_path[node_path.length - 1].parent_node != 0) {
+        var n_length = node_path.length;
+        // Append the current node to the path
+        node_path.push(node_path[n_length -1].parent_node);
+    }
+
+    // Return the path to the player
+    return node_path;
+}
+
+// Check if any (x, y) hits a wall
+function detectWallCollision(x, y) {
+    for (var i = 0; i < walls.length; i++) {
+        if (walls[i].pos.x - x + half_tile < tile_width-1 && walls[i].pos.x - x + half_tile > -tile_width+1 &&
+            walls[i].pos.y - y + half_tile < tile_width-1 && walls[i].pos.y - y + half_tile > -tile_width+1) {
+                return true;
+            }
+    }
+    return false;
 }
