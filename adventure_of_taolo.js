@@ -6,37 +6,50 @@
 
 // Control what part of the game is running 
 // i.e. start_screen, playing_level_1, win_screen, lose_screen, etc.
-var game_state = "start_screen"
+var game_state = "playing_level_1"
 
 // Tile map of the game
-tile_map = ["wwwwwwwwwwwwwwwwwwww",
-            "w------------------w",
-            "w--p---------------w",
-            "w------------------w",
-            "w------------------w",
-            "w-----wwwwwwwwwwwwww",
-            "w----------w-------w",
-            "wwwwwwwwww-w---e---w",
-            "w--------w-w-------w",
-            "w--------w-w-------w",
-            "w--------w-w-------w",
-            "w--------w-w-------w",
-            "w------------------w",
-            "w----e-------------w",
-            "w------------------w",
-            "w------------------w",
-            "w------------------w",
-            "w------------------w",
-            "w------------------w",
-            "wwwwwwwwwwwwwwwwwwww"];
+tile_map = ["wwwwwwwwwwwwwwwwwwwwww",
+            "w--------------------w",
+            "w--------------p-----w",
+            "w--------------------w",
+            "w--------------------w",
+            "w-----wwwwwwwwwwwwwwww",
+            "w----------w---------w",
+            "wwwwwwwwww-w---e-----w",
+            "w--------w-w---------w",
+            "w--------w-w---------w",
+            "w--------w-w---------w",
+            "w--------w-w---------w",
+            "w--------------------w",
+            "w----e---------------w",
+            "w--------------------w",
+            "w--------------------w",
+            "w--------------------w",
+            "w--------------------w",
+            "wwwwwwwwwwwwwwwwwww--w",
+            "w--------------------w",
+            "w--------------------w",
+            "w--wwwwwwwwwwwwwwwwwww",
+            "w-------------------ew",
+            "wwwwwwwwwwwwwwwwwwwwww"];
 
 // Define the width of one tile
 let tile_width = 20;
 let half_tile = tile_width / 2;
 
+let MAX_X_OFFSET = 0;
+let MIN_X_OFFSET = -40;
+let MAX_Y_OFFSET = 60;
+let MIN_Y_OFFSET = -80;
+
+let DIST_FOR_VIEW_WINDOW_MOVE = 120;
+
+let PLAYER_MOVEMENT_SPEED = 2;
+
 // Global offsets for scrolling game window
 var x_offset = 0;
-var y_offset = 0;
+var y_offset = 60;
 
 // Instance of a playerModel object
 var player;
@@ -50,11 +63,14 @@ var wall_img;
 
 var bow_img;
 
+var heart_img;
+
 // global var to keep track of font
 var font 
 
 var startScreen;
 var instructionsScreen;
+var infoBar;
 
 // gravity affects some items
 var gravity;
@@ -64,10 +80,12 @@ var graph_nodes = [];
 
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
-    wall_img = loadImage('gray_rock.png');
+    wall_img = loadImage('images/gray_rock.png');
     bow_img = loadImage('sprites/weapons/bow.png');
+    heart_img = loadImage('images/heart.png');
 
     instructionsScreen = new InstructionsScreen();
+    infoBar = new InformationBar();
 
     makeTileMap(tile_map);
 
@@ -118,9 +136,11 @@ function draw() {
         player.draw();
 
         for (var i = 0; i < enemies.length; i++) {
-            enemies[i].draw();
-            // Execute the current state of the enemy
-            enemies[i].update();
+            if (enemies[i].health > 0) {
+                enemies[i].draw();
+                // Execute the current state of the enemy
+                enemies[i].update();
+            }
         }
 
         ///// PLAYER MOVEMENT   //////
@@ -139,6 +159,16 @@ function draw() {
         if (keyIsDown(DOWN_ARROW)) {
             player.moveDown();
         }
+
+        // Player can use space to attack
+        if (keyIsDown(32)) {
+            player.attack();
+        }
+        else {
+            player.attack_done();
+        }
+
+        infoBar.draw();
     }
     // Display win screen
     else if (game_state === "win_screen") {
@@ -181,6 +211,7 @@ class playerModel {
         this.health = 3;
         this.current_weapon = "";
         this.ammo = 10;
+        this.attack_again = true;
     }
     draw() {
         push();
@@ -192,28 +223,53 @@ class playerModel {
         pop();
     }
     moveRight() {
-        if (!detectWallCollision(this.pos.x+1, this.pos.y)) {
-            player.pos.x++;
+        if (!detectWallCollision(this.pos.x+PLAYER_MOVEMENT_SPEED, this.pos.y)) {
+            player.pos.x += PLAYER_MOVEMENT_SPEED;
+            if (player.pos.x + x_offset > (width - DIST_FOR_VIEW_WINDOW_MOVE) &&
+                x_offset > MIN_X_OFFSET) {
+                    x_offset -= PLAYER_MOVEMENT_SPEED;
+            }
         }
     }
     moveLeft() {
-        if (!detectWallCollision(this.pos.x-1, this.pos.y)) {
-            player.pos.x--;
+        if (!detectWallCollision(this.pos.x-PLAYER_MOVEMENT_SPEED, this.pos.y)) {
+            player.pos.x -= PLAYER_MOVEMENT_SPEED;
+            if (player.pos.x + x_offset < DIST_FOR_VIEW_WINDOW_MOVE &&
+                x_offset < MAX_X_OFFSET) {
+                    x_offset += PLAYER_MOVEMENT_SPEED;
+            }
         }
     }
     moveDown() {
-        if (!detectWallCollision(this.pos.x, this.pos.y+1)) {
-            player.pos.y++;
+        if (!detectWallCollision(this.pos.x, this.pos.y+PLAYER_MOVEMENT_SPEED)) {
+            player.pos.y += PLAYER_MOVEMENT_SPEED;
+            if (player.pos.y + y_offset > (height - DIST_FOR_VIEW_WINDOW_MOVE) &&
+                y_offset > MIN_Y_OFFSET) {
+                    y_offset -= PLAYER_MOVEMENT_SPEED;
+            }
         }
     }
     moveUp() {
-        if (!detectWallCollision(this.pos.x, this.pos.y-1)) {
-            player.pos.y--;
+        if (!detectWallCollision(this.pos.x, this.pos.y-PLAYER_MOVEMENT_SPEED)) {
+            player.pos.y -= PLAYER_MOVEMENT_SPEED;
+            if (player.pos.y + y_offset < DIST_FOR_VIEW_WINDOW_MOVE &&
+                y_offset < MAX_Y_OFFSET) {
+                    y_offset += PLAYER_MOVEMENT_SPEED;
+            }
         }
     }
-
     attack() {
-
+        if (this.attack_again) {
+            for (var i = 0; i < enemies.length; i++) {
+                if (squaredDist(this.pos.x, this.pos.y, enemies[i].pos.x, enemies[i].pos.y) < 800) {
+                    enemies[i].health--;
+                }
+            }
+            this.attack_again = false;
+        }
+    }
+    attack_done() {
+        this.attack_again = true;
     }
 }
 
@@ -352,7 +408,7 @@ class wallModel {
     }
     draw() {
         push();
-        translate(this.pos.x, this.pos.y);
+        translate(this.pos.x + x_offset, this.pos.y + y_offset);
         image(wall_img, -half_tile, -half_tile, tile_width, tile_width);
         pop();
     }
@@ -568,9 +624,9 @@ function astar_search(me) {
                     // note that this node has been used
                     curr_leaf_node.adjacent_nodes[i].used = true;
 
-                    fill(0, 255, 0);
-                    noStroke();
-                    ellipse(curr_leaf_node.adjacent_nodes[i].pos.x, curr_leaf_node.adjacent_nodes[i].pos.y, 10, 10);
+                    // fill(0, 255, 0);
+                    // noStroke();
+                    // ellipse(curr_leaf_node.adjacent_nodes[i].pos.x, curr_leaf_node.adjacent_nodes[i].pos.y, 10, 10);
                 }
             }
         }

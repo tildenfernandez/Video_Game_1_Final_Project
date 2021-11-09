@@ -33,7 +33,7 @@ class StartScreen {
 
         fill(255);
         rect(30, 220, 100, 30);     // Start button rectangle
-        rect(150, 220, 110, 30);    // Instructions button
+        rect(145, 220, 115, 30);    // Instructions button
         rect(275, 220, 100, 30);    // Levels button
 
         // credits
@@ -60,6 +60,35 @@ class StartScreen {
         text("Start", 60, 240);
         text("Instructions", 157, 240);
         text("Levels", 300, 240);
+
+        // Emphasize buttons when mouse is on top of them
+        if (mouseX >= 30 && mouseX <= 130 &&
+            mouseY >= 220 && mouseY <= 250) {
+                fill(255);
+                stroke(0);
+                strokeWeight(2);
+                rect(30, 220, 100, 30);
+
+                text("Start", 60, 240);
+        }
+        if (mouseX >= 145 && mouseX <= 260 &&
+            mouseY >= 220 && mouseY <= 250) {
+                fill(255);
+                stroke(0);
+                strokeWeight(2);
+                rect(145, 220, 115, 30);
+
+                text("Instructions", 157, 240);
+        }
+        if (mouseX >= 275 && mouseX <= 375 &&
+            mouseY >= 220 && mouseY <= 250) {
+                fill(255);
+                stroke(0);
+                strokeWeight(2);
+                rect(275, 220, 100, 30);
+
+                text("Levels", 300, 240);
+        }
 
         this.player.update();
         this.player.draw();
