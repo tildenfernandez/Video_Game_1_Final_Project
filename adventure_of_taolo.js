@@ -6,7 +6,7 @@
 
 // Control what part of the game is running 
 // i.e. start_screen, playing_level_1, win_screen, lose_screen, etc.
-var game_state = "playing_level_1"
+var game_state = "start_screen"
 
 // Tile map of the game
 tile_map = ["wwwwwwwwwwwwwwwwwwwwww",
