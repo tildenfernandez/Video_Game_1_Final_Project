@@ -150,14 +150,17 @@ function draw() {
             player.moveLeft()
         }
         // Move player right
-        if (keyIsDown(RIGHT_ARROW)) {
+        else if (keyIsDown(RIGHT_ARROW)) {
             player.moveRight();
         }
-        if (keyIsDown(UP_ARROW)) {
+        else if (keyIsDown(UP_ARROW)) {
             player.moveUp();
         }
-        if (keyIsDown(DOWN_ARROW)) {
+        else if (keyIsDown(DOWN_ARROW)) {
             player.moveDown();
+        } else {
+            // make the player idle
+            player.idle();
         }
 
         // Player can use space to attack
@@ -205,13 +208,26 @@ class playerModel {
         // Player tools available
         this.all_tools = [];
 
-        this.images = loadImageSequence('sprites/player/walk/walk', 9);
+        this.imageDict = {
+            walkright: loadImageSequence('sprites/player/walk/right/', 9),
+            walkup: loadImageSequence('sprites/player/walk/up/', 9),
+            walkdown: loadImageSequence('sprites/player/walk/down/', 9),
+            walkleft: loadImageSequence('sprites/player/walk/left/', 9),
+        }
 
         // Player information to be displayed
         this.health = 3;
         this.current_weapon = "";
         this.ammo = 10;
         this.attack_again = true;
+
+        // essentially use a string as an FSM for the player
+        this.state = "idle";
+        this.direction = "right";
+
+        this.frameCount = frameCount;
+        this.imageIndex = 0;
+        this.images = this.imageDict.walkRight;
     }
     draw() {
         push();
@@ -219,8 +235,36 @@ class playerModel {
         noStroke();
         fill(255, 0, 255);
         ellipse(-half_tile, -half_tile, 20, 20);
-        image(this.images[0], -half_tile-18, -half_tile-25, 40, 40);
+
+        // cycle to the next image every 10 frames
+        if (frameCount - this.frameCount > 10) {
+            this.frameCount = frameCount;
+
+            // cycle to the next image
+            // there are only ever 9 images per animation
+            if (this.state !== "idle") {
+                this.imageIndex = (this.imageIndex + 1) % 9;
+            } else {
+                this.imageIndex = 0;
+            }
+        }
+
+        var tempstate = this.state;
+        // this.images = this.imageDict[this.state + this.direction];
+        if (this.state === "idle") {
+            // idle and walk use the same images
+            tempstate = "walk";
+        }
+
+        this.images = this.imageDict[tempstate + this.direction];
+
+        image(this.images[this.imageIndex], -half_tile-18, -half_tile-25, 40, 40);
         pop();
+    }
+    idle() {
+        if (this.state !== "attack") {
+            this.state = "idle";
+        }
     }
     moveRight() {
         if (!detectWallCollision(this.pos.x+PLAYER_MOVEMENT_SPEED, this.pos.y)) {
@@ -230,6 +274,8 @@ class playerModel {
                     x_offset -= PLAYER_MOVEMENT_SPEED;
             }
         }
+        this.state = "walk";
+        this.direction = "right";
     }
     moveLeft() {
         if (!detectWallCollision(this.pos.x-PLAYER_MOVEMENT_SPEED, this.pos.y)) {
@@ -239,6 +285,8 @@ class playerModel {
                     x_offset += PLAYER_MOVEMENT_SPEED;
             }
         }
+        this.state = "walk";
+        this.direction = "left";
     }
     moveDown() {
         if (!detectWallCollision(this.pos.x, this.pos.y+PLAYER_MOVEMENT_SPEED)) {
@@ -248,6 +296,8 @@ class playerModel {
                     y_offset -= PLAYER_MOVEMENT_SPEED;
             }
         }
+        this.state = "walk";
+        this.direction = "down";
     }
     moveUp() {
         if (!detectWallCollision(this.pos.x, this.pos.y-PLAYER_MOVEMENT_SPEED)) {
@@ -257,6 +307,8 @@ class playerModel {
                     y_offset += PLAYER_MOVEMENT_SPEED;
             }
         }
+        this.state = "walk";
+        this.direction = "up"; 
     }
     attack() {
         if (this.attack_again) {
@@ -267,6 +319,7 @@ class playerModel {
             }
             this.attack_again = false;
         }
+        this.state = "attack";
     }
     attack_done() {
         this.attack_again = true;
