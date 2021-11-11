@@ -49,12 +49,11 @@ class Player {
         ellipse(-half_tile, -half_tile, 20, 20);
 
         // attack is active for 60 frames
-        if (frameCount - this.attackTimer > 60) {
-            this.state = "idle";
+        if (this.state === "attack" && frameCount - this.attackTimer > 60) {
+            this.state = "idle"; 
         }
 
-        var frameInterval = 10;
-
+        var frameInterval;
         switch (this.state) {
             case "idle":
             case "walk":
@@ -86,7 +85,6 @@ class Player {
         }
 
         var tempstate = this.state;
-        // this.images = this.imageDict[this.state + this.direction];
         if (this.state === "idle") {
             // idle and walk use the same images
             tempstate = "walk";
