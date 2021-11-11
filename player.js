@@ -19,6 +19,11 @@ class Player {
             walkup: loadImageSequence('sprites/player/walk/up/', 9),
             walkdown: loadImageSequence('sprites/player/walk/down/', 9),
             walkleft: loadImageSequence('sprites/player/walk/left/', 9),
+            attackup: loadImageSequence('sprites/player/attack/up/', 6),
+            attackdown: loadImageSequence('sprites/player/attack/down/', 6),
+            attackleft: loadImageSequence('sprites/player/attack/left/', 6),
+            attackright: loadImageSequence('sprites/player/attack/right/', 6),
+
         }
 
         // Player information to be displayed
@@ -34,6 +39,7 @@ class Player {
         this.frameCount = frameCount;
         this.imageIndex = 0;
         this.images = this.imageDict.walkRight;
+        this.attackTimer = frameCount;
     }
     draw() {
         push();
@@ -42,17 +48,41 @@ class Player {
         fill(255, 0, 255);
         ellipse(-half_tile, -half_tile, 20, 20);
 
+        // attack is active for 60 frames
+        if (frameCount - this.attackTimer > 60) {
+            this.state = "idle";
+        }
+
+        var frameInterval = 10;
+
+        switch (this.state) {
+            case "idle":
+            case "walk":
+                frameInterval = 10;
+                break;
+            case "attack":
+                frameInterval = 6;
+                break;
+        }
+
         // cycle to the next image every 10 frames
-        if (frameCount - this.frameCount > 10) {
+        if (frameCount - this.frameCount > frameInterval) {
             this.frameCount = frameCount;
 
             // cycle to the next image
             // there are only ever 9 images per animation
-            if (this.state !== "idle") {
-                this.imageIndex = (this.imageIndex + 1) % 9;
-            } else {
-                this.imageIndex = 0;
+            switch (this.state) {
+                case "idle":
+                    this.imageIndex = 0;
+                    break;
+                case "walk":
+                    this.imageIndex = (this.imageIndex + 1) % 9;
+                    break;
+                case "attack":
+                    this.imageIndex = (this.imageIndex + 1) % 6;
+                    break;
             }
+
         }
 
         var tempstate = this.state;
@@ -118,16 +148,20 @@ class Player {
     }
     attack() {
         if (this.attack_again) {
+            this.attackTimer = frameCount;
+            this.state = "attack";
             for (var i = 0; i < enemies.length; i++) {
                 if (squaredDist(this.pos.x, this.pos.y, enemies[i].pos.x, enemies[i].pos.y) < 800) {
                     enemies[i].health--;
                 }
             }
             this.attack_again = false;
-        }
-        this.state = "attack";
+        } 
+
+
     }
     attack_done() {
-        this.attack_again = true;
+            this.attack_again = true;
+
     }
 }
