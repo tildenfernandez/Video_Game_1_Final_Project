@@ -9,10 +9,10 @@
 
 class InstructionsScreen {
     constructor() {
-        this.playerChar = new StartScreenPlayer(30, 75, 40, 40);
-        this.enemyChar = new StartScreenSkeleton(30, 150, 40, 40);
-        this.boss = new StartScreenOrc(30, 225, 40, 40);
-        this.weapon = new Bow(30, 300, 40, 40);
+        this.playerChar = new StartScreenPlayer(15, 60, 60, 60);
+        this.enemyChar = new StartScreenSkeleton(15, 135, 60, 60);
+        this.boss = new StartScreenOrc(15, 210, 60, 60);
+        this.weapon = new Bow(20, 290, 60, 60);
     }
     draw() {
         background(248, 179, 173);

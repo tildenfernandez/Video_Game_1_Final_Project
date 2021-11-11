@@ -9,7 +9,7 @@
 var game_state = "start_screen"
 
 // Tile map of the game
-tile_map = ["wwwwwwwwwwwwwwwwwwwwww",
+level1_tilemap = ["wwwwwwwwwwwwwwwwwwwwww",
             "w--------------------w",
             "w--------------p-----w",
             "w--------------------w",
@@ -94,7 +94,7 @@ function preload() {
     instructionsScreen = new InstructionsScreen();
     infoBar = new InformationBar();
 
-    makeTileMap(tile_map);
+    makeTileMap(level1_tilemap);
 
     // Note each node's adjacent nodes
     for (var i = 0; i < graph_nodes.length; i++) {
