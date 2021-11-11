@@ -72,10 +72,18 @@ var ENEMY_ATTACK_IDX = 2;
                     this.imageIndex = 0;
                     break;
                 case "walk":
-                    this.imageIndex = (this.imageIndex + 1) % 9;
+                    if (this.imageIndex < 8) {
+                        this.imageIndex++;
+                    } else {
+                        this.imageIndex = 0;
+                    }
                     break;
                 case "attack":
-                    this.imageIndex = (this.imageIndex + 1) % 6;
+                    if (this.imageIndex < 5) {
+                        this.imageIndex++;
+                    } else {
+                        this.imageIndex = 0;
+                    }
                     break;
             }
         }
@@ -88,7 +96,7 @@ var ENEMY_ATTACK_IDX = 2;
 
         this.images = this.imageDict[tempState + this.direction];
 
-        image(this.images[this.imageIndex], -half_tile-18, -half_tile-25, 40, 40);
+        image(this.images[this.imageIndex], -half_tile-10, -half_tile-15, 40, 40);
 
         pop();
     }

@@ -43,7 +43,7 @@ class playerModel {
         ellipse(-half_tile, -half_tile, 20, 20);
 
         // attack is active for 60 frames
-        if (this.state === "attack" && frameCount - this.attackTimer > 60) {
+        if (this.state === "attack" && frameCount - this.attackTimer > 30) {
             this.state = "idle"; 
         }
 
@@ -69,10 +69,18 @@ class playerModel {
                     this.imageIndex = 0;
                     break;
                 case "walk":
-                    this.imageIndex = (this.imageIndex + 1) % 9;
+                    if (this.imageIndex < 8) {
+                        this.imageIndex++;
+                    } else {
+                        this.imageIndex = 0;
+                    }
                     break;
                 case "attack":
-                    this.imageIndex = (this.imageIndex + 1) % 6;
+                    if (this.imageIndex < 5) {
+                        this.imageIndex++;
+                    } else {
+                        this.imageIndex = 0;
+                    }
                     break;
             }
 
@@ -115,7 +123,7 @@ class playerModel {
         if (this.imageIndex >= this.images.length) {
             this.imageIndex = this.images.length - 1;
         }
-        
+
         image(this.images[this.imageIndex], -half_tile-18, -half_tile-25, 40, 40);
         pop();
     }

@@ -160,7 +160,12 @@ class StartScreenCharacter {
 
         // update the image every 5 frames
         if (frameCount - this.imageFrameCount > 5) {
-            this.imageIndex = (this.imageIndex + 1) % this.images.length;
+            if (this.imageIndex < 8) {
+                this.imageIndex++;
+            } else {
+                this.imageIndex = 0;
+            }
+            // this.imageIndex = (this.imageIndex + 1) % this.images.length;
             this.imageFrameCount = frameCount;
         }
     }
