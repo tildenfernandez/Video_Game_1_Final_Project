@@ -182,7 +182,7 @@ class StartScreenCharacter {
 class StartScreenPlayer extends StartScreenCharacter{
     constructor(x, y, width, height) {
         super(x, y, width, height);
-        this.images = loadImageSequence('sprites/player/walk/walk', 9);
+        this.images = loadImageSequence('sprites/player/walk/right/', 9);
     }
 }
 
