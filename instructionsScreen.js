@@ -65,11 +65,12 @@ class InstructionsScreen {
         rect(20, 215, 60, 60, 10);
         rect(20, 290, 60, 60, 10);
 
+        checkMouseY(this);
+
         this.playerChar.draw();
         this.enemyChar.draw();
         this.boss.draw();
         this.weapon.draw();
-
     }
 }
 
@@ -86,5 +87,44 @@ class Bow {
         translate(this.x, this.y);
         image(bow_img, 0, 0, this.w, this.h);
 
+    }
+}
+
+// Cause the mini models to walk when the mouse is over their area of the screen
+function checkMouseY(me) {
+    // Player character
+    if (mouseY >= 65 && mouseY <= 120) {
+        // update the image every 5 frames
+        if (frameCount - me.playerChar.imageFrameCount > 5) {
+            me.playerChar.imageIndex = (me.playerChar.imageIndex + 1) % me.playerChar.images.length;
+            me.playerChar.imageFrameCount = frameCount;
+        }
+    }
+    else {
+        me.playerChar.imageIndex = 0;
+    }
+
+    // Skeleton character
+    if (mouseY >= 140 && mouseY <= 200) {
+        // update the image every 5 frames
+        if (frameCount - me.enemyChar.imageFrameCount > 5) {
+            me.enemyChar.imageIndex = (me.enemyChar.imageIndex + 1) % me.enemyChar.images.length;
+            me.enemyChar.imageFrameCount = frameCount;
+        }
+    }
+    else {
+        me.enemyChar.imageIndex = 0;
+    }
+
+    // Orc character
+    if (mouseY >= 215 && mouseY <= 275) {
+        // update the image every 5 frames
+        if (frameCount - me.boss.imageFrameCount > 5) {
+            me.boss.imageIndex = (me.boss.imageIndex + 1) % me.boss.images.length;
+            me.boss.imageFrameCount = frameCount;
+        }
+    }
+    else {
+        me.boss.imageIndex = 0;
     }
 }

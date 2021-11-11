@@ -66,6 +66,9 @@ var bow_img;
 var heart_img;
 var gem_img;
 
+var background_tiles = [];
+var background_img;
+
 // global var to keep track of font
 var font 
 
@@ -87,7 +90,6 @@ function preload() {
     bow_img = loadImage('sprites/weapons/bow.png');
     heart_img = loadImage('images/heart.png');
     gem_img = loadImage('images/gem.png');
-
 
     instructionsScreen = new InstructionsScreen();
     infoBar = new InformationBar();
@@ -120,8 +122,6 @@ function setup() {
     startScreen  = new StartScreen();
     instructionsScreen = new InstructionsScreen();
 
-    // player = new playerModel(0, 0);
-
     gravity = new p5.Vector(0, 0.3);
 }
 
@@ -132,7 +132,7 @@ function draw() {
     }
     // Display level 1
     else if (game_state === "playing_level_1") {
-        background(230);
+        background(17, 166, 51);
 
         for (var i = 0; i < walls.length; i++) {
             walls[i].draw();
@@ -228,10 +228,11 @@ class wallModel {
  * Draw the level select screen
  */
 function drawLevelSelect() {
-    background(225);
-    fill(color('teal'));
+    background(54, 207, 207);
+    fill(130, 85, 36);
+    textSize(32);
     noStroke();
-    text("Select a Level", 30, 30);
+    text("Select a Level", 30, 45);
 
     fill(25);
     noStroke();
@@ -243,7 +244,7 @@ function drawLevelSelect() {
 
     rect(50, 350, 300, 30);
 
-
+    textSize(16);
     fill(255);
     text("Level 1", 175, 120);
     text("Level 2", 175, 170);
@@ -252,31 +253,81 @@ function drawLevelSelect() {
     text("Return to Main Menu", 125, 370);
 
     noFill();
-    stroke('yellow');
+    stroke(219, 84, 46);
     strokeWeight(3);
     if (mouseX >= 50 && mouseX <= 350 &&
         mouseY >= 100 && mouseY <= 130) {
             rect(50, 100, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Level 1", 175, 120);
+
+            push()
+            translate(30, 100);
+            scale(cos(frameCount/10), 1);
+            image(gem_img, -12, 0, 25, 30);
+            pop()
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
         mouseY >= 150 && mouseY <= 180) {
             rect(50, 150, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Level 2", 175, 170);
+
+            push()
+            translate(30, 150);
+            scale(cos(frameCount/10), 1);
+            image(gem_img, -12, 0, 25, 30);
+            pop()
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
         mouseY >= 200 && mouseY <= 230) {
             rect(50, 200, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Level 3", 175, 220);
+
+            push()
+            translate(30, 200);
+            scale(cos(frameCount/10), 1);
+            image(gem_img, -12, 0, 25, 30);
+            pop()
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
         mouseY >= 250 && mouseY <= 280) {
             rect(50, 250, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Level 4", 175, 270);
+
+            push()
+            translate(30, 250);
+            scale(cos(frameCount/10), 1);
+            image(gem_img, -12, 0, 25, 30);
+            pop()
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
         mouseY >= 350 && mouseY <= 380) {
             rect(50, 350, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Return to Main Menu", 125, 370);
+
+            push()
+            translate(30, 350);
+            scale(cos(frameCount/10), 1);
+            image(gem_img, -12, 0, 25, 30);
+            pop()
     }
 }
 
@@ -295,6 +346,7 @@ function drawLevelSelect() {
             // Add all non-wall tiles to the graph for astar search
             else {
                 graph_nodes.push(new node(tile_width*i + half_tile, tile_width*j + half_tile));
+                // background_tiles.push(new p5.Vector(tile_width*i, tile_width*j));
             }
 
             // 'e' is an enemy
@@ -310,6 +362,10 @@ function drawLevelSelect() {
             if (tmap[j][i] === 'p') {
                 player =  new playerModel(tile_width*i + half_tile, tile_width*j + half_tile);
             }
+
+            // if (tmap[j][i] !== 'p' && tmap[j][i] !== 'e' && tmap[j][i] !== 'w') {
+                
+            // }
         }
     }
 }

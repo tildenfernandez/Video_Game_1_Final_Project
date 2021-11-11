@@ -1,13 +1,7 @@
-class Player {
-    constructor(x, y, width, height) {
-        
-    }
-}
-
 /**
  * Player model object, has methods for doing everything the player should do
  */
- class playerModel {
+class playerModel {
     constructor(x, y) {
         this.pos = new p5.Vector(x, y);
 
@@ -26,9 +20,10 @@ class Player {
         }
 
         // Player information to be displayed
-        this.health = 3;
+        this.health = 5;
         this.current_weapon = "";
         this.ammo = 10;
+        this.coins = 0;
         this.attack_again = true;
 
         // essentially use a string as an FSM for the player

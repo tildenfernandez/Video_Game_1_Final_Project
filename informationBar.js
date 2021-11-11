@@ -36,8 +36,8 @@ class InformationBar {
         stroke('blue');
         strokeWeight(4);
         noFill();
-        rect(220, height-55, 30, 40);
-        rect(180, height-55, 30, 40);
+        rect(220, height-55, 30, 40, 5);
+        rect(180, height-55, 30, 40, 5);
 
         noStroke();
         fill(255);
@@ -59,22 +59,21 @@ class InformationBar {
         stroke('red');
         strokeWeight(2);
         noFill();
-        rect(305, 355, 70, 35);
+        rect(285, 355, 110, 35, 5);
         noStroke();
         fill(245, 200, 137);
         rect(310, 380, 60, 20);
 
-        fill('red');
+        
         noStroke();
         textFont(font);
         textSize(16);
+        fill('red');
         text("Health", 314, height-5);
-        
-        
 
-        image(heart_img, 310, height-40, 20, 20);
-        image(heart_img, 330, height-40, 20, 20);
-        image(heart_img, 350, height-40, 20, 20);
+        for (var i = 0; i < player.health; i++) {
+            image(heart_img, 290 + (20*i), height-40, 20, 20);
+        }
         
         push()
         translate(50, 350);
