@@ -32,7 +32,7 @@ class playerModel {
 
         this.frameCount = frameCount;
         this.imageIndex = 0;
-        this.images = this.imageDict.walkRight;
+        this.images = this.imageDict.walkright;
         this.attackTimer = frameCount;
     }
     draw() {
@@ -221,12 +221,14 @@ class AttackAnimation {
 
         var currentAngle = lerp(angleOffset, angleOffset + PI/2, framesPassed/this.duration);
 
+        var startAngle = max(angleOffset, currentAngle - PI/4);
+
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         fill(color('white'));
         stroke(255);
         strokeWeight(2);
-        arc(0, 0, 30, 30, angleOffset, currentAngle);
+        arc(0, 0, 30, 30, startAngle, currentAngle);
         pop();
 
     }
@@ -247,8 +249,3 @@ function lerpAngle(current, required, speed) {
     }
 }
 
-
-
-// function linearInterpolate(start, end, percent) {
-//     return start + percent * (end - start);
-// }

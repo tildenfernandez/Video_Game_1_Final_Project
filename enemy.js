@@ -1,6 +1,11 @@
 /**
  * Enemy model object, has methods for doing everything the enemy should do
  */
+
+var ENEMY_WAIT_IDX = 0;
+var ENEMY_CHASE_IDX = 1;
+var ENEMY_ATTACK_IDX = 2;
+
  class enemyModel {
     constructor(x, y) {
         this.pos = new p5.Vector(x, y);
@@ -10,6 +15,25 @@
 
         this.state = [new waitState(), new chaseState(), new attackState()];
         this.currState = 0;
+
+        // load images
+        this.imageDict = {
+            walkright: loadImageSequence('sprites/orc/walk/right/', 9),
+            walkup: loadImageSequence('sprites/orc/walk/up/', 9),
+            walkdown: loadImageSequence('sprites/orc/walk/down/', 9),
+            walkleft: loadImageSequence('sprites/orc/walk/left/', 9),
+            attackup: loadImageSequence('sprites/orc/attack/up/', 6),
+            attackdown: loadImageSequence('sprites/orc/attack/down/', 6),
+            attackleft: loadImageSequence('sprites/orc/attack/left/', 6),
+            attackright: loadImageSequence('sprites/orc/attack/right/', 6),
+        }
+        this.imageIndex = 0;
+        this.images = this.imageDict.walkright;
+
+        this.direction = "right";
+        this.stateName = "idle";
+
+        this.frameCount = 0;
 
         // Member variables used for a star search chasing
         this.currNode = 0;
@@ -24,6 +48,48 @@
         noStroke();
         fill("blue");
         ellipse(0, 0, 20, 20);
+
+        var frameInterval;
+        switch (this.stateName) {
+            case "idle":
+            case "walk":
+                frameInterval = 10;
+                break;
+            case "attack":
+                frameInterval = 4;
+                break;
+        }
+
+
+        // cycle to the next image every 10 frames
+        if (frameCount - this.frameCount > frameInterval) {
+            this.frameCount = frameCount;
+
+            // cycle to the next image
+            // there are only ever 9 images per animation
+            switch (this.stateName) {
+                case "idle":
+                    this.imageIndex = 0;
+                    break;
+                case "walk":
+                    this.imageIndex = (this.imageIndex + 1) % 9;
+                    break;
+                case "attack":
+                    this.imageIndex = (this.imageIndex + 1) % 6;
+                    break;
+            }
+        }
+
+        var tempState = this.stateName;
+        if (this.stateName === "idle") {
+            // idle and walk use the same images
+            tempState = "walk";
+        }
+
+        this.images = this.imageDict[tempState + this.direction];
+
+        image(this.images[this.imageIndex], -half_tile-18, -half_tile-25, 40, 40);
+
         pop();
     }
     // encapsulate FSM behavior
@@ -41,7 +107,7 @@ class waitState {
     execute(me) {
         // If the player gets near, change to chase state
         if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) < 20000) {
-            me.changeState(1);
+            me.changeState(ENEMY_CHASE_IDX);
         }
     }
 }
@@ -56,6 +122,9 @@ class chaseState {
             me.targetNum = me.path.length - 2;
             me.firstChaseLoop = false;
         }
+
+        // set my state to walking
+        me.stateName = "walk";
 
         // If I have a path (should always have a path), travel along it
         if (me.path != 0) {
@@ -77,16 +146,20 @@ class chaseState {
                 if (xDiff < 0) {
                     me.pos.x--;
                     me.flipImage = true;
+                    me.direction = "left";
                 }
                 if (xDiff > 0) {
                     me.pos.x++;
                     me.flipImage = false;
+                    me.direction = "right";
                 }
                 if (yDiff < 0) {
                     me.pos.y--;
+                    me.direction = "up";
                 }
                 if (yDiff > 0) {
                     me.pos.y++;
+                    me.direction = "down";
                 }
             }
             // If I am at my target node, update to target the next node in the path
@@ -105,11 +178,11 @@ class chaseState {
 
                 // If we chase close enough to the player, go to attack state
                 if (dist_to_player < 800) {
-                    me.changeState(2);
+                    me.changeState(ENEMY_ATTACK_IDX);
                 }
                 // If the player gets too far away, go to the waiting state
                 if (dist_to_player > 20000) {
-                    me.changeState(0);
+                    me.changeState(ENEMY_WAIT_IDX);
                 }
             }
         }  
@@ -122,7 +195,7 @@ class attackState {
     execute(me) {
         // If the player gets too far away, go to the chase state
         if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) > 800) {
-            me.changeState(1);
+            me.changeState(ENEMY_CHASE_IDX);
         }
     }
 }
