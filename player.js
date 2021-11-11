@@ -110,6 +110,12 @@ class playerModel {
 
         this.images = this.imageDict[tempstate + this.direction];
 
+        // error handling
+        // if the image index is greater than the number of images, simply take the last one
+        if (this.imageIndex >= this.images.length) {
+            this.imageIndex = this.images.length - 1;
+        }
+        
         image(this.images[this.imageIndex], -half_tile-18, -half_tile-25, 40, 40);
         pop();
     }
