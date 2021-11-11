@@ -109,7 +109,7 @@ var drawRange = function(c1, c2, c3, offset) {
         stroke(c1, c2, c3);
         var n = noise(t + c1 * 20);
         var y = map(n, 0, 1, 0, height/4);
-        rect(t*100, height-y - offset, 1, y);
+        rect(t*100, height-y - offset, 1, y+offset);
     }
     pop();
 };
