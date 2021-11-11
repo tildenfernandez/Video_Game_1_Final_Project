@@ -79,6 +79,8 @@ var gravity;
 // graph nodes for a* BFS
 var graph_nodes = [];
 
+var attack_animations = [];
+
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
     wall_img = loadImage('images/gray_rock.png');
@@ -148,29 +150,39 @@ function draw() {
 
         ///// PLAYER MOVEMENT   //////
 
-        // move player left
-        if (keyIsDown(LEFT_ARROW)) {
-            player.moveLeft()
-        }
-        // Move player right
-        else if (keyIsDown(RIGHT_ARROW)) {
-            player.moveRight();
-        }
-        else if (keyIsDown(UP_ARROW)) {
-            player.moveUp();
-        }
-        else if (keyIsDown(DOWN_ARROW)) {
-            player.moveDown();
-        } else {
-            player.idle();
-        }
-    
+
         // Player can use space to attack
         if (keyIsDown(32)) {
             player.attack();
         }
         else {
             player.attack_done();
+            
+            if (keyIsDown(LEFT_ARROW)) {
+                player.moveLeft()
+            }
+            else if (keyIsDown(RIGHT_ARROW)) {
+                player.moveRight();
+            }
+            else if (keyIsDown(UP_ARROW)) {
+                player.moveUp();
+            }
+            else if (keyIsDown(DOWN_ARROW)) {
+                player.moveDown();
+            } else {
+                player.idle();
+            }
+    
+        }
+
+        // draw all attack animations
+        for (var i = 0; i < attack_animations.length; i++) {
+            attack_animations[i].draw();
+
+            // if the animation is done, remove it
+            if (attack_animations[i].done) {
+                attack_animations.splice(i, 1);
+            }
         }
 
         infoBar.draw();

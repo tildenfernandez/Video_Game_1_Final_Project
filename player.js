@@ -23,7 +23,6 @@ class Player {
             attackdown: loadImageSequence('sprites/player/attack/down/', 6),
             attackleft: loadImageSequence('sprites/player/attack/left/', 6),
             attackright: loadImageSequence('sprites/player/attack/right/', 6),
-
         }
 
         // Player information to be displayed
@@ -90,6 +89,30 @@ class Player {
             tempstate = "walk";
         }
 
+        // if you are attacking, start an attack animation
+        if (this.state === "attack") {
+            var xOffset = 0;
+            var yOffset = 0;
+
+            switch (this.direction) {
+                case "up":
+                    yOffset = -20;
+                    break;
+                case "down":
+                    yOffset = 20;
+                    break;
+                case "right":
+                    xOffset = 20;
+                    break;
+                case "left":
+                    xOffset = -20;
+                    break;
+            }
+
+            // there is a global variable that stores all the current attack animations
+            attack_animations.push(new AttackAnimation(this.pos.x + xOffset - half_tile, this.pos.y + yOffset - half_tile, this.direction));
+        }
+
         this.images = this.imageDict[tempstate + this.direction];
 
         image(this.images[this.imageIndex], -half_tile-18, -half_tile-25, 40, 40);
@@ -97,6 +120,7 @@ class Player {
     }
     idle() {
         if (this.state !== "attack") {
+            // change back to idle if you release an arrow key and you're not attacking
             this.state = "idle";
         }
     }
@@ -155,11 +179,57 @@ class Player {
             }
             this.attack_again = false;
         } 
-
-
     }
     attack_done() {
-            this.attack_again = true;
+        this.attack_again = true;
+        // this.imageIndex = 0;
+    }
+}
+
+class AttackAnimation {
+    constructor(x, y, direction) {
+        this.pos = createVector(x, y, direction);
+        this.direction = direction;
+        this.startTime = frameCount;
+        
+        // how long the attack lasts
+        this.duration = 30;
+        this.done = false;
+    }
+
+    draw() {
+        // draw a white half circle to indicate a slashing motion
+        var angleOffset;
+
+        var framesPassed = frameCount - this.startTime;
+
+        // if framesPassed is longer than duration, done
+        if (framesPassed > this.duration) {
+            this.done = true;
+        }
+
+        switch (this.direction) {
+            case "right":
+                angleOffset = -PI/4;
+                break;
+            case "left":
+                angleOffset = 3*PI/4;
+                break;
+            case "up":
+                angleOffset = -3*PI/4;
+                break;
+            case "down":
+                angleOffset = PI/4;
+                break;
+        }
+
+        push();
+        translate(this.pos.x + x_offset, this.pos.y + y_offset);
+        fill(color('white'));
+        stroke(255);
+        strokeWeight(2);
+        arc(0, 0, 30, 30, angleOffset, angleOffset + PI/2);
+        pop();
 
     }
 }
