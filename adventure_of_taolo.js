@@ -159,10 +159,9 @@ function draw() {
         else if (keyIsDown(DOWN_ARROW)) {
             player.moveDown();
         } else {
-            // make the player idle
             player.idle();
         }
-
+    
         // Player can use space to attack
         if (keyIsDown(32)) {
             player.attack();
@@ -213,6 +212,10 @@ class playerModel {
             walkup: loadImageSequence('sprites/player/walk/up/', 9),
             walkdown: loadImageSequence('sprites/player/walk/down/', 9),
             walkleft: loadImageSequence('sprites/player/walk/left/', 9),
+            attackup: loadImageSequence('sprites/player/attack/up/', 6),
+            attackdown: loadImageSequence('sprites/player/attack/down/', 6),
+            attackleft: loadImageSequence('sprites/player/attack/left/', 6),
+            attackright: loadImageSequence('sprites/player/attack/right/', 6),
         }
 
         // Player information to be displayed
@@ -323,6 +326,7 @@ class playerModel {
     }
     attack_done() {
         this.attack_again = true;
+        // this.state = "idle";
     }
 }
 
