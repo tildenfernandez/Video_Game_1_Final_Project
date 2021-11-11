@@ -54,7 +54,7 @@ class playerModel {
                 frameInterval = 10;
                 break;
             case "attack":
-                frameInterval = 6;
+                frameInterval = 4;
                 break;
         }
 
@@ -188,8 +188,9 @@ class AttackAnimation {
         this.startTime = frameCount;
         
         // how long the attack lasts
-        this.duration = 30;
+        this.duration = 10;
         this.done = false;
+
     }
 
     draw() {
@@ -218,13 +219,36 @@ class AttackAnimation {
                 break;
         }
 
+        var currentAngle = lerp(angleOffset, angleOffset + PI/2, framesPassed/this.duration);
+
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         fill(color('white'));
         stroke(255);
         strokeWeight(2);
-        arc(0, 0, 30, 30, angleOffset, angleOffset + PI/2);
+        arc(0, 0, 30, 30, angleOffset, currentAngle);
         pop();
 
     }
 }
+
+// linearly interpolate the required angle to the current angle
+function lerpAngle(current, required, speed) {
+    var delta = required - current;
+    var deltaAbs = abs(delta);
+    if (deltaAbs > speed) {
+        if (delta > 0) {
+            return current + speed;
+        } else {
+            return current - speed;
+        }
+    } else {
+        return required;
+    }
+}
+
+
+
+// function linearInterpolate(start, end, percent) {
+//     return start + percent * (end - start);
+// }
