@@ -16,7 +16,7 @@ class StartScreen {
         this.orc = new StartScreenOrc(150, height - 80, 80, 80);
         this.skeleton = new StartScreenSkeleton(50, height - 80, 80, 80);
 
-        this.castle_img = loadImage('castle.png');
+        this.castle_img = loadImage('images/castle.png');
     }
 
     draw() {
