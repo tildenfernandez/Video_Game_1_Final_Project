@@ -465,6 +465,8 @@ class wallModel {
     else if (game_state === "lose_screen") {
         if (mouseX >= 75 && mouseX <= 175 &&
             mouseY >= 300 && mouseY <= 330) {
+                stopAllSongs();
+                songs[0].play();
                 game_state = "start_screen"
         }
 
