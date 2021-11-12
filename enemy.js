@@ -131,12 +131,50 @@ class waitState {
     constructor() {
     }
     execute(me) {
-        me.stateName = "idle";
+        me.stateName = "walk";
 
-        // If the player gets near, change to chase state
-        if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) < 20000) {
-            me.changeState(ENEMY_CHASE_IDX);
+        // If the enemy is not at the target node, move towards the node
+        if (me.target.pos.x != me.pos.x || me.pos.y != me.target.pos.y) {
+            var xDiff = me.target.pos.x - me.pos.x;
+            var yDiff = me.target.pos.y - me.pos.y;
+
+            if (xDiff < 0) {
+                me.pos.x--;
+                me.direction = "left";
+            }
+            if (xDiff > 0) {
+                me.pos.x++;
+                me.direction = "right";
+            }
+            if (yDiff < 0) {
+                me.pos.y--;
+                me.direction = "up";
+            }
+            if (yDiff > 0) {
+                me.pos.y++;
+                me.direction = "down";
+            }
         }
+        // If the enemy is at the target node, pick a new target from the neighboring nodes
+        else {
+            me.currNode = me.target;
+
+            // Get a random node from the options
+            var r = int(random(me.currNode.adjacent_nodes.length));
+
+            // Update the target
+            me.target = me.currNode.adjacent_nodes[r];
+
+            // State changes can only occur when we are on a node to avoid going off the paths
+            // If the player gets near, change to chase state
+            if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) < 20000) {
+                me.changeState(ENEMY_CHASE_IDX);
+                me.target = me.currNode;
+                me.firstChaseLoop = true;
+            }
+        }
+
+        
     }
 }
 
