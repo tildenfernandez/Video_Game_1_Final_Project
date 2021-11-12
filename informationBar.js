@@ -75,10 +75,6 @@ class InformationBar {
             image(heart_img, 290 + (20*i), height-40, 20, 20);
         }
         
-        push()
-        translate(50, 350);
-        scale(cos(frameCount/10), 1);
-        image(gem_img, -12, 0, 25, 30);
-        pop()
+        drawGem(50, 350);
     }
 }

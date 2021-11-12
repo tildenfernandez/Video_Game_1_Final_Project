@@ -61,14 +61,17 @@ var enemies = [];
 var walls = [];
 var wall_img;
 
-var bow_img;
+// Array of gems (p5 vector of position)
+var gems = [];
 
+// Loaded images
+var bow_img;
 var heart_img;
 var gem_img;
 var castle_img;
+var background_img;
 
 var background_tiles = [];
-var background_img;
 
 // global var to keep track of font
 var font 
@@ -84,6 +87,9 @@ var gravity;
 var graph_nodes = [];
 
 var attack_animations = [];
+
+// Variable to keep track of current level for win/lose screen buttons
+var curr_level
 
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
@@ -267,11 +273,7 @@ function drawLevelSelect() {
             fill(219, 84, 46);
             text("Level 1", 175, 120);
 
-            push()
-            translate(30, 100);
-            scale(cos(frameCount/10), 1);
-            image(gem_img, -12, 0, 25, 30);
-            pop()
+            drawGem(30, 100);
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
@@ -282,11 +284,7 @@ function drawLevelSelect() {
             fill(219, 84, 46);
             text("Level 2", 175, 170);
 
-            push()
-            translate(30, 150);
-            scale(cos(frameCount/10), 1);
-            image(gem_img, -12, 0, 25, 30);
-            pop()
+            drawGem(30, 150);
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
@@ -297,11 +295,7 @@ function drawLevelSelect() {
             fill(219, 84, 46);
             text("Level 3", 175, 220);
 
-            push()
-            translate(30, 200);
-            scale(cos(frameCount/10), 1);
-            image(gem_img, -12, 0, 25, 30);
-            pop()
+            drawGem(30, 200);
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
@@ -312,11 +306,7 @@ function drawLevelSelect() {
             fill(219, 84, 46);
             text("Level 4", 175, 270);
 
-            push()
-            translate(30, 250);
-            scale(cos(frameCount/10), 1);
-            image(gem_img, -12, 0, 25, 30);
-            pop()
+            drawGem(30, 250);
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
@@ -327,11 +317,7 @@ function drawLevelSelect() {
             fill(219, 84, 46);
             text("Return to Main Menu", 125, 370);
 
-            push()
-            translate(30, 350);
-            scale(cos(frameCount/10), 1);
-            image(gem_img, -12, 0, 25, 30);
-            pop()
+            drawGem(30, 350);
     }
 }
 
@@ -366,10 +352,6 @@ function drawLevelSelect() {
             if (tmap[j][i] === 'p') {
                 player =  new playerModel(tile_width*i + half_tile, tile_width*j + half_tile);
             }
-
-            // if (tmap[j][i] !== 'p' && tmap[j][i] !== 'e' && tmap[j][i] !== 'w') {
-                
-            // }
         }
     }
 }
@@ -377,12 +359,13 @@ function drawLevelSelect() {
 /**
  * Capture mouse input as necessary
  */
-function mousePressed() {
+ function mousePressed() {
     // Record player clicking buttons on start screen
     if (game_state === "start_screen") {
         if (mouseX >= 30 && mouseX <= 130 &&
             mouseY >= 220 && mouseY <= 250) {
                 game_state = "playing_level_1"
+                curr_level = 1;
                 clear();
         }
 
@@ -409,30 +392,56 @@ function mousePressed() {
             mouseY >= 100 && mouseY <= 130) {
                 clear();
                 game_state = "playing_level_1";
+                curr_level = 1;
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 150 && mouseY <= 180) {
                 clear();
                 game_state = "playing_level_2";
+                curr_level = 2;
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 200 && mouseY <= 230) {
                 clear();
                 game_state = "playing_level_3";
+                curr_level = 3;
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 250 && mouseY <= 280) {
                 clear();
                 game_state = "playing_level_4";
+                curr_level = 4;
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 350 && mouseY <= 380) {
                 clear();
                 game_state = "start_screen";
+        }
+        
+    }
+    else if (game_state === "win_screen") {
+        if (mouseX >= 75 && mouseX <= 175 &&
+            mouseY >= 300 && mouseY <= 330) {
+                game_state = "start_screen"
+        }
+
+        if (mouseX >= 225 && mouseX <= 325 &&
+            mouseY >= 300 && mouseY <= 330) {
+                switch (curr_level) {
+                    case 1:
+                        game_state = "playing_level_2";
+                        break;
+                    case 2:
+                        game_state = "playing_level_3";
+                        break;
+                    case 3:
+                        game_state = "playing_level_2";
+                        break;
+                }
         }
     }
 }
@@ -459,4 +468,12 @@ function detectWallCollision(x, y) {
             }
     }
     return false;
+}
+
+function drawGem(x, y) {
+    push()
+        translate(x, y);
+        scale(cos(frameCount/10), 1);
+        image(gem_img, -12, 0, 25, 30);
+        pop()
 }
