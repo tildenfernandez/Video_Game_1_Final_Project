@@ -137,8 +137,18 @@ function draw() {
         for (var i = 0; i < walls.length; i++) {
             walls[i].draw();
         }
+        // draw all attack animations
+        for (var i = 0; i < attack_animations.length; i++) {
+            attack_animations[i].draw();
+
+            // if the animation is done, remove it
+            if (attack_animations[i].done) {
+                attack_animations.splice(i, 1);
+            }
+        }
 
         player.draw();
+
 
         for (var i = 0; i < enemies.length; i++) {
             if (enemies[i].health > 0) {
@@ -175,15 +185,7 @@ function draw() {
     
         }
 
-        // draw all attack animations
-        for (var i = 0; i < attack_animations.length; i++) {
-            attack_animations[i].draw();
 
-            // if the animation is done, remove it
-            if (attack_animations[i].done) {
-                attack_animations.splice(i, 1);
-            }
-        }
 
         infoBar.draw();
     }
