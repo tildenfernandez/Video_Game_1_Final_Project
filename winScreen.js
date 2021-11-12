@@ -17,10 +17,10 @@ class WinScreen {
         // if not chasing, then face right and move to the left
         if (this.playerChar.chasing) {
             this.playerChar.velocity.x = 2;
-            drawGem(330, 200);
+            drawGem(330, 200, 25, 30);
         } else {
             this.playerChar.velocity.x = -2;
-            drawGem(70, 200);
+            drawGem(70, 200, 25, 30);
         }
 
         this.playerChar.position.add(this.playerChar.velocity);

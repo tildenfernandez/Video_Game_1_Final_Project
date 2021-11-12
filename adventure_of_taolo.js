@@ -6,7 +6,7 @@
 
 // Control what part of the game is running 
 // i.e. start_screen, playing_level_1, win_screen, lose_screen, etc.
-var game_state = "win_screen"
+var game_state = "lose_screen"
 
 // Tile map of the game
 level1_tilemap = ["wwwwwwwwwwwwwwwwwwwwww",
@@ -91,7 +91,7 @@ var graph_nodes = [];
 var attack_animations = [];
 
 // Variable to keep track of current level for win/lose screen buttons
-var curr_level
+var curr_level = 1;
 
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
@@ -239,93 +239,6 @@ class wallModel {
 }
 
 /**
- * Draw the level select screen
- */
-function drawLevelSelect() {
-    background(54, 207, 207);
-    fill(130, 85, 36);
-    textSize(32);
-    noStroke();
-    text("Select a Level", 30, 45);
-
-    fill(25);
-    noStroke();
-
-    rect(50, 100, 300, 30);
-    rect(50, 150, 300, 30);
-    rect(50, 200, 300, 30);
-    rect(50, 250, 300, 30);
-
-    rect(50, 350, 300, 30);
-
-    textSize(16);
-    fill(255);
-    text("Level 1", 175, 120);
-    text("Level 2", 175, 170);
-    text("Level 3", 175, 220);
-    text("Level 4", 175, 270);
-    text("Return to Main Menu", 125, 370);
-
-    noFill();
-    stroke(219, 84, 46);
-    strokeWeight(3);
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 100 && mouseY <= 130) {
-            rect(50, 100, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Level 1", 175, 120);
-
-            drawGem(30, 100);
-    }
-
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 150 && mouseY <= 180) {
-            rect(50, 150, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Level 2", 175, 170);
-
-            drawGem(30, 150);
-    }
-
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 200 && mouseY <= 230) {
-            rect(50, 200, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Level 3", 175, 220);
-
-            drawGem(30, 200);
-    }
-
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 250 && mouseY <= 280) {
-            rect(50, 250, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Level 4", 175, 270);
-
-            drawGem(30, 250);
-    }
-
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 350 && mouseY <= 380) {
-            rect(50, 350, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Return to Main Menu", 125, 370);
-
-            drawGem(30, 350);
-    }
-}
-
-/**
  * Function to interpret a tilemap
  */
  function makeTileMap(tmap) {
@@ -427,6 +340,7 @@ function drawLevelSelect() {
         }
         
     }
+    // Mouse input on the win screen
     else if (game_state === "win_screen") {
         if (mouseX >= 75 && mouseX <= 175 &&
             mouseY >= 300 && mouseY <= 330) {
@@ -448,6 +362,7 @@ function drawLevelSelect() {
                 }
         }
     }
+    // Mouse input on the lose screen
     else if (game_state === "lose_screen") {
         if (mouseX >= 75 && mouseX <= 175 &&
             mouseY >= 300 && mouseY <= 330) {
@@ -475,6 +390,93 @@ function drawLevelSelect() {
 }
 
 /**
+ * Draw the level select screen
+ */
+ function drawLevelSelect() {
+    background(54, 207, 207);
+    fill(130, 85, 36);
+    textSize(32);
+    noStroke();
+    text("Select a Level", 30, 45);
+
+    fill(25);
+    noStroke();
+
+    rect(50, 100, 300, 30);
+    rect(50, 150, 300, 30);
+    rect(50, 200, 300, 30);
+    rect(50, 250, 300, 30);
+
+    rect(50, 350, 300, 30);
+
+    textSize(16);
+    fill(255);
+    text("Level 1", 175, 120);
+    text("Level 2", 175, 170);
+    text("Level 3", 175, 220);
+    text("Level 4", 175, 270);
+    text("Return to Main Menu", 125, 370);
+
+    noFill();
+    stroke(219, 84, 46);
+    strokeWeight(3);
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 100 && mouseY <= 130) {
+            rect(50, 100, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Level 1", 175, 120);
+
+            drawGem(30, 100, 25, 30);
+    }
+
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 150 && mouseY <= 180) {
+            rect(50, 150, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Level 2", 175, 170);
+
+            drawGem(30, 150, 25, 30);
+    }
+
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 200 && mouseY <= 230) {
+            rect(50, 200, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Level 3", 175, 220);
+
+            drawGem(30, 200, 25, 30);
+    }
+
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 250 && mouseY <= 280) {
+            rect(50, 250, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Level 4", 175, 270);
+
+            drawGem(30, 250, 25, 30);
+    }
+
+    if (mouseX >= 50 && mouseX <= 350 &&
+        mouseY >= 350 && mouseY <= 380) {
+            rect(50, 350, 300, 30);
+
+            noStroke();
+            fill(219, 84, 46);
+            text("Return to Main Menu", 125, 370);
+
+            drawGem(30, 350, 25, 30);
+    }
+}
+
+/**
  * Calculate the square of the distance between to points
  * 
  * @param {*} x1 x coordinant of the first point
@@ -487,7 +489,12 @@ function squaredDist(x1, y1, x2, y2) {
     return (((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)))
 }
 
-// Check if any (x, y) hits a wall
+/**
+ * Check if any (x, y) hits a wall
+ * @param {x coordinant of position to check} x 
+ * @param {y coordinant of position to check} y 
+ * @returns 
+ */
 function detectWallCollision(x, y) {
     for (var i = 0; i < walls.length; i++) {
         if (walls[i].pos.x - x + half_tile < tile_width-1 && walls[i].pos.x - x + half_tile > -tile_width+1 &&
@@ -498,10 +505,17 @@ function detectWallCollision(x, y) {
     return false;
 }
 
-function drawGem(x, y) {
+/**
+ * Draw a gem in the given (x,y) coordinante, of the given [width, height] size
+ * @param {x position to draw gem} x 
+ * @param {y position of gem} y 
+ * @param {width to draw gem} w
+ * @param {height to draw gem} h
+ */
+function drawGem(x, y, w, h) {
     push()
         translate(x, y);
         scale(cos(frameCount/10), 1);
-        image(gem_img, -12, 0, 25, 30);
+        image(gem_img, -(floor(w>>1)), 0, w, h);
         pop()
 }

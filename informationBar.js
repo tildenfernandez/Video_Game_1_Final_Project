@@ -75,6 +75,6 @@ class InformationBar {
             image(heart_img, 290 + (20*i), height-40, 20, 20);
         }
         
-        drawGem(50, 350);
+        drawGem(50, 350, 25, 30);
     }
 }

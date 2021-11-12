@@ -13,6 +13,7 @@ class StartScreen {
         }
     
         this.player = new StartScreenPlayer(250, height - 80, 80, 80);
+        this.player.imageIndex = 3;
         this.orc = new StartScreenOrc(150, height - 80, 80, 80);
         this.skeleton = new StartScreenSkeleton(50, height - 80, 80, 80);
 
@@ -170,7 +171,7 @@ class StartScreenCharacter {
         }
 
         // update the image every 5 frames
-        if (frameCount - this.imageFrameCount > 3) {
+        if (frameCount - this.imageFrameCount > 5) {
             if (this.imageIndex < 8) {
                 this.imageIndex++;
             } else {
