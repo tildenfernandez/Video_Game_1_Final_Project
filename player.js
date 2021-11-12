@@ -39,8 +39,8 @@ class playerModel {
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         noStroke();
-        fill(255, 0, 255);
-        ellipse(-half_tile, -half_tile, 20, 20);
+        // fill(255, 0, 255);
+        // ellipse(-half_tile, -half_tile, 20, 20);
 
         // attack is active for 60 frames
         if (this.state === "attack" && frameCount - this.attackTimer > 30) {

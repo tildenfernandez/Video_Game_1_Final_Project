@@ -46,8 +46,8 @@ var ENEMY_ATTACK_IDX = 2;
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         noStroke();
-        fill("blue");
-        ellipse(0, 0, 20, 20);
+        // fill("blue");
+        // ellipse(0, 0, 20, 20);
 
         // offset for slashing animations
         this.xOffset = 0;
@@ -106,7 +106,7 @@ var ENEMY_ATTACK_IDX = 2;
             this.imageIndex = this.images.length - 1;
         }
 
-        image(this.images[this.imageIndex], -half_tile-10, -half_tile-25, 40, 40);
+        image(this.images[this.imageIndex], -half_tile-10, -half_tile-23, 40, 40);
 
         pop();
     }
@@ -211,14 +211,30 @@ class chaseState {
 
 class attackState {
     constructor() {
+        this.frameCount = frameCount;
     }
     execute(me) {
         me.stateName = "attack";
         
+        switch (me.direction) {
+            case "up":
+                me.yOffset = -10;
+                break;
+            case "down":
+                me.yOffset = 10;
+                break;
+            case "right":
+                me.xOffset = 10;
+                break;
+            case "left":
+                me.xOffset = -10;
+                break;
+        }
+
         // create a new slash animation every 30 seconds
         if (frameCount - this.frameCount > 30) {
             this.frameCount = frameCount;
-            attack_animations.push(new AttackAnimation(me.pos.x + me.xOffset - half_tile, me.pos.y + me.yOffset - half_tile, me.direction));
+            attack_animations.push(new AttackAnimation(me.pos.x + me.xOffset, me.pos.y + me.yOffset, me.direction));
         }
 
         // If the player gets too far away, go to the chase state
