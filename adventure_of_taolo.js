@@ -9,30 +9,71 @@
 var game_state = "start_screen"
 
 // Tile map of the game
-let level1_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
-                        "w--------------------w",
-                        "w--------------p-----w",
-                        "w--------------------w",
-                        "w-g------------------w",
-                        "w-----wwwwwwwwwwwwwwww",
-                        "w----------w---------w",
-                        "wwwwwwwwww-w---e-----w",
-                        "w--------w-w---------w",
-                        "w--------w-w---------w",
-                        "w--------w-w----g----w",
-                        "w--------w-w---------w",
-                        "w--------------------w",
-                        "w----e---------------w",
-                        "w--------------g-----w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "wwwwwwwwwwwwwwwwwww--w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--wwwwwwwwwwwwwwwwwww",
-                        "w-------------------ew",
-                        "wwwwwwwwwwwwwwwwwwwwww"];          
+let level1_tilemap = [
+    "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", 
+    "wwwwb                     b      wwwwwww",
+    "wbb                         s     swwwww",
+    "w s     p                            s w",
+    "w                                      w",
+    "w   s     s                            w",
+    "wwwwwwwwwwwbb         e                w",
+    "wwwwwwwwwwbbb                          w",
+    "w ss bbb bbb                           w",
+    "w             e                        w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "wwwwwwwwwbb                         sbbw",
+    "wwwwwwwwbs                            sw",
+    "wwwwwbb                                w",
+    "wsbb                           b   bwwww",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "w                                      w",
+    "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", 
+
+]
+
+// let level1_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
+//                         "w--------------------w",
+//                         "w--------------p-----w",
+//                         "w--------------------w",
+//                         "w-g------------------w",
+//                         "w-----wwwwwwwwwwwwwwww",
+//                         "w----------w---------w",
+//                         "wwwwwwwwww-w---e-----w",
+//                         "w--------w-w---------w",
+//                         "w--------w-w---------w",
+//                         "w--------w-w----g----w",
+//                         "w--------w-w---------w",
+//                         "w--------------------w",
+//                         "w----e---------------w",
+//                         "w--------------g-----w",
+//                         "w--------------------w",
+//                         "w--------------------w",
+//                         "w--------------------w",
+//                         "wwwwwwwwwwwwwwwwwww--w",
+//                         "w--------------------w",
+//                         "w--------------------w",
+//                         "w--wwwwwwwwwwwwwwwwwww",
+//                         "w-------------------ew",
+//                         "wwwwwwwwwwwwwwwwwwwwww"];          
 
 let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
                         "w--------------------w",
@@ -123,6 +164,9 @@ var curr_level = 1;
 // keep track of random grass background
 var grass_img = [];
 
+// keep track of songs
+var songs = [];
+
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
     wall_img = loadImage('images/gray_rock.png');
@@ -130,11 +174,16 @@ function preload() {
     heart_img = loadImage('images/heart.png');
     gem_img = loadImage('images/gem.png');
     castle_img = loadImage('images/castle.png');
+    bush_img = loadImage('images/bush.png');
+    stump_img = loadImage('images/stump.png');
 
     instructionsScreen = new InstructionsScreen();
     infoBar = new InformationBar();
     win_screen = new WinScreen();
     lose_screen = new LoseScreen();
+
+    songs[0] = loadSound('sounds/music/start_screen.mp3');
+    songs[1] = loadSound('sounds/music/level1.mp3');
 }
 
 
@@ -151,6 +200,8 @@ function setup() {
     instructionsScreen = new InstructionsScreen();
 
     gravity = new p5.Vector(0, 0.3);
+    songs[0].play();
+
 }
 
 function draw() {
@@ -261,13 +312,14 @@ function draw() {
 }
 
 class wallModel {
-    constructor(x, y) {
+    constructor(x, y, image) {
         this.pos = new p5.Vector(x, y);
+        this.image = image;
     }
     draw() {
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
-        image(wall_img, -half_tile, -half_tile, tile_width, tile_width);
+        image(this.image, -half_tile, -half_tile, tile_width, tile_width);
         pop();
     }
 }
@@ -282,10 +334,15 @@ class wallModel {
         for (var j = 0; j < tmap.length; j++) {
             // 'w' is a wall
             if (tmap[j][i] === 'w') {
-                walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile));
-            }
-            // Add all non-wall tiles to the graph for astar search
-            else {
+                walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile, wall_img));
+            } else if (tmap[j][i] === 's') {
+                // stump
+                walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile, stump_img));
+            } else if (tmap[j][i] === 'b') {
+                // bush
+                walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile, bush_img));
+            } else {
+                // Add all non-wall tiles to the graph for astar search
                 graph_nodes.push(new node(tile_width*i + half_tile, tile_width*j + half_tile));
                 // background_tiles.push(new p5.Vector(tile_width*i, tile_width*j));
             }
@@ -572,6 +629,9 @@ function drawGem(x, y, w, h) {
  */
 function resetGameState(game_level) {
     clear();
+    stopAllSongs();
+    
+    songs[game_level].play();
 
     curr_level = game_level;
 
@@ -623,9 +683,9 @@ function createGrassyField() {
 
     // sky
     var n1 = a;
-    for (var x=0; x<=400; x+=8) {
+    for (var x=0; x<=800; x+=8) {
         var n2 = 0;
-        for (var y=0; y<=400; y+=8) {
+        for (var y=0; y<=800; y+=8) {
             var c = map(noise(n1,n2),0,1,0,255);
             fill(c, c+50,c,100);
             rect(x,y,8,8);
@@ -636,5 +696,11 @@ function createGrassyField() {
     pop();
 
     // take a picture
-    return get(0, 0, 400, 400);    
+    return get(0, 0, 800, 800);    
+}
+
+function stopAllSongs() {
+    for (var i = 0; i < songs.length; i++) {
+        songs[i].stop();
+    }
 }
