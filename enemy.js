@@ -49,6 +49,10 @@ var ENEMY_ATTACK_IDX = 2;
         fill("blue");
         ellipse(0, 0, 20, 20);
 
+        // offset for slashing animations
+        this.xOffset = 0;
+        this.yOffset = 0;
+
         var frameInterval;
         switch (this.stateName) {
             case "idle":
@@ -96,7 +100,13 @@ var ENEMY_ATTACK_IDX = 2;
 
         this.images = this.imageDict[tempState + this.direction];
 
-        image(this.images[this.imageIndex], -half_tile-10, -half_tile-15, 40, 40);
+        // error handling
+        // if the image index is greater than the number of images, simply take the last one
+        if (this.imageIndex >= this.images.length) {
+            this.imageIndex = this.images.length - 1;
+        }
+
+        image(this.images[this.imageIndex], -half_tile-10, -half_tile-25, 40, 40);
 
         pop();
     }
@@ -113,6 +123,8 @@ class waitState {
     constructor() {
     }
     execute(me) {
+        me.stateName = "idle";
+
         // If the player gets near, change to chase state
         if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) < 20000) {
             me.changeState(ENEMY_CHASE_IDX);
@@ -201,6 +213,14 @@ class attackState {
     constructor() {
     }
     execute(me) {
+        me.stateName = "attack";
+        
+        // create a new slash animation every 30 seconds
+        if (frameCount - this.frameCount > 30) {
+            this.frameCount = frameCount;
+            attack_animations.push(new AttackAnimation(me.pos.x + me.xOffset - half_tile, me.pos.y + me.yOffset - half_tile, me.direction));
+        }
+
         // If the player gets too far away, go to the chase state
         if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) > 800) {
             me.changeState(ENEMY_CHASE_IDX);
