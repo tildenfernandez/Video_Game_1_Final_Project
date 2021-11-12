@@ -235,6 +235,13 @@ class attackState {
         if (frameCount - this.frameCount > 30) {
             this.frameCount = frameCount;
             attack_animations.push(new AttackAnimation(me.pos.x + me.xOffset, me.pos.y + me.yOffset, me.direction));
+
+            // hurt the player if they are close enough and in the right direction
+            if (squaredDist(me.pos.x + me.xOffset, me.pos.y + me.yOffset, player.pos.x, player.pos.y) < 400) {
+                player.health -= 1;
+            }
+
+
         }
 
         // If the player gets too far away, go to the chase state
