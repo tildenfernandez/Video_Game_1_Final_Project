@@ -730,12 +730,12 @@ function createGrassyField() {
 
     // sky
     var n1 = a;
-    for (var x=0; x<=800; x+=8) {
+    for (var x=0; x<=800; x+=4) {
         var n2 = 0;
-        for (var y=0; y<=800; y+=8) {
+        for (var y=0; y<=800; y+=4) {
             var c = map(noise(n1,n2),0,1,0,255);
             fill(c, c+50,c,100);
-            rect(x,y,8,8);
+            rect(x,y,4,4);
             n2 += 0.075; // step size in noise
         }
         n1 += 0.02; // step size in noise
