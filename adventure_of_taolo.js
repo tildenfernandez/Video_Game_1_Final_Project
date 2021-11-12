@@ -107,9 +107,9 @@ let tile_width = 20;
 let half_tile = tile_width / 2;
 
 let MAX_X_OFFSET = 0;
-let MIN_X_OFFSET = -40;
+let MIN_X_OFFSET = -400;
 let MAX_Y_OFFSET = 0;
-let MIN_Y_OFFSET = -140;
+let MIN_Y_OFFSET = -400;
 
 let DIST_FOR_VIEW_WINDOW_MOVE = 120;
 
