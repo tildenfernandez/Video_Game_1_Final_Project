@@ -15,10 +15,10 @@ class LoseScreen {
     }
     draw() {
         background(54, 207, 207);
-        textSize(42);
+        textSize(52);
         noStroke();
         fill('red');
-        text("Level Failed", 80, 100);
+        text("Level Failed", 50, 180);
 
         noStroke();
         fill(25);
@@ -58,7 +58,7 @@ class LoseScreen {
         if (this.playerState === 0) {
             this.playerChar.pos.x += this.movement_speed;
             
-            if (this.playerChar.pos.x >= 320) {
+            if (this.playerChar.pos.x >= 370) {
                 this.playerState = 1;
                 this.playerChar.direction = "up";
             }
@@ -74,7 +74,7 @@ class LoseScreen {
         if (this.playerState === 2) {
             this.playerChar.pos.x -= this.movement_speed;
 
-            if (this.playerChar.pos.x <= 100) {
+            if (this.playerChar.pos.x <= 50) {
                 this.playerState = 3;
                 this.playerChar.direction = "down";
             }
@@ -92,7 +92,7 @@ class LoseScreen {
         if (this.enemyState === 0) {
             this.enemyChar.pos.x += this.movement_speed;
             
-            if (this.enemyChar.pos.x >= 312) {
+            if (this.enemyChar.pos.x >= 362) {
                 this.enemyState = 1;
                 this.enemyChar.direction = "up";
             }
@@ -108,7 +108,7 @@ class LoseScreen {
         if (this.enemyState === 2) {
             this.enemyChar.pos.x -= this.movement_speed;
 
-            if (this.enemyChar.pos.x <= 92) {
+            if (this.enemyChar.pos.x <= 42) {
                 this.enemyState = 3;
                 this.enemyChar.direction = "down";
             }

@@ -212,7 +212,8 @@ function draw() {
     // Display level 1
     else if (game_state === "playing_level_1" ||
              game_state === "playing_level_2") {
-        image(grass_img[1], 0, 0);
+                 background('blue');
+        image(grass_img[1], x_offset, y_offset, 800, 800);
 
         for (var i = 0; i < walls.length; i++) {
             walls[i].draw();
@@ -292,6 +293,8 @@ function draw() {
     }
     // Display lose screen
     else if (game_state === "lose_screen") {
+        x_offset = 0;
+        y_offset = 0;
         lose_screen.draw();
     }
     // Display instructions menu
@@ -344,7 +347,6 @@ class wallModel {
             } else {
                 // Add all non-wall tiles to the graph for astar search
                 graph_nodes.push(new node(tile_width*i + half_tile, tile_width*j + half_tile));
-                // background_tiles.push(new p5.Vector(tile_width*i, tile_width*j));
             }
 
             // 'e' is an enemy
@@ -698,7 +700,7 @@ function createGrassyField() {
     pop();
 
     // take a picture
-    return get(0, 0, 800, 800);    
+    return get(0, 0, 400, 400);    
 }
 
 function stopAllSongs() {
