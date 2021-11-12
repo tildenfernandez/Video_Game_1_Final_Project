@@ -100,7 +100,7 @@ let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
                         "w--------------------w",
                         "wwwwwwwwwwwwwwwwwwwwww"];
 
-let LEVEL_COINS_NEEDED = [10, 2];
+let LEVEL_COINS_NEEDED = [20, 2];
 
 // Define the width of one tile
 let tile_width = 20;

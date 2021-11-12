@@ -51,6 +51,7 @@ class InformationBar {
         strokeWeight(2);
         text(player.coins, 80, 375);
         text("x", 60, 375);
+        text("/20", 110, 375);
 
         textSize(32);
         textFont('Georgia');
