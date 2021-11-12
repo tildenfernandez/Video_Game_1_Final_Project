@@ -65,6 +65,7 @@ var bow_img;
 
 var heart_img;
 var gem_img;
+var castle_img;
 
 var background_tiles = [];
 var background_img;
@@ -90,6 +91,7 @@ function preload() {
     bow_img = loadImage('sprites/weapons/bow.png');
     heart_img = loadImage('images/heart.png');
     gem_img = loadImage('images/gem.png');
+    castle_img = loadImage('images/castle.png');
 
     instructionsScreen = new InstructionsScreen();
     infoBar = new InformationBar();
@@ -381,45 +383,55 @@ function mousePressed() {
         if (mouseX >= 30 && mouseX <= 130 &&
             mouseY >= 220 && mouseY <= 250) {
                 game_state = "playing_level_1"
+                clear();
         }
 
         if (mouseX >= 150 && mouseX <= 260 &&
             mouseY >= 220 && mouseY <= 250) {
+                instructionsScreen.first = 1;
+                clear();
                 game_state = "instructions"
         }
 
         if (mouseX >= 275 && mouseX <= 375 &&
             mouseY >= 220 && mouseY <= 250) {
+                clear();
                 game_state = "level_select"
         }
     }
     // Record player clicking on instructions menu
     else if (game_state === "instructions") {
-        game_state = "start_screen";
+                clear();
+                game_state = "start_screen";
     }
     else if (game_state === "level_select") {
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 100 && mouseY <= 130) {
+                clear();
                 game_state = "playing_level_1";
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 150 && mouseY <= 180) {
+                clear();
                 game_state = "playing_level_2";
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 200 && mouseY <= 230) {
+                clear();
                 game_state = "playing_level_3";
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 250 && mouseY <= 280) {
+                clear();
                 game_state = "playing_level_4";
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 350 && mouseY <= 380) {
+                clear();
                 game_state = "start_screen";
         }
     }

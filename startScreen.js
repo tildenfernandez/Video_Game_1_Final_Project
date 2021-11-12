@@ -16,27 +16,38 @@ class StartScreen {
         this.orc = new StartScreenOrc(150, height - 80, 80, 80);
         this.skeleton = new StartScreenSkeleton(50, height - 80, 80, 80);
 
-        this.castle_img = loadImage('images/castle.png');
+        
+
+        this.custom_img;
+        this.first = 1;
     }
 
     draw() {
-        background(248, 179, 173);
-        noStroke();
+        if (this.first) {
+            background(248, 179, 173);
+            noStroke();
 
-        // Castle
-        image(this.castle_img, 60, 140, 500/(2), 428/(2));
+            // Castle
+            image(castle_img, 60, 140, 500/(2), 428/(2));
 
-        // mountains
-        drawRange(117, 115, 4, 30);
-        drawRange(168, 143, 89, 15);
-        drawRange(194, 178, 128, 0);
+            // mountains
+            drawRange(117, 115, 4, 30);
+            drawRange(168, 143, 89, 15);
+            drawRange(194, 178, 128, 0);
 
-        fill(255);
-        rect(30, 220, 100, 30);     // Start button rectangle
-        rect(145, 220, 115, 30);    // Instructions button
-        rect(275, 220, 100, 30);    // Levels button
+            fill(255);
+            rect(30, 220, 100, 30);     // Start button rectangle
+            rect(145, 220, 115, 30);    // Instructions button
+            rect(275, 220, 100, 30);    // Levels button
+            this.custom_img = get(0, 0, width, height);
+            this.first = 0;
+        }
+        else {
+            image(this.custom_img, 0, 0, width, height);
+        }
 
         // credits
+        noStroke();
         fill(color('teal'));
         textSize(16);
         text("Tilden Fernandez and Paolo Fermin present", 40, 30);
