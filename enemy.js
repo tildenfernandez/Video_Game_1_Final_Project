@@ -108,6 +108,14 @@ var ENEMY_ATTACK_IDX = 2;
 
         image(this.images[this.imageIndex], -half_tile-10, -half_tile-23, 40, 40);
 
+        // display hearts over enemy's head if game is not over
+        if (game_state !== "win_screen" && game_state !== "lose_screen") {
+            for (var i = 0; i < this.health; i++) {
+                image(heart_img, -half_tile-5 + i * 10, -half_tile - 20, 10, 10);
+                // image(heart_img, 290 + (20*i), height-40, 20, 20);
+            }
+        }
+
         pop();
     }
     // encapsulate FSM behavior
