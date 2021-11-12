@@ -99,16 +99,16 @@ class playerModel {
 
             switch (this.direction) {
                 case "up":
-                    yOffset = -20;
+                    yOffset = -10;
                     break;
                 case "down":
-                    yOffset = 20;
+                    yOffset = 10;
                     break;
                 case "right":
-                    xOffset = 20;
+                    xOffset = 10;
                     break;
                 case "left":
-                    xOffset = -20;
+                    xOffset = -10;
                     break;
             }
 
@@ -124,7 +124,7 @@ class playerModel {
             this.imageIndex = this.images.length - 1;
         }
 
-        image(this.images[this.imageIndex], -half_tile-18, -half_tile-25, 40, 40);
+        image(this.images[this.imageIndex], -half_tile-18, -half_tile-30, 40, 40);
         pop();
     }
     idle() {
