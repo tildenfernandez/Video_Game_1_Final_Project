@@ -9,7 +9,7 @@
 var game_state = "lose_screen"
 
 // Tile map of the game
-level1_tilemap = ["wwwwwwwwwwwwwwwwwwwwww",
+let level1_tilemap = ["wwwwwwwwwwwwwwwwwwwwww",
             "w--------------------w",
             "w--------------p-----w",
             "w--------------------w",
@@ -107,25 +107,6 @@ function preload() {
     infoBar = new InformationBar();
     win_screen = new WinScreen();
     lose_screen = new LoseScreen();
-
-    makeTileMap(level1_tilemap);
-
-    // Note each node's adjacent nodes
-    for (var i = 0; i < graph_nodes.length; i++) {
-        for (var j = 0; j < graph_nodes.length; j++) {
-            // If the nodes are adjacent, note it
-            if (graph_nodes[i].pos.x - graph_nodes[j].pos.x === 0 &&
-                graph_nodes[i].pos.y - graph_nodes[j].pos.y != 0 &&
-                abs(graph_nodes[i].pos.y - graph_nodes[j].pos.y) <= 30) {
-                    graph_nodes[i].adjacent_nodes.push(graph_nodes[j]);
-            }
-            if (graph_nodes[i].pos.y - graph_nodes[j].pos.y === 0 &&
-                graph_nodes[i].pos.x - graph_nodes[j].pos.x != 0 &&
-                abs(graph_nodes[i].pos.x - graph_nodes[j].pos.x) <= 30) {
-                    graph_nodes[i].adjacent_nodes.push(graph_nodes[j]);
-            }
-        }
-    }
 }
 
 
@@ -560,6 +541,37 @@ function drawGem(x, y, w, h) {
  * @param {the game level to reset to} game_level 
  */
 function resetGameState(game_level) {
+    clear();
+
+    enemies = [];
+    gems = [];
+    walls = [];
+
+    switch (game_level) {
+        case 1:
+            makeTileMap(level1_tilemap);
+            x_offset = 0;
+            y_offset = 0;
+            break;
+    }
+
+    // Note each node's adjacent nodes
+    for (var i = 0; i < graph_nodes.length; i++) {
+        for (var j = 0; j < graph_nodes.length; j++) {
+            // If the nodes are adjacent, note it
+            if (graph_nodes[i].pos.x - graph_nodes[j].pos.x === 0 &&
+                graph_nodes[i].pos.y - graph_nodes[j].pos.y != 0 &&
+                abs(graph_nodes[i].pos.y - graph_nodes[j].pos.y) <= 30) {
+                    graph_nodes[i].adjacent_nodes.push(graph_nodes[j]);
+            }
+            if (graph_nodes[i].pos.y - graph_nodes[j].pos.y === 0 &&
+                graph_nodes[i].pos.x - graph_nodes[j].pos.x != 0 &&
+                abs(graph_nodes[i].pos.x - graph_nodes[j].pos.x) <= 30) {
+                    graph_nodes[i].adjacent_nodes.push(graph_nodes[j]);
+            }
+        }
+    }
+
     player.coins = 0;
     player.health = 5;
 }
