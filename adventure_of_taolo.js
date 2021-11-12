@@ -11,9 +11,9 @@ var game_state = "start_screen"
 // Tile map of the game
 let level1_tilemap = [
     "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", 
-    "wwwwb                     b      wwwwwww",
+    "wwwwb     h               b      wwwwwww",
     "wbb                         s     swwwww",
-    "w s     p       g                    s w",
+    "w s     p       g    h               s w",
     "w                                  s   w",
     "w   s     s                            w",
     "wwwwwwwwwwwbb         e       g        w",
@@ -132,6 +132,9 @@ var wall_img;
 // Array of gems (p5 vector of position)
 var gems = [];
 
+// Array of hearts (p5 vector of position)
+var hearts = [];
+
 // Loaded images
 var bow_img;
 var heart_img;
@@ -167,6 +170,8 @@ var grass_img = [];
 // keep track of songs
 var songs = [];
 
+
+
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
     wall_img = loadImage('images/gray_rock.png');
@@ -184,6 +189,7 @@ function preload() {
 
     songs[0] = loadSound('sounds/music/start_screen.mp3');
     songs[1] = loadSound('sounds/music/level1.mp3');
+    songs[2] = loadSound('sounds/music/level1.mp3');
 }
 
 
@@ -247,6 +253,22 @@ function draw() {
             }
         }
 
+        // draw hearts
+        for (var i = 0; i < hearts.length; i++) {
+            if (hearts[i][2] === 1) {
+                drawHeart(hearts[i][0]+x_offset, hearts[i][1]+y_offset, 16, 20);
+
+                if (squaredDist(player.pos.x, player.pos.y, hearts[i][0], hearts[i][1]+half_tile) < 400) {
+                    player.health++;
+
+                    if (player.health > 5) {
+                        player.health = 5;
+                    }
+
+                    hearts[i][2] = 0;
+                }
+            }
+        }
         ///// PLAYER MOVEMENT   //////
 
 
@@ -318,6 +340,7 @@ class wallModel {
     constructor(x, y, image) {
         this.pos = new p5.Vector(x, y);
         this.image = image;
+        this.destructable = false;
     }
     draw() {
         push();
@@ -326,6 +349,35 @@ class wallModel {
         pop();
     }
 }
+
+class destructableWallModel extends wallModel {
+    constructor(x, y, image) {
+        super(x, y, image);
+        this.destructable = true;
+    }
+    draw() {
+        push();
+        translate(this.pos.x + x_offset, this.pos.y + y_offset);
+        image(this.image, -half_tile, -half_tile, tile_width, tile_width);
+        pop();
+    }
+
+    destroy() {
+        // randomly produce nothing, a gem, or a heart
+        var rand = Math.floor(Math.random() * 3);
+        switch (rand) {
+            case 0:
+                break;
+            case 1:
+                gems.push([this.pos.x, this.pos.y - half_tile, 1]);
+                break;
+            case 2:
+                hearts.push([this.pos.x, this.pos.y - half_tile, 1]);
+                break;
+        }
+    }
+}
+
 
 /**
  * Function to interpret a tilemap
@@ -340,10 +392,10 @@ class wallModel {
                 walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile, wall_img));
             } else if (tmap[j][i] === 's') {
                 // stump
-                walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile, stump_img));
+                walls.push(new destructableWallModel(tile_width*i + half_tile, tile_width*j + half_tile, stump_img));
             } else if (tmap[j][i] === 'b') {
                 // bush
-                walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile, bush_img));
+                walls.push(new destructableWallModel(tile_width*i + half_tile, tile_width*j + half_tile, bush_img));
             } else {
                 // Add all non-wall tiles to the graph for astar search
                 graph_nodes.push(new node(tile_width*i + half_tile, tile_width*j + half_tile));
@@ -367,6 +419,12 @@ class wallModel {
             if (tmap[j][i] === 'g') {
                 gems.push([tile_width*i + half_tile, tile_width*j + half_tile, 1]);
             }
+
+            // 'h' is a heart
+            if (tmap[j][i] === 'h') {
+                hearts.push([tile_width*i + half_tile, tile_width*j + half_tile, 1]);
+            }
+
         }
     }
 }
@@ -610,21 +668,6 @@ function detectWallCollision(x, y) {
             }
     }
     return false;
-}
-
-/**
- * Draw a gem in the given (x,y) coordinante, of the given [width, height] size
- * @param {x position to draw gem} x 
- * @param {y position of gem} y 
- * @param {width to draw gem} w
- * @param {height to draw gem} h
- */
-function drawGem(x, y, w, h) {
-    push()
-    translate(x, y);
-    scale(cos(frameCount/10), 1);
-    image(gem_img, -(floor(w>>1)), 0, w, h);
-    pop()
 }
 
 /**

@@ -34,6 +34,7 @@ class playerModel {
         this.imageIndex = 0;
         this.images = this.imageDict.walkright;
         this.attackTimer = frameCount;
+        this.attackOffset = new p5.Vector(0, 0);
     }
     draw() {
         push();
@@ -94,26 +95,9 @@ class playerModel {
 
         // if you are attacking, start an attack animation
         if (this.state === "attack") {
-            var xOffset = 0;
-            var yOffset = 0;
-
-            switch (this.direction) {
-                case "up":
-                    yOffset = -10;
-                    break;
-                case "down":
-                    yOffset = 10;
-                    break;
-                case "right":
-                    xOffset = 10;
-                    break;
-                case "left":
-                    xOffset = -10;
-                    break;
-            }
 
             // there is a global variable that stores all the current attack animations
-            attack_animations.push(new AttackAnimation(this.pos.x + xOffset - half_tile, this.pos.y + yOffset - half_tile, this.direction));
+            attack_animations.push(new AttackAnimation(this.pos.x + this.attackOffset.x - half_tile, this.pos.y + this.attackOffset.y - half_tile, this.direction));
         }
 
         this.images = this.imageDict[tempstate + this.direction];
@@ -181,11 +165,43 @@ class playerModel {
         if (this.attack_again) {
             this.attackTimer = frameCount;
             this.state = "attack";
+
+            this.attackOffset.x = 0;
+            this.attackOffset.y = 0;
+
+            switch (this.direction) {
+                case "up":
+                    this.attackOffset.y = -10;
+                    break;
+                case "down":
+                    this.attackOffset.y = 10;
+                    break;
+                case "right":
+                    this.attackOffset.x = 10;
+                    break;
+                case "left":
+                    this.attackOffset.x = -10;
+                    break;
+            }
+
+
             for (var i = 0; i < enemies.length; i++) {
-                if (squaredDist(this.pos.x, this.pos.y, enemies[i].pos.x, enemies[i].pos.y) < 800) {
+                if (squaredDist(this.pos.x + this.attackOffset.x, this.pos.y + this.attackOffset.y, enemies[i].pos.x, enemies[i].pos.y) < 800) {
                     enemies[i].health--;
                 }
             }
+
+            // check if near any destructible walls
+            // for now, loop through all walls
+            // consider making a separate array for destructible walls
+            for (var i = 0; i < walls.length; i++) {
+                if (walls[i].destructable === true && squaredDist(this.pos.x + this.attackOffset.x, this.pos.y + this.attackOffset.y, walls[i].pos.x, walls[i].pos.y) < 800) {
+                    walls[i].destroy();
+                    // remove wall from walls array
+                    walls.splice(i, 1);
+                }
+            }
+
             this.attack_again = false;
         } 
     }
