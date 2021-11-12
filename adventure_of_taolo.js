@@ -6,7 +6,7 @@
 
 // Control what part of the game is running 
 // i.e. start_screen, playing_level_1, win_screen, lose_screen, etc.
-var game_state = "lose_screen"
+var game_state = "start_screen"
 
 // Tile map of the game
 let level1_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
@@ -120,6 +120,9 @@ var attack_animations = [];
 // Variable to keep track of current level for win/lose screen buttons
 var curr_level = 1;
 
+// keep track of random grass background
+var grass_img = [];
+
 function preload() {
     font = loadFont('HyliaSerifBeta-Regular.otf');
     wall_img = loadImage('images/gray_rock.png');
@@ -139,6 +142,11 @@ function setup() {
     createCanvas(400, 400);
     textFont(font);
     
+    // initialize grass images
+    for (var i = 0; i < 4; i++) {
+        grass_img[i] = createGrassyField();
+    }
+
     startScreen  = new StartScreen();
     instructionsScreen = new InstructionsScreen();
 
@@ -153,7 +161,7 @@ function draw() {
     // Display level 1
     else if (game_state === "playing_level_1" ||
              game_state === "playing_level_2") {
-        background(17, 166, 51);
+        image(grass_img[1], 0, 0);
 
         for (var i = 0; i < walls.length; i++) {
             walls[i].draw();
@@ -604,4 +612,29 @@ function resetGameState(game_level) {
 
     player.coins = 0;
     player.health = 5;
+}
+
+function createGrassyField() {
+    var a=random(1500);
+
+    push();
+    background(3, 242, 102);
+    noStroke();
+
+    // sky
+    var n1 = a;
+    for (var x=0; x<=400; x+=8) {
+        var n2 = 0;
+        for (var y=0; y<=400; y+=8) {
+            var c = map(noise(n1,n2),0,1,0,255);
+            fill(c, c+50,c,100);
+            rect(x,y,8,8);
+            n2 += 0.075; // step size in noise
+        }
+        n1 += 0.02; // step size in noise
+    }
+    pop();
+
+    // take a picture
+    return get(0, 0, 400, 400);    
 }
