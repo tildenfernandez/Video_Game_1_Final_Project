@@ -147,7 +147,6 @@ function draw() {
             }
         }
 
-        player.draw();
 
 
         for (var i = 0; i < enemies.length; i++) {
@@ -185,6 +184,7 @@ function draw() {
     
         }
 
+        player.draw();
 
 
         infoBar.draw();
