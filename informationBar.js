@@ -46,9 +46,10 @@ class InformationBar {
         textSize(24);
         textFont('Helvetica');
         
-        text(player.coins, 80, 375);
+        // fill(0);
         stroke(0);
         strokeWeight(2);
+        text(player.coins, 80, 375);
         text("x", 60, 375);
 
         textSize(32);

@@ -13,17 +13,17 @@ level1_tilemap = ["wwwwwwwwwwwwwwwwwwwwww",
             "w--------------------w",
             "w--------------p-----w",
             "w--------------------w",
-            "w--------------------w",
+            "w-g------------------w",
             "w-----wwwwwwwwwwwwwwww",
             "w----------w---------w",
             "wwwwwwwwww-w---e-----w",
             "w--------w-w---------w",
             "w--------w-w---------w",
-            "w--------w-w---------w",
+            "w--------w-w----g----w",
             "w--------w-w---------w",
             "w--------------------w",
             "w----e---------------w",
-            "w--------------------w",
+            "w--------------g-----w",
             "w--------------------w",
             "w--------------------w",
             "w--------------------w",
@@ -33,6 +33,8 @@ level1_tilemap = ["wwwwwwwwwwwwwwwwwwwwww",
             "w--wwwwwwwwwwwwwwwwwww",
             "w-------------------ew",
             "wwwwwwwwwwwwwwwwwwwwww"];
+
+let LEVEL_COINS_NEEDED = [3];
 
 // Define the width of one tile
 let tile_width = 20;
@@ -159,13 +161,22 @@ function draw() {
             }
         }
 
-
-
         for (var i = 0; i < enemies.length; i++) {
             if (enemies[i].health > 0) {
                 enemies[i].draw();
                 // Execute the current state of the enemy
                 enemies[i].update();
+            }
+        }
+
+        for (var i = 0; i < gems.length; i++) {
+            if (gems[i][2] === 1) {
+                drawGem(gems[i][0]+x_offset, gems[i][1]+y_offset, 16, 20);
+
+                if (squaredDist(player.pos.x, player.pos.y, gems[i][0], gems[i][1]+half_tile) < 400) {
+                    player.coins++;
+                    gems[i][2] = 0;
+                }
             }
         }
 
@@ -198,8 +209,15 @@ function draw() {
 
         player.draw();
 
-
         infoBar.draw();
+
+        if (player.health <= 0) {
+            game_state = "lose_screen";
+        }
+
+        if (player.coins >= LEVEL_COINS_NEEDED[curr_level-1]) {
+            game_state = "win_screen";
+        }
     }
     // Display win screen
     else if (game_state === "win_screen") {
@@ -269,6 +287,11 @@ class wallModel {
             if (tmap[j][i] === 'p') {
                 player =  new playerModel(tile_width*i + half_tile, tile_width*j + half_tile);
             }
+
+            // 'g' is a gem
+            if (tmap[j][i] === 'g') {
+                gems.push([tile_width*i + half_tile, tile_width*j + half_tile, 1]);
+            }
         }
     }
 }
@@ -283,6 +306,7 @@ class wallModel {
             mouseY >= 220 && mouseY <= 250) {
                 game_state = "playing_level_1"
                 curr_level = 1;
+                resetGameState(1);
                 clear();
         }
 
@@ -310,6 +334,7 @@ class wallModel {
                 clear();
                 game_state = "playing_level_1";
                 curr_level = 1;
+                resetGameState(1);
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
@@ -317,6 +342,7 @@ class wallModel {
                 clear();
                 game_state = "playing_level_2";
                 curr_level = 2;
+                resetGameState(2);
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
@@ -324,6 +350,7 @@ class wallModel {
                 clear();
                 game_state = "playing_level_3";
                 curr_level = 3;
+                resetGameState(3);
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
@@ -331,6 +358,7 @@ class wallModel {
                 clear();
                 game_state = "playing_level_4";
                 curr_level = 4;
+                resetGameState(4);
         }
     
         if (mouseX >= 50 && mouseX <= 350 &&
@@ -352,12 +380,15 @@ class wallModel {
                 switch (curr_level) {
                     case 1:
                         game_state = "playing_level_2";
+                        resetGameState(2);
                         break;
                     case 2:
                         game_state = "playing_level_3";
+                        resetGameState(3);
                         break;
                     case 3:
                         game_state = "playing_level_4";
+                        resetGameState(4);
                         break;
                 }
         }
@@ -374,15 +405,19 @@ class wallModel {
                 switch (curr_level) {
                     case 1:
                         game_state = "playing_level_1";
+                        resetGameState(1);
                         break;
                     case 2:
                         game_state = "playing_level_2";
+                        resetGameState(2);
                         break;
                     case 3:
                         game_state = "playing_level_3";
+                        resetGameState(3);
                         break;
                     case 4:
                         game_state = "playing_level_4";
+                        resetGameState(4);
                         break;
                 }
         }
@@ -514,8 +549,17 @@ function detectWallCollision(x, y) {
  */
 function drawGem(x, y, w, h) {
     push()
-        translate(x, y);
-        scale(cos(frameCount/10), 1);
-        image(gem_img, -(floor(w>>1)), 0, w, h);
-        pop()
+    translate(x, y);
+    scale(cos(frameCount/10), 1);
+    image(gem_img, -(floor(w>>1)), 0, w, h);
+    pop()
+}
+
+/**
+ * Functin to reset values in the game when going to a new level
+ * @param {the game level to reset to} game_level 
+ */
+function resetGameState(game_level) {
+    player.coins = 0;
+    player.health = 5;
 }
