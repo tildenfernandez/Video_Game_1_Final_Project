@@ -1,0 +1,8 @@
+class LoseScreen {
+    constructor() {
+
+    }
+    draw() {
+        
+    }
+}

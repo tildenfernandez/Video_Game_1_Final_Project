@@ -80,6 +80,7 @@ var startScreen;
 var instructionsScreen;
 var infoBar;
 var win_screen;
+var lose_screen;
 
 // gravity affects some items
 var gravity;
@@ -103,6 +104,7 @@ function preload() {
     instructionsScreen = new InstructionsScreen();
     infoBar = new InformationBar();
     win_screen = new WinScreen();
+    lose_screen = new LoseScreen();
 
     makeTileMap(level1_tilemap);
 
@@ -205,7 +207,7 @@ function draw() {
     }
     // Display lose screen
     else if (game_state === "lose_screen") {
-        
+        lose_screen.draw();
     }
     // Display instructions menu
     else if (game_state === "instructions") {
@@ -441,7 +443,31 @@ function drawLevelSelect() {
                         game_state = "playing_level_3";
                         break;
                     case 3:
+                        game_state = "playing_level_4";
+                        break;
+                }
+        }
+    }
+    else if (game_state === "lose_screen") {
+        if (mouseX >= 75 && mouseX <= 175 &&
+            mouseY >= 300 && mouseY <= 330) {
+                game_state = "start_screen"
+        }
+
+        if (mouseX >= 225 && mouseX <= 325 &&
+            mouseY >= 300 && mouseY <= 330) {
+                switch (curr_level) {
+                    case 1:
+                        game_state = "playing_level_1";
+                        break;
+                    case 2:
                         game_state = "playing_level_2";
+                        break;
+                    case 3:
+                        game_state = "playing_level_3";
+                        break;
+                    case 4:
+                        game_state = "playing_level_4";
                         break;
                 }
         }
