@@ -6,7 +6,7 @@
 
 // Control what part of the game is running 
 // i.e. start_screen, playing_level_1, win_screen, lose_screen, etc.
-var game_state = "start_screen"
+var game_state = "win_screen"
 
 // Tile map of the game
 level1_tilemap = ["wwwwwwwwwwwwwwwwwwwwww",
@@ -79,6 +79,7 @@ var font
 var startScreen;
 var instructionsScreen;
 var infoBar;
+var win_screen;
 
 // gravity affects some items
 var gravity;
@@ -101,6 +102,7 @@ function preload() {
 
     instructionsScreen = new InstructionsScreen();
     infoBar = new InformationBar();
+    win_screen = new WinScreen();
 
     makeTileMap(level1_tilemap);
 
@@ -199,7 +201,7 @@ function draw() {
     }
     // Display win screen
     else if (game_state === "win_screen") {
-
+        win_screen.draw();
     }
     // Display lose screen
     else if (game_state === "lose_screen") {
