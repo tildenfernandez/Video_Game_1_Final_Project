@@ -9,32 +9,57 @@
 var game_state = "lose_screen"
 
 // Tile map of the game
-let level1_tilemap = ["wwwwwwwwwwwwwwwwwwwwww",
-            "w--------------------w",
-            "w--------------p-----w",
-            "w--------------------w",
-            "w-g------------------w",
-            "w-----wwwwwwwwwwwwwwww",
-            "w----------w---------w",
-            "wwwwwwwwww-w---e-----w",
-            "w--------w-w---------w",
-            "w--------w-w---------w",
-            "w--------w-w----g----w",
-            "w--------w-w---------w",
-            "w--------------------w",
-            "w----e---------------w",
-            "w--------------g-----w",
-            "w--------------------w",
-            "w--------------------w",
-            "w--------------------w",
-            "wwwwwwwwwwwwwwwwwww--w",
-            "w--------------------w",
-            "w--------------------w",
-            "w--wwwwwwwwwwwwwwwwwww",
-            "w-------------------ew",
-            "wwwwwwwwwwwwwwwwwwwwww"];
+let level1_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
+                        "w--------------------w",
+                        "w--------------p-----w",
+                        "w--------------------w",
+                        "w-g------------------w",
+                        "w-----wwwwwwwwwwwwwwww",
+                        "w----------w---------w",
+                        "wwwwwwwwww-w---e-----w",
+                        "w--------w-w---------w",
+                        "w--------w-w---------w",
+                        "w--------w-w----g----w",
+                        "w--------w-w---------w",
+                        "w--------------------w",
+                        "w----e---------------w",
+                        "w--------------g-----w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "wwwwwwwwwwwwwwwwwww--w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--wwwwwwwwwwwwwwwwwww",
+                        "w-------------------ew",
+                        "wwwwwwwwwwwwwwwwwwwwww"];          
 
-let LEVEL_COINS_NEEDED = [3];
+let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
+                        "w--------------------w",
+                        "w--------------p-----w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w-g------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w----------w---------w",
+                        "w--------------------w",
+                        "w----e---------------w",
+                        "w--------------g-----w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "w--------------------w",
+                        "wwwwwwwwwwwwwwwwwwwwww"];
+
+let LEVEL_COINS_NEEDED = [3, 2];
 
 // Define the width of one tile
 let tile_width = 20;
@@ -126,7 +151,8 @@ function draw() {
         startScreen.draw();
     }
     // Display level 1
-    else if (game_state === "playing_level_1") {
+    else if (game_state === "playing_level_1" ||
+             game_state === "playing_level_2") {
         background(17, 166, 51);
 
         for (var i = 0; i < walls.length; i++) {
@@ -196,6 +222,7 @@ function draw() {
             game_state = "lose_screen";
         }
 
+        // print(curr_level);
         if (player.coins >= LEVEL_COINS_NEEDED[curr_level-1]) {
             game_state = "win_screen";
         }
@@ -286,7 +313,6 @@ class wallModel {
         if (mouseX >= 30 && mouseX <= 130 &&
             mouseY >= 220 && mouseY <= 250) {
                 game_state = "playing_level_1"
-                curr_level = 1;
                 resetGameState(1);
                 clear();
         }
@@ -314,7 +340,6 @@ class wallModel {
             mouseY >= 100 && mouseY <= 130) {
                 clear();
                 game_state = "playing_level_1";
-                curr_level = 1;
                 resetGameState(1);
         }
     
@@ -322,7 +347,6 @@ class wallModel {
             mouseY >= 150 && mouseY <= 180) {
                 clear();
                 game_state = "playing_level_2";
-                curr_level = 2;
                 resetGameState(2);
         }
     
@@ -330,7 +354,6 @@ class wallModel {
             mouseY >= 200 && mouseY <= 230) {
                 clear();
                 game_state = "playing_level_3";
-                curr_level = 3;
                 resetGameState(3);
         }
     
@@ -338,7 +361,6 @@ class wallModel {
             mouseY >= 250 && mouseY <= 280) {
                 clear();
                 game_state = "playing_level_4";
-                curr_level = 4;
                 resetGameState(4);
         }
     
@@ -543,13 +565,21 @@ function drawGem(x, y, w, h) {
 function resetGameState(game_level) {
     clear();
 
+    curr_level = game_level;
+
     enemies = [];
     gems = [];
     walls = [];
+    graph_nodes = [];
 
     switch (game_level) {
         case 1:
             makeTileMap(level1_tilemap);
+            x_offset = 0;
+            y_offset = 0;
+            break;
+        case 2:
+            makeTileMap(level2_tilemap);
             x_offset = 0;
             y_offset = 0;
             break;
