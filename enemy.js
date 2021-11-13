@@ -10,9 +10,11 @@ var ENEMY_ATTACK_IDX = 2;
     constructor(x, y) {
         this.pos = new p5.Vector(x, y);
 
+        // Enemy stats
         this.health = 3;
         this.attack_damage = 1;
 
+        // State machine variables
         this.state = [new waitState(), new chaseState(), new attackState()];
         this.currState = 0;
 
@@ -138,6 +140,7 @@ class waitState {
             var xDiff = me.target.pos.x - me.pos.x;
             var yDiff = me.target.pos.y - me.pos.y;
 
+            // Move and change images used for animation
             if (xDiff < 0) {
                 me.pos.x--;
                 me.direction = "left";
@@ -194,12 +197,6 @@ class chaseState {
 
         // If I have a path (should always have a path), travel along it
         if (me.path != 0) {
-            // Draw magenta circle
-            // for (var x = 0; x < me.path.length; x++) {
-            //     fill(255, 0, 255);
-            //     noStroke();
-            //     ellipse(me.path[x].pos.x, me.path[x].pos.y, 10, 10);
-            // }
 
             // Set my target to the correct node in the path
             me.target = me.path[me.targetNum];

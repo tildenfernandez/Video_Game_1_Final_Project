@@ -72,6 +72,7 @@ class InstructionsScreen {
 
         checkMouseY(this);
 
+        // Draw the player models by their descriptions
         this.playerChar.draw();
         this.enemyChar.draw();
         this.boss.draw();
@@ -79,6 +80,7 @@ class InstructionsScreen {
     }
 }
 
+// Draw the bow item
 class Bow {
     constructor(x, y, w, h) {
         this.x = x;

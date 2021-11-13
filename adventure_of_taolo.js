@@ -48,32 +48,7 @@ let level1_tilemap = [
     "wwwwwwwwwwwwwsbbb                  swwww",
     "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", 
 
-]
-
-// let level1_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
-//                         "w--------------------w",
-//                         "w--------------p-----w",
-//                         "w--------------------w",
-//                         "w-g------------------w",
-//                         "w-----wwwwwwwwwwwwwwww",
-//                         "w----------w---------w",
-//                         "wwwwwwwwww-w---e-----w",
-//                         "w--------w-w---------w",
-//                         "w--------w-w---------w",
-//                         "w--------w-w----g----w",
-//                         "w--------w-w---------w",
-//                         "w--------------------w",
-//                         "w----e---------------w",
-//                         "w--------------g-----w",
-//                         "w--------------------w",
-//                         "w--------------------w",
-//                         "w--------------------w",
-//                         "wwwwwwwwwwwwwwwwwww--w",
-//                         "w--------------------w",
-//                         "w--------------------w",
-//                         "w--wwwwwwwwwwwwwwwwwww",
-//                         "w-------------------ew",
-//                         "wwwwwwwwwwwwwwwwwwwwww"];          
+]          
 
 let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
                         "w--------------------w",
@@ -171,8 +146,8 @@ var grass_img = [];
 var songs = [];
 
 
-
 function preload() {
+    // Load all the images
     font = loadFont('HyliaSerifBeta-Regular.otf');
     wall_img = loadImage('images/gray_rock.png');
     bow_img = loadImage('sprites/weapons/bow.png');
@@ -182,16 +157,16 @@ function preload() {
     bush_img = loadImage('images/bush.png');
     stump_img = loadImage('images/stump.png');
 
-    instructionsScreen = new InstructionsScreen();
+    // Set up objects from different classes used to organize code
     infoBar = new InformationBar();
     win_screen = new WinScreen();
     lose_screen = new LoseScreen();
 
+    // Load music
     songs[0] = loadSound('sounds/music/start_screen.mp3');
     songs[1] = loadSound('sounds/music/level1.mp3');
     songs[2] = loadSound('sounds/music/level1.mp3');
 }
-
 
 function setup() {
     createCanvas(400, 400);
@@ -202,10 +177,13 @@ function setup() {
         grass_img[i] = createGrassyField();
     }
 
+    // These classes need the canvas to be set up
     startScreen  = new StartScreen();
     instructionsScreen = new InstructionsScreen();
 
+    // Initialize gravity for some objects
     gravity = new p5.Vector(0, 0.3);
+    // Start the music
     songs[0].play();
 
 }
@@ -218,12 +196,15 @@ function draw() {
     // Display level 1
     else if (game_state === "playing_level_1" ||
              game_state === "playing_level_2") {
-                 background('blue');
+
+        // Use an image with random noise for the background
         image(grass_img[1], x_offset, y_offset, 800, 800);
 
+        // Draw all the walls
         for (var i = 0; i < walls.length; i++) {
             walls[i].draw();
         }
+
         // draw all attack animations
         for (var i = 0; i < attack_animations.length; i++) {
             attack_animations[i].draw();
@@ -234,6 +215,7 @@ function draw() {
             }
         }
 
+        // Draw and update all enemies
         for (var i = 0; i < enemies.length; i++) {
             if (enemies[i].health > 0) {
                 enemies[i].draw();
@@ -242,10 +224,12 @@ function draw() {
             }
         }
 
+        // Draw and implement all gems
         for (var i = 0; i < gems.length; i++) {
             if (gems[i][2] === 1) {
                 drawGem(gems[i][0]+x_offset, gems[i][1]+y_offset, 16, 20);
 
+                // If the player is near the gem, they collect it
                 if (squaredDist(player.pos.x, player.pos.y, gems[i][0], gems[i][1]+half_tile) < 400) {
                     player.coins++;
                     gems[i][2] = 0;
@@ -258,9 +242,11 @@ function draw() {
             if (hearts[i][2] === 1) {
                 drawHeart(hearts[i][0]+x_offset, hearts[i][1]+y_offset, 16, 20);
 
+                // If the player is near the heart, they collect it
                 if (squaredDist(player.pos.x, player.pos.y, hearts[i][0], hearts[i][1]+half_tile) < 400) {
                     player.health++;
 
+                    // The player can only get a maximum of 5 health
                     if (player.health > 5) {
                         player.health = 5;
                     }
@@ -279,6 +265,7 @@ function draw() {
         else {
             player.attack_done();
             
+            // The player moves with the arrow keys
             if (keyIsDown(LEFT_ARROW)) {
                 player.moveLeft()
             }
@@ -291,20 +278,24 @@ function draw() {
             else if (keyIsDown(DOWN_ARROW)) {
                 player.moveDown();
             } else {
+                // If the player is not moving, they are animated as idle
                 player.idle();
             }
     
         }
 
+        // Draw the player
         player.draw();
 
+        // Draw the information bar at the bottom
         infoBar.draw();
 
+        // If the player is out of health, they lose the level
         if (player.health <= 0) {
             game_state = "lose_screen";
         }
 
-        // print(curr_level);
+        // if the player collects enough coins, they win the level
         if (player.coins >= LEVEL_COINS_NEEDED[curr_level-1]) {
             game_state = "win_screen";
         }
@@ -323,6 +314,7 @@ function draw() {
     else if (game_state === "instructions") {
         instructionsScreen.draw();
     }
+    // Display the level select menu
     else if (game_state === "level_select") {
         drawLevelSelect();
     }
@@ -335,49 +327,6 @@ function draw() {
         text("Check updates to game state", 100, 130);
     }
 }
-
-class wallModel {
-    constructor(x, y, image) {
-        this.pos = new p5.Vector(x, y);
-        this.image = image;
-        this.destructable = false;
-    }
-    draw() {
-        push();
-        translate(this.pos.x + x_offset, this.pos.y + y_offset);
-        image(this.image, -half_tile, -half_tile, tile_width, tile_width);
-        pop();
-    }
-}
-
-class destructableWallModel extends wallModel {
-    constructor(x, y, image) {
-        super(x, y, image);
-        this.destructable = true;
-    }
-    draw() {
-        push();
-        translate(this.pos.x + x_offset, this.pos.y + y_offset);
-        image(this.image, -half_tile, -half_tile, tile_width, tile_width);
-        pop();
-    }
-
-    destroy() {
-        // randomly produce nothing, a gem, or a heart
-        var rand = Math.floor(Math.random() * 3);
-        switch (rand) {
-            case 0:
-                break;
-            case 1:
-                gems.push([this.pos.x, this.pos.y - half_tile, 1]);
-                break;
-            case 2:
-                hearts.push([this.pos.x, this.pos.y - half_tile, 1]);
-                break;
-        }
-    }
-}
-
 
 /**
  * Function to interpret a tilemap
@@ -435,20 +384,21 @@ class destructableWallModel extends wallModel {
  function mousePressed() {
     // Record player clicking buttons on start screen
     if (game_state === "start_screen") {
+        // First button redirects to the first level
         if (mouseX >= 30 && mouseX <= 130 &&
             mouseY >= 220 && mouseY <= 250) {
                 game_state = "playing_level_1"
                 resetGameState(1);
                 clear();
         }
-
+        // Second button redirects to the instructions menu
         if (mouseX >= 150 && mouseX <= 260 &&
             mouseY >= 220 && mouseY <= 250) {
                 instructionsScreen.first = 1;
                 clear();
                 game_state = "instructions"
         }
-
+        // Third button redirects to the level select menu
         if (mouseX >= 275 && mouseX <= 375 &&
             mouseY >= 220 && mouseY <= 250) {
                 clear();
@@ -457,54 +407,58 @@ class destructableWallModel extends wallModel {
     }
     // Record player clicking on instructions menu
     else if (game_state === "instructions") {
+                // All clicks here redirect back to the main menu
                 clear();
                 game_state = "start_screen";
     }
+    // Record player clicks on the level select menu
     else if (game_state === "level_select") {
+        // First button goes to level one
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 100 && mouseY <= 130) {
                 clear();
                 game_state = "playing_level_1";
                 resetGameState(1);
         }
-    
+        // Second button goes to level 2
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 150 && mouseY <= 180) {
                 clear();
                 game_state = "playing_level_2";
                 resetGameState(2);
         }
-    
+        // Third button goes to level 3
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 200 && mouseY <= 230) {
                 clear();
                 game_state = "playing_level_3";
                 resetGameState(3);
         }
-    
+        // Fourth button goes to level 4
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 250 && mouseY <= 280) {
                 clear();
                 game_state = "playing_level_4";
                 resetGameState(4);
         }
-    
+        // Last button returns to the main menu
         if (mouseX >= 50 && mouseX <= 350 &&
             mouseY >= 350 && mouseY <= 380) {
                 clear();
                 game_state = "start_screen";
         }
-        
     }
     // Mouse input on the win screen
     else if (game_state === "win_screen") {
+        // First button returns to the main menu
         if (mouseX >= 75 && mouseX <= 175 &&
             mouseY >= 300 && mouseY <= 330) {
                 game_state = "start_screen"
         }
-
+        // Second button redirects to the next level
         if (mouseX >= 225 && mouseX <= 325 &&
             mouseY >= 300 && mouseY <= 330) {
+                // Redirect to different levels based on the current level
                 switch (curr_level) {
                     case 1:
                         game_state = "playing_level_2";
@@ -523,15 +477,17 @@ class destructableWallModel extends wallModel {
     }
     // Mouse input on the lose screen
     else if (game_state === "lose_screen") {
+        // First button returns to the main menu
         if (mouseX >= 75 && mouseX <= 175 &&
             mouseY >= 300 && mouseY <= 330) {
                 stopAllSongs();
                 songs[0].play();
                 game_state = "start_screen"
         }
-
+        // Second button restarts the current level
         if (mouseX >= 225 && mouseX <= 325 &&
             mouseY >= 300 && mouseY <= 330) {
+                // Redirect to different level based on the current level
                 switch (curr_level) {
                     case 1:
                         game_state = "playing_level_1";
@@ -559,11 +515,14 @@ class destructableWallModel extends wallModel {
  */
  function drawLevelSelect() {
     background(54, 207, 207);
+
+    // Title text
     fill(130, 85, 36);
     textSize(32);
     noStroke();
     text("Select a Level", 30, 45);
 
+    // Button rectangles
     fill(25);
     noStroke();
 
@@ -574,6 +533,7 @@ class destructableWallModel extends wallModel {
 
     rect(50, 350, 300, 30);
 
+    // Button text
     textSize(16);
     fill(255);
     text("Level 1", 175, 120);
@@ -582,6 +542,7 @@ class destructableWallModel extends wallModel {
     text("Level 4", 175, 270);
     text("Return to Main Menu", 125, 370);
 
+    // Button highlights when the mouse is over them
     noFill();
     stroke(219, 84, 46);
     strokeWeight(3);
@@ -661,6 +622,7 @@ function squaredDist(x1, y1, x2, y2) {
  * @returns 
  */
 function detectWallCollision(x, y) {
+    // For each wall, check if the (x, y) is near the wall
     for (var i = 0; i < walls.length; i++) {
         if (walls[i].pos.x - x + half_tile < tile_width-1 && walls[i].pos.x - x + half_tile > -tile_width+1 &&
             walls[i].pos.y - y + half_tile < tile_width-1 && walls[i].pos.y - y + half_tile > -tile_width+1) {
@@ -676,17 +638,20 @@ function detectWallCollision(x, y) {
  */
 function resetGameState(game_level) {
     clear();
+
+    // Reset songs
     stopAllSongs();
-    
     songs[game_level].play();
 
     curr_level = game_level;
 
+    // Reset tile maps
     enemies = [];
     gems = [];
     walls = [];
     graph_nodes = [];
 
+    // Reset differently depending on the current level
     switch (game_level) {
         case 1:
             makeTileMap(level1_tilemap);
@@ -717,10 +682,15 @@ function resetGameState(game_level) {
         }
     }
 
+    // Reset player stats
     player.coins = 0;
     player.health = 5;
 }
 
+/**
+ * Function to draw a background image with random noise and variance
+ * @returns 400x400 background image
+ */
 function createGrassyField() {
     var a=random(1500);
 
@@ -746,6 +716,9 @@ function createGrassyField() {
     return get(0, 0, 400, 400);    
 }
 
+/**
+ * Stop the music
+ */
 function stopAllSongs() {
     for (var i = 0; i < songs.length; i++) {
         songs[i].stop();

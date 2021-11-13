@@ -1,38 +1,49 @@
 class LoseScreen {
     constructor() {
+        // Characters that chase each other
         this.playerChar = new playerModel(120, 300);
         this.enemyChar = new enemyModel(80, 293);
 
+        // Set the current states to be walking
         this.playerChar.state = "walk";
         this.enemyChar.stateName = "walk";
 
+        // Variable used for finite state machine
         this.playerState = 0;
         this.enemyState = 0;
 
+        // Offset the player characters image
         this.playerChar.imageIndex = 4;
 
+        // Set a movement for the players to chase each other
         this.movement_speed = 2;
     }
     draw() {
         background(54, 207, 207);
+
+        // Title text
         textSize(52);
         noStroke();
         fill('red');
         text("Level Failed", 50, 180);
 
+        // Button rectangles
         noStroke();
         fill(25);
         rect(75, 300, 100, 30);
         rect(225, 300, 100, 30);
 
+        // Button text
         fill(255);
         textSize(16);
         text("Main Menu", 85, 320);
         text("Retry", 252, 320);
 
+        // Draw characters
         this.playerChar.draw();
         this.enemyChar.draw();
 
+        // Highlight buttons when the mouse is over them
         noFill();
         stroke(219, 84, 46);
         strokeWeight(3);

@@ -117,6 +117,7 @@ class playerModel {
             this.state = "idle";
         }
     }
+    // Player movement functions
     moveRight() {
         if (!detectWallCollision(this.pos.x+PLAYER_MOVEMENT_SPEED, this.pos.y)) {
             player.pos.x += PLAYER_MOVEMENT_SPEED;
@@ -253,6 +254,7 @@ class AttackAnimation {
 
         var startAngle = max(angleOffset, currentAngle - PI/4);
 
+        // Draw an arc when the player attacks
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         fill(color('white'));

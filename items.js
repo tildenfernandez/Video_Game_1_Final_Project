@@ -20,6 +20,13 @@
     pop()
 }
 
+/**
+ * Draw a heart of a given size at a given location
+ * @param {heart x position} x 
+ * @param {heart y position} y 
+ * @param {heart width} w 
+ * @param {heart height} h 
+ */
 function drawHeart(x, y, w, h) {
     push()
     translate(x, y);
