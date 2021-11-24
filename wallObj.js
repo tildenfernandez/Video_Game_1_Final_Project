@@ -40,5 +40,26 @@ class destructableWallModel extends wallModel {
                 hearts.push([this.pos.x, this.pos.y - half_tile, 1]);
                 break;
         }
+
+        // Add a node to the graph of nodes for enemy movement
+        graph_nodes.push(new node(this.pos.x, this.pos.y));
+
+        var gLength = graph_nodes.length;
+        // Check for any adjacent nodes to connect to
+        for (var j = 0; j < gLength; j++) {
+            // If the nodes are adjacent, note it
+            if (graph_nodes[gLength - 1].pos.x - graph_nodes[j].pos.x === 0 &&
+                graph_nodes[gLength - 1].pos.y - graph_nodes[j].pos.y != 0 &&
+                abs(graph_nodes[gLength - 1].pos.y - graph_nodes[j].pos.y) <= 30) {
+                    graph_nodes[gLength - 1].adjacent_nodes.push(graph_nodes[j]);
+                    graph_nodes[j].adjacent_nodes.push(graph_nodes[gLength - 1]);
+            }
+            if (graph_nodes[gLength - 1].pos.y - graph_nodes[j].pos.y === 0 &&
+                graph_nodes[gLength - 1].pos.x - graph_nodes[j].pos.x != 0 &&
+                abs(graph_nodes[gLength - 1].pos.x - graph_nodes[j].pos.x) <= 30) {
+                    graph_nodes[gLength - 1].adjacent_nodes.push(graph_nodes[j]);
+                    graph_nodes[j].adjacent_nodes.push(graph_nodes[gLength - 1]);
+            }
+        }
     }
 }
