@@ -116,6 +116,7 @@ var heart_img;
 var gem_img;
 var castle_img;
 var background_img;
+var shield_img;
 
 var background_tiles = [];
 
@@ -170,6 +171,12 @@ function preload() {
 
 function setup() {
     createCanvas(400, 400);
+
+    dcircle(200, 200, 200, 27, 224, 216, 20);
+
+    shield_img = get(0, 0, width, height);
+    clear();
+    
     textFont(font);
     
     // initialize grass images
@@ -281,11 +288,15 @@ function draw() {
                 // If the player is not moving, they are animated as idle
                 player.idle();
             }
-    
         }
 
         // Draw the player
         player.draw();
+
+        // Player can use their shield as long as they aren't attacking
+        if (!keyIsDown(32) && keyIsDown(SHIFT)) {
+            player.use_shield();
+        }
 
         // Draw the information bar at the bottom
         infoBar.draw();
@@ -722,5 +733,18 @@ function createGrassyField() {
 function stopAllSongs() {
     for (var i = 0; i < songs.length; i++) {
         songs[i].stop();
+    }
+}
+
+/**
+ * Draw a sphere illusion of a given position (x,y), size s, color (r, g, b) and depth x
+ */
+var dcircle = function(x, y, s, r, b, g, z) {
+    s -= z;
+    var fs = s - z;
+    for(var i = 0; i < s; i ++) {
+        noFill();
+        stroke(r - (i * 1.5 - fs), b - (i * 1.5 - fs), g - (i * 1.5 - fs));
+        ellipse(x, y, i, i);
     }
 }

@@ -109,6 +109,8 @@ class playerModel {
         }
 
         image(this.images[this.imageIndex], -half_tile-18, -half_tile-30, 40, 40);
+
+        
         pop();
     }
     idle() {
@@ -209,6 +211,13 @@ class playerModel {
     attack_done() {
         this.attack_again = true;
         // this.imageIndex = 0;
+    }
+    use_shield() {
+        push();
+        translate(this.pos.x + x_offset, this.pos.y + y_offset);
+        tint(255, 127);
+        image(shield_img, -half_tile-44, -half_tile-50, 90, 90);
+        pop();
     }
 }
 
