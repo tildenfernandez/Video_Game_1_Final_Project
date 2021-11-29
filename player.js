@@ -54,6 +54,11 @@ class playerModel {
             this.state = "idle"; 
         }
 
+        // shoot is active for 60 frames
+        if (this.state === "shoot" && frameCount - this.attackTimer > 30) {
+            this.state = "idle";
+        }
+
         var frameInterval;
         switch (this.state) {
             case "idle":
@@ -123,7 +128,7 @@ class playerModel {
         pop();
     }
     idle() {
-        if (this.state !== "attack") {
+        if (this.state !== "attack" && this.state !== "shoot") {
             // change back to idle if you release an arrow key and you're not attacking
             this.state = "idle";
         }
