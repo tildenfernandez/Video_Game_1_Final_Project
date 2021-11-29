@@ -110,6 +110,9 @@ var gems = [];
 // Array of hearts (p5 vector of position)
 var hearts = [];
 
+// array of arrows
+var arrows = [];
+
 // Loaded images
 var bow_img;
 var heart_img;
@@ -117,6 +120,7 @@ var gem_img;
 var castle_img;
 var background_img;
 var shield_img;
+var arrow_img;
 
 var background_tiles = [];
 
@@ -157,6 +161,7 @@ function preload() {
     castle_img = loadImage('images/castle.png');
     bush_img = loadImage('images/bush.png');
     stump_img = loadImage('images/stump.png');
+    arrow_img = loadImage('sprites/weapons/arrow.png');
 
     // Set up objects from different classes used to organize code
     infoBar = new InformationBar();
@@ -219,6 +224,17 @@ function draw() {
             // if the animation is done, remove it
             if (attack_animations[i].done) {
                 attack_animations.splice(i, 1);
+            }
+        }
+
+        // draw all arrows
+        for (var i = 0; i < arrows.length; i++) {
+            arrows[i].update();
+            arrows[i].draw();
+
+            // if the arrow is done, remove it
+            if (arrows[i].done) {
+                arrows.splice(i, 1);
             }
         }
 

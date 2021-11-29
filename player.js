@@ -17,6 +17,10 @@ class playerModel {
             attackdown: loadImageSequence('sprites/player/attack/down/', 6),
             attackleft: loadImageSequence('sprites/player/attack/left/', 6),
             attackright: loadImageSequence('sprites/player/attack/right/', 6),
+            shootup: loadImageSequence('sprites/player/shoot/up/', 13),
+            shootdown: loadImageSequence('sprites/player/shoot/down/', 13),
+            shootleft: loadImageSequence('sprites/player/shoot/left/', 13),
+            shootright: loadImageSequence('sprites/player/shoot/right/', 13),
         }
 
         // Player information to be displayed
@@ -35,6 +39,8 @@ class playerModel {
         this.images = this.imageDict.walkright;
         this.attackTimer = frameCount;
         this.attackOffset = new p5.Vector(0, 0);
+
+        this.currentWeapon = "bow";
     }
     draw() {
         push();
@@ -57,6 +63,9 @@ class playerModel {
             case "attack":
                 frameInterval = 4;
                 break;
+            case "shoot":
+                frameInterval = 2;
+                break;
         }
 
         // cycle to the next image every 10 frames
@@ -64,7 +73,7 @@ class playerModel {
             this.frameCount = frameCount;
 
             // cycle to the next image
-            // there are only ever 9 images per animation
+            // there are a different number of frames per animation
             switch (this.state) {
                 case "idle":
                     this.imageIndex = 0;
@@ -83,6 +92,13 @@ class playerModel {
                         this.imageIndex = 0;
                     }
                     break;
+                case "shoot":
+                    if (this.imageIndex < 12) {
+                        this.imageIndex++;
+                    } else {
+                        this.imageIndex = 0;
+                    }
+                    break;
             }
 
         }
@@ -91,13 +107,6 @@ class playerModel {
         if (this.state === "idle") {
             // idle and walk use the same images
             tempstate = "walk";
-        }
-
-        // if you are attacking, start an attack animation
-        if (this.state === "attack") {
-
-            // there is a global variable that stores all the current attack animations
-            attack_animations.push(new AttackAnimation(this.pos.x + this.attackOffset.x - half_tile, this.pos.y + this.attackOffset.y - half_tile, this.direction));
         }
 
         this.images = this.imageDict[tempstate + this.direction];
@@ -167,7 +176,7 @@ class playerModel {
     attack() {
         if (this.attack_again) {
             this.attackTimer = frameCount;
-            this.state = "attack";
+            this.attack_again = false;
 
             this.attackOffset.x = 0;
             this.attackOffset.y = 0;
@@ -187,30 +196,46 @@ class playerModel {
                     break;
             }
 
+            if (this.currentWeapon === "bow") {
+                this.shoot();
+            } else {
+                // swing the axe
+                this.state = "attack";
 
-            for (var i = 0; i < enemies.length; i++) {
-                if (squaredDist(this.pos.x + this.attackOffset.x, this.pos.y + this.attackOffset.y, enemies[i].pos.x, enemies[i].pos.y) < 800) {
-                    enemies[i].health--;
+                for (var i = 0; i < enemies.length; i++) {
+                    if (squaredDist(this.pos.x + this.attackOffset.x, this.pos.y + this.attackOffset.y, enemies[i].pos.x, enemies[i].pos.y) < 800) {
+                        enemies[i].health--;
+                    }
                 }
+
+                // there is a global variable that stores all the current attack animations
+                attack_animations.push(new AttackAnimation(this.pos.x + this.attackOffset.x - half_tile, this.pos.y + this.attackOffset.y - half_tile, this.direction));
+
+                // check if near any destructible walls
+                // for now, loop through all walls
+                // consider making a separate array for destructible walls
+                for (var i = 0; i < walls.length; i++) {
+                    if (walls[i].destructable === true && squaredDist(this.pos.x + this.attackOffset.x, this.pos.y + this.attackOffset.y, walls[i].pos.x, walls[i].pos.y) < 800) {
+                        walls[i].destroy();
+                        // remove wall from walls array
+                        walls.splice(i, 1);
+                    }
+                }
+
             }
 
-            // check if near any destructible walls
-            // for now, loop through all walls
-            // consider making a separate array for destructible walls
-            for (var i = 0; i < walls.length; i++) {
-                if (walls[i].destructable === true && squaredDist(this.pos.x + this.attackOffset.x, this.pos.y + this.attackOffset.y, walls[i].pos.x, walls[i].pos.y) < 800) {
-                    walls[i].destroy();
-                    // remove wall from walls array
-                    walls.splice(i, 1);
-                }
-            }
-
-            this.attack_again = false;
         } 
     }
     attack_done() {
         this.attack_again = true;
         // this.imageIndex = 0;
+    }
+    shoot() {
+        // this is called if you press the space bar and you have the bow currently equipped
+        this.state = "shoot";
+
+        // instantiate a new arrow object in the direction based on this.attackOffset
+        arrows.push(new Arrow(this.pos.x + this.attackOffset.x, this.pos.y + this.attackOffset.y, this.direction));
     }
     use_shield() {
         push();
