@@ -179,8 +179,6 @@ class waitState {
                 me.firstChaseLoop = true;
             }
         }
-
-        
     }
 }
 
@@ -303,7 +301,7 @@ class lineOfSightState {
     execute(me) {
         // If this is my frame to search, or I just started chasing, calculate a path using a star search
         if (!(frameCount & me.frameNum) || me.firstChaseLoop) {
-            me.path = astar_search(me);
+            me.path = range_astar_search(me);
             me.targetNum = me.path.length - 2;
             me.firstChaseLoop = false;
         }
@@ -359,7 +357,7 @@ class lineOfSightState {
                 if (dist_to_player < 5000) {
                     // If we are in line with the player
                     var xDiff = player.pos.x - me.pos.x - half_tile;
-                    var yDiff = player.pos.x - me.pos.x - half_tile;
+                    var yDiff = player.pos.y - me.pos.y - half_tile;
 
                     // var lineOfSight = true;
                     
@@ -482,6 +480,89 @@ function astar_search(me) {
             var d = squaredDist(new_leaf_nodes[i].pos.x, new_leaf_nodes[i].pos.y, player.pos.x, player.pos.y);
             // if one is, find the path from it to the head node
             if (d < 500) {
+                // Note we are done searching - exit the while loop
+                done = true;
+
+                // Add this node to the node path
+                node_path.push(new_leaf_nodes[i]);
+
+                // Exit the for loop
+                i = new_leaf_nodes.length;
+            }
+        }
+    }
+
+    // Backtrack to find the shortest path
+    // Go until we find the root node, which has no parent node
+    while (node_path[node_path.length - 1].parent_node != 0) {
+        var n_length = node_path.length;
+        // Append the current node to the path
+        node_path.push(node_path[n_length -1].parent_node);
+    }
+
+    // Return the path to the player
+    return node_path;
+}
+
+// Calculate the a* search algorithm for a ranged enemy
+function range_astar_search(me) {
+    var node_path = [];     // path to return
+    var node_tree = [];     // tree of nodes
+
+    // Add my current node to the tree
+    node_tree.push([me.currNode]);
+
+    // Note that my current node is the root of the tree, and therefor has no parent node
+    me.currNode.parent_node = 0;
+
+    var done = false;
+
+    // Set all nodes except for my current node to be unused
+    for (var i = 0; i < graph_nodes.length; i++) {
+        graph_nodes[i].used = false;
+    }
+    me.currNode.used = true;
+
+    // Search until we find a node close to pacman
+    while (!done) {
+        // Initialize a list of new nodes to add to the tree
+        var new_leaf_nodes = [];
+
+        // for each leaf node in the tree
+        for (var j = 0; j < node_tree[node_tree.length - 1].length; j++) {
+            var curr_leaf_node = node_tree[node_tree.length - 1][j];
+
+            // check each node adjacent to the current node
+            for (var i = 0; i < curr_leaf_node.adjacent_nodes.length; i++) {
+
+                // If it is unsued:
+                if (!curr_leaf_node.adjacent_nodes[i].used) {
+                    // Add to list of next leaf nodes
+                    new_leaf_nodes.push(curr_leaf_node.adjacent_nodes[i]);
+
+                    // Update the parent of the node
+                    new_leaf_nodes[new_leaf_nodes.length - 1].parent_node = curr_leaf_node;
+                    
+                    // note that this node has been used
+                    curr_leaf_node.adjacent_nodes[i].used = true;
+
+                    // fill(0, 255, 0);
+                    // noStroke();
+                    // ellipse(curr_leaf_node.adjacent_nodes[i].pos.x, curr_leaf_node.adjacent_nodes[i].pos.y, 10, 10);
+                }
+            }
+        }
+        // Add list of new leaf nodes to the tree
+        node_tree.push(new_leaf_nodes);
+
+        // check all lead nodes to see if one is line of sight to the player
+        for (var i = 0; i < new_leaf_nodes.length; i++) {
+            var d = squaredDist(new_leaf_nodes[i].pos.x, new_leaf_nodes[i].pos.y, player.pos.x, player.pos.y);
+            // if one is, find the path from it to the head node
+            var xDiff = player.pos.x - new_leaf_nodes[i].pos.x - half_tile;
+            var yDiff = player.pos.y - new_leaf_nodes[i].pos.y - half_tile;
+            if (d < 10000 &&
+                ((xDiff <= 10 && xDiff >= -10) || (yDiff <= 10 && yDiff >= -10))) {
                 // Note we are done searching - exit the while loop
                 done = true;
 
