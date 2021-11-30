@@ -213,7 +213,7 @@ class StartScreenOrc extends StartScreenCharacter{
 class StartScreenSkeleton extends StartScreenCharacter{
     constructor(x, y, width, height) {
         super(x, y, width, height);
-        this.images = loadImageSequence('sprites/skeleton/walk/walk', 9);
+        this.images = loadImageSequence('sprites/skeleton/walk/right/', 9);
     }
 }
 

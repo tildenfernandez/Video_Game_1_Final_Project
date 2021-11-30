@@ -199,14 +199,14 @@ function preload() {
 
     // Skeleton models (ranged enemies)
     ranged_img_dict = {
-        walkright: loadImageSequence('sprites/skeleton/walk/walk', 9),
-        walkup: loadImageSequence('sprites/skeleton/walk/walk', 9),
-        walkdown: loadImageSequence('sprites/skeleton/walk/walk', 9),
-        walkleft: loadImageSequence('sprites/skeleton/walk/walk', 9),
-        attackup: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
-        attackdown: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
-        attackleft: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
-        attackright: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
+        walkright: loadImageSequence('sprites/skeleton/walk/right/', 9),
+        walkup: loadImageSequence('sprites/skeleton/walk/up/', 9),
+        walkdown: loadImageSequence('sprites/skeleton/walk/down/', 9),
+        walkleft: loadImageSequence('sprites/skeleton/walk/left/', 9),
+        attackup: loadImageSequence('sprites/skeleton/shoot/up/', 13),
+        attackdown: loadImageSequence('sprites/skeleton/shoot/down/', 13),
+        attackleft: loadImageSequence('sprites/skeleton/shoot/left/', 13),
+        attackright: loadImageSequence('sprites/skeleton/shoot/right/', 13),
     }
 
     // Set up objects from different classes used to organize code
