@@ -24,7 +24,7 @@ let level1_tilemap = [
     "w                      swwwwws         w",
     "wbbbb         s       wwwsb            w",
     "wswwwss      b         bbb    g        w",
-    "wwwwwwwwwbb                  g     sbbw",
+    "wwwwwwwwwbb                  g      sbbw",
     "wwwwwwwwbs         e        g    swwsbsw",
     "wwwwwbb                       bbwwwwbbsw",
     "wsbb   g                    bbsbwwwbwwww",
@@ -50,41 +50,41 @@ let level1_tilemap = [
 
 ]          
 
-let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
-                        "w--------------------w",
-                        "w--------------p-----w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w-g------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w----------w---------w",
-                        "w--------------------w",
-                        "w----e---------------w",
-                        "w--------------g-----w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "wwwwwwwwwwwwwwwwwwwwww"];
+let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+                        "wbb-------wwwwwwwwwwws------------swwwww",
+                        "ws---------------------------------bswww",
+                        "w---h----------p-----------------------w",
+                        "w----------------------------------g---w",
+                        "wwwwsbssbb-------------------bww--g-g--w",
+                        "wwwwwwsbssb----------------sswww---g---w",
+                        "wwwwwbsbb------------------bswww--r----w",
+                        "wwwbsbb--------------------bwwww---g---w",
+                        "wsss--------------e----g-----sbw--g-g--w",
+                        "wb-------r---bww------g-g-----ss---g-r-w",
+                        "w----------wwwwwws-----g---------------w",
+                        "w-----------h--sbb---------------------w",
+                        "w----e-----------------------------h---w",
+                        "w--------------g-----------------------w",
+                        "w-----b-------ggg---------bsww---------w",
+                        "w----s---------g---------swwwww-------ww",
+                        "w-------------------e----bbwwws-------ww",
+                        "wss--------------------------sb------sww",
+                        "wss---e----r------------------------swww",
+                        "wbsb----------r---------------------bwww",
+                        "wsssb-rh---bsswwwwbbb-------g--r----swww",
+                        "wbsbbb--sbwwwwwwwwwwsbs----ghg-----bbwww",
+                        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"];
 
-let LEVEL_COINS_NEEDED = [20, 2];
+let LEVEL_COINS_NEEDED = [20, 25];
 
 // Define the width of one tile
 let tile_width = 20;
 let half_tile = tile_width / 2;
 
 let MAX_X_OFFSET = 0;
-let MIN_X_OFFSET = -400;
+let MIN_X_OFFSET = [-400, -400];    // min is (# rows - 20)* -20 * think
 let MAX_Y_OFFSET = 0;
-let MIN_Y_OFFSET = -400;
+let MIN_Y_OFFSET = [-400, -140];    // no idea how to calculate play around with it
 
 let DIST_FOR_VIEW_WINDOW_MOVE = 120;
 
@@ -121,6 +121,9 @@ var castle_img;
 var background_img;
 var shield_img;
 var arrow_img;
+
+// Sprite image dicts
+let player_img_dict, melee_img_dict, ranged_img_dict;
 
 var background_tiles = [];
 
@@ -163,15 +166,53 @@ function preload() {
     stump_img = loadImage('images/stump.png');
     arrow_img = loadImage('sprites/weapons/arrow.png');
 
-    // Set up objects from different classes used to organize code
-    infoBar = new InformationBar();
-    win_screen = new WinScreen();
-    lose_screen = new LoseScreen();
-
     // Load music
     songs[0] = loadSound('sounds/music/start_screen.mp3');
     songs[1] = loadSound('sounds/music/level1.mp3');
     songs[2] = loadSound('sounds/music/level1.mp3');
+
+    ////////////// Load image sequences for character models //////////////
+
+    // Player images
+    player_img_dict = {
+        walkright: loadImageSequence('sprites/player/walk/right/', 9),
+        walkup: loadImageSequence('sprites/player/walk/up/', 9),
+        walkdown: loadImageSequence('sprites/player/walk/down/', 9),
+        walkleft: loadImageSequence('sprites/player/walk/left/', 9),
+        attackup: loadImageSequence('sprites/player/attack/up/', 6),
+        attackdown: loadImageSequence('sprites/player/attack/down/', 6),
+        attackleft: loadImageSequence('sprites/player/attack/left/', 6),
+        attackright: loadImageSequence('sprites/player/attack/right/', 6),
+    }
+
+    // Orc models (melee enemies)
+    melee_img_dict = {
+        walkright: loadImageSequence('sprites/orc/walk/right/', 9),
+        walkup: loadImageSequence('sprites/orc/walk/up/', 9),
+        walkdown: loadImageSequence('sprites/orc/walk/down/', 9),
+        walkleft: loadImageSequence('sprites/orc/walk/left/', 9),
+        attackup: loadImageSequence('sprites/orc/attack/up/', 6),
+        attackdown: loadImageSequence('sprites/orc/attack/down/', 6),
+        attackleft: loadImageSequence('sprites/orc/attack/left/', 6),
+        attackright: loadImageSequence('sprites/orc/attack/right/', 6),
+    }
+
+    // Skeleton models (ranged enemies)
+    ranged_img_dict = {
+        walkright: loadImageSequence('sprites/skeleton/walk/walk', 9),
+        walkup: loadImageSequence('sprites/skeleton/walk/walk', 9),
+        walkdown: loadImageSequence('sprites/skeleton/walk/walk', 9),
+        walkleft: loadImageSequence('sprites/skeleton/walk/walk', 9),
+        attackup: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
+        attackdown: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
+        attackleft: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
+        attackright: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
+    }
+
+    // Set up objects from different classes used to organize code
+    infoBar = new InformationBar();
+    win_screen = new WinScreen();
+    lose_screen = new LoseScreen();
 }
 
 function setup() {
@@ -356,310 +397,6 @@ function draw() {
 }
 
 /**
- * Function to interpret a tilemap
- */
- function makeTileMap(tmap) {
-    // For each row and column, check if the character if coded
-    var iNum = 0;
-    for (var i = 0; i < tmap[0].length; i++) {
-        for (var j = 0; j < tmap.length; j++) {
-            // 'w' is a wall
-            if (tmap[j][i] === 'w') {
-                walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile, wall_img));
-            } else if (tmap[j][i] === 's') {
-                // stump
-                walls.push(new destructableWallModel(tile_width*i + half_tile, tile_width*j + half_tile, stump_img));
-            } else if (tmap[j][i] === 'b') {
-                // bush
-                walls.push(new destructableWallModel(tile_width*i + half_tile, tile_width*j + half_tile, bush_img));
-            } else {
-                // Add all non-wall tiles to the graph for astar search
-                graph_nodes.push(new node(tile_width*i + half_tile, tile_width*j + half_tile));
-            }
-
-            // 'e' is an enemy
-            if (tmap[j][i] === 'e') {
-                enemies.push(new enemyModel(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
-                enemies[enemies.length - 1].frameNum = 50;      // Need to change
-                iNum++;
-                enemies[enemies.length - 1].currNode = graph_nodes[graph_nodes.length - 1];
-                enemies[enemies.length - 1].target = graph_nodes[graph_nodes.length - 1];
-            }
-
-            // 'p' is the player model
-            if (tmap[j][i] === 'p') {
-                player =  new playerModel(tile_width*i + half_tile, tile_width*j + half_tile);
-            }
-
-            // 'g' is a gem
-            if (tmap[j][i] === 'g') {
-                gems.push([tile_width*i + half_tile, tile_width*j + half_tile, 1]);
-            }
-
-            // 'h' is a heart
-            if (tmap[j][i] === 'h') {
-                hearts.push([tile_width*i + half_tile, tile_width*j + half_tile, 1]);
-            }
-
-        }
-    }
-}
-
-/**
- * Capture mouse input as necessary
- */
- function mousePressed() {
-    // Record player clicking buttons on start screen
-    if (game_state === "start_screen") {
-        // First button redirects to the first level
-        if (mouseX >= 30 && mouseX <= 130 &&
-            mouseY >= 220 && mouseY <= 250) {
-                game_state = "playing_level_1"
-                resetGameState(1);
-                clear();
-        }
-        // Second button redirects to the instructions menu
-        if (mouseX >= 150 && mouseX <= 260 &&
-            mouseY >= 220 && mouseY <= 250) {
-                instructionsScreen.first = 1;
-                clear();
-                game_state = "instructions"
-        }
-        // Third button redirects to the level select menu
-        if (mouseX >= 275 && mouseX <= 375 &&
-            mouseY >= 220 && mouseY <= 250) {
-                clear();
-                game_state = "level_select"
-        }
-    }
-    // Record player clicking on instructions menu
-    else if (game_state === "instructions") {
-                // All clicks here redirect back to the main menu
-                clear();
-                game_state = "start_screen";
-    }
-    // Record player clicks on the level select menu
-    else if (game_state === "level_select") {
-        // First button goes to level one
-        if (mouseX >= 50 && mouseX <= 350 &&
-            mouseY >= 100 && mouseY <= 130) {
-                clear();
-                game_state = "playing_level_1";
-                resetGameState(1);
-        }
-        // Second button goes to level 2
-        if (mouseX >= 50 && mouseX <= 350 &&
-            mouseY >= 150 && mouseY <= 180) {
-                clear();
-                game_state = "playing_level_2";
-                resetGameState(2);
-        }
-        // Third button goes to level 3
-        if (mouseX >= 50 && mouseX <= 350 &&
-            mouseY >= 200 && mouseY <= 230) {
-                clear();
-                game_state = "playing_level_3";
-                resetGameState(3);
-        }
-        // Fourth button goes to level 4
-        if (mouseX >= 50 && mouseX <= 350 &&
-            mouseY >= 250 && mouseY <= 280) {
-                clear();
-                game_state = "playing_level_4";
-                resetGameState(4);
-        }
-        // Last button returns to the main menu
-        if (mouseX >= 50 && mouseX <= 350 &&
-            mouseY >= 350 && mouseY <= 380) {
-                clear();
-                game_state = "start_screen";
-        }
-    }
-    // Mouse input on the win screen
-    else if (game_state === "win_screen") {
-        // First button returns to the main menu
-        if (mouseX >= 75 && mouseX <= 175 &&
-            mouseY >= 300 && mouseY <= 330) {
-                game_state = "start_screen"
-        }
-        // Second button redirects to the next level
-        if (mouseX >= 225 && mouseX <= 325 &&
-            mouseY >= 300 && mouseY <= 330) {
-                // Redirect to different levels based on the current level
-                switch (curr_level) {
-                    case 1:
-                        game_state = "playing_level_2";
-                        resetGameState(2);
-                        break;
-                    case 2:
-                        game_state = "playing_level_3";
-                        resetGameState(3);
-                        break;
-                    case 3:
-                        game_state = "playing_level_4";
-                        resetGameState(4);
-                        break;
-                }
-        }
-    }
-    // Mouse input on the lose screen
-    else if (game_state === "lose_screen") {
-        // First button returns to the main menu
-        if (mouseX >= 75 && mouseX <= 175 &&
-            mouseY >= 300 && mouseY <= 330) {
-                stopAllSongs();
-                songs[0].play();
-                game_state = "start_screen"
-        }
-        // Second button restarts the current level
-        if (mouseX >= 225 && mouseX <= 325 &&
-            mouseY >= 300 && mouseY <= 330) {
-                // Redirect to different level based on the current level
-                switch (curr_level) {
-                    case 1:
-                        game_state = "playing_level_1";
-                        resetGameState(1);
-                        break;
-                    case 2:
-                        game_state = "playing_level_2";
-                        resetGameState(2);
-                        break;
-                    case 3:
-                        game_state = "playing_level_3";
-                        resetGameState(3);
-                        break;
-                    case 4:
-                        game_state = "playing_level_4";
-                        resetGameState(4);
-                        break;
-                }
-        }
-    }
-}
-
-/**
- * Draw the level select screen
- */
- function drawLevelSelect() {
-    background(54, 207, 207);
-
-    // Title text
-    fill(130, 85, 36);
-    textSize(32);
-    noStroke();
-    text("Select a Level", 30, 45);
-
-    // Button rectangles
-    fill(25);
-    noStroke();
-
-    rect(50, 100, 300, 30);
-    rect(50, 150, 300, 30);
-    rect(50, 200, 300, 30);
-    rect(50, 250, 300, 30);
-
-    rect(50, 350, 300, 30);
-
-    // Button text
-    textSize(16);
-    fill(255);
-    text("Level 1", 175, 120);
-    text("Level 2", 175, 170);
-    text("Level 3", 175, 220);
-    text("Level 4", 175, 270);
-    text("Return to Main Menu", 125, 370);
-
-    // Button highlights when the mouse is over them
-    noFill();
-    stroke(219, 84, 46);
-    strokeWeight(3);
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 100 && mouseY <= 130) {
-            rect(50, 100, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Level 1", 175, 120);
-
-            drawGem(30, 100, 25, 30);
-    }
-
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 150 && mouseY <= 180) {
-            rect(50, 150, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Level 2", 175, 170);
-
-            drawGem(30, 150, 25, 30);
-    }
-
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 200 && mouseY <= 230) {
-            rect(50, 200, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Level 3", 175, 220);
-
-            drawGem(30, 200, 25, 30);
-    }
-
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 250 && mouseY <= 280) {
-            rect(50, 250, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Level 4", 175, 270);
-
-            drawGem(30, 250, 25, 30);
-    }
-
-    if (mouseX >= 50 && mouseX <= 350 &&
-        mouseY >= 350 && mouseY <= 380) {
-            rect(50, 350, 300, 30);
-
-            noStroke();
-            fill(219, 84, 46);
-            text("Return to Main Menu", 125, 370);
-
-            drawGem(30, 350, 25, 30);
-    }
-}
-
-/**
- * Calculate the square of the distance between to points
- * 
- * @param {*} x1 x coordinant of the first point
- * @param {*} y1 y coordinant of the first point
- * @param {*} x2 x coordinant of the second point
- * @param {*} y2 y coordinant of the second point
- * @returns the squared distance between the two points
- */
-function squaredDist(x1, y1, x2, y2) {
-    return (((x1 - x2) * (x1 - x2)) + ((y1 - y2) * (y1 - y2)))
-}
-
-/**
- * Check if any (x, y) hits a wall
- * @param {x coordinant of position to check} x 
- * @param {y coordinant of position to check} y 
- * @returns 
- */
-function detectWallCollision(x, y) {
-    // For each wall, check if the (x, y) is near the wall
-    for (var i = 0; i < walls.length; i++) {
-        if (walls[i].pos.x - x + half_tile < tile_width-1 && walls[i].pos.x - x + half_tile > -tile_width+1 &&
-            walls[i].pos.y - y + half_tile < tile_width-1 && walls[i].pos.y - y + half_tile > -tile_width+1) {
-                return true;
-            }
-    }
-    return false;
-}
-
-/**
  * Functin to reset values in the game when going to a new level
  * @param {the game level to reset to} game_level 
  */
@@ -714,53 +451,3 @@ function resetGameState(game_level) {
     player.health = 5;
 }
 
-/**
- * Function to draw a background image with random noise and variance
- * @returns 400x400 background image
- */
-function createGrassyField() {
-    var a=random(1500);
-
-    push();
-    background(3, 242, 102);
-    noStroke();
-
-    // sky
-    var n1 = a;
-    for (var x=0; x<=800; x+=4) {
-        var n2 = 0;
-        for (var y=0; y<=800; y+=4) {
-            var c = map(noise(n1,n2),0,1,0,255);
-            fill(c, c+50,c,100);
-            rect(x,y,4,4);
-            n2 += 0.075; // step size in noise
-        }
-        n1 += 0.02; // step size in noise
-    }
-    pop();
-
-    // take a picture
-    return get(0, 0, 400, 400);    
-}
-
-/**
- * Stop the music
- */
-function stopAllSongs() {
-    for (var i = 0; i < songs.length; i++) {
-        songs[i].stop();
-    }
-}
-
-/**
- * Draw a sphere illusion of a given position (x,y), size s, color (r, g, b) and depth x
- */
-var dcircle = function(x, y, s, r, b, g, z) {
-    s -= z;
-    var fs = s - z;
-    for(var i = 0; i < s; i ++) {
-        noFill();
-        stroke(r - (i * 1.5 - fs), b - (i * 1.5 - fs), g - (i * 1.5 - fs));
-        ellipse(x, y, i, i);
-    }
-}

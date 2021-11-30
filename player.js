@@ -8,20 +8,7 @@ class playerModel {
         // Player tools available
         this.all_tools = [];
 
-        this.imageDict = {
-            walkright: loadImageSequence('sprites/player/walk/right/', 9),
-            walkup: loadImageSequence('sprites/player/walk/up/', 9),
-            walkdown: loadImageSequence('sprites/player/walk/down/', 9),
-            walkleft: loadImageSequence('sprites/player/walk/left/', 9),
-            attackup: loadImageSequence('sprites/player/attack/up/', 6),
-            attackdown: loadImageSequence('sprites/player/attack/down/', 6),
-            attackleft: loadImageSequence('sprites/player/attack/left/', 6),
-            attackright: loadImageSequence('sprites/player/attack/right/', 6),
-            shootup: loadImageSequence('sprites/player/shoot/up/', 13),
-            shootdown: loadImageSequence('sprites/player/shoot/down/', 13),
-            shootleft: loadImageSequence('sprites/player/shoot/left/', 13),
-            shootright: loadImageSequence('sprites/player/shoot/right/', 13),
-        }
+        this.imageDict = player_img_dict;
 
         // Player information to be displayed
         this.health = 5;
@@ -137,7 +124,7 @@ class playerModel {
         if (!detectWallCollision(this.pos.x+PLAYER_MOVEMENT_SPEED, this.pos.y)) {
             player.pos.x += PLAYER_MOVEMENT_SPEED;
             if (player.pos.x + x_offset > (width - DIST_FOR_VIEW_WINDOW_MOVE) &&
-                x_offset > MIN_X_OFFSET) {
+                x_offset > MIN_X_OFFSET[curr_level-1]) {
                     x_offset -= PLAYER_MOVEMENT_SPEED;
             }
         }
@@ -159,7 +146,7 @@ class playerModel {
         if (!detectWallCollision(this.pos.x, this.pos.y+PLAYER_MOVEMENT_SPEED)) {
             player.pos.y += PLAYER_MOVEMENT_SPEED;
             if (player.pos.y + y_offset > (height - DIST_FOR_VIEW_WINDOW_MOVE) &&
-                y_offset > MIN_Y_OFFSET) {
+                y_offset > MIN_Y_OFFSET[curr_level-1]) {
                     y_offset -= PLAYER_MOVEMENT_SPEED;
             }
         }
