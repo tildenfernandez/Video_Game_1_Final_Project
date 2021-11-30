@@ -183,6 +183,10 @@ function preload() {
         attackdown: loadImageSequence('sprites/player/attack/down/', 6),
         attackleft: loadImageSequence('sprites/player/attack/left/', 6),
         attackright: loadImageSequence('sprites/player/attack/right/', 6),
+        shootup: loadImageSequence('sprites/player/shoot/up/', 13),
+        shootdown: loadImageSequence('sprites/player/shoot/down/', 13),
+        shootleft: loadImageSequence('sprites/player/shoot/left/', 13),
+        shootright: loadImageSequence('sprites/player/shoot/right/', 13),
     }
 
     // Orc models (melee enemies)
