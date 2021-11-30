@@ -50,30 +50,30 @@ let level1_tilemap = [
 
 ]          
 
-let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwww",
-                        "w--------------------w",
-                        "w--------------p-----w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w-g------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w----------w---------w",
-                        "w--------------------w",
-                        "w----e---------------w",
-                        "w--------------g-----w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "w--------------------w",
-                        "wwwwwwwwwwwwwwwwwwwwww"];
+let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
+                        "wbb-------wwwwwwwwwwws------------swwwww",
+                        "ws---------------------------------bswww",
+                        "w---h----------p-----------------------w",
+                        "w----------------------------------g---w",
+                        "wwwwsbssbb-------------------bww--g-g--w",
+                        "wwwwwwsbssb----------------sswww---g---w",
+                        "wwwwwbsbb------------------bswww--r----w",
+                        "wwwbsbb--------------------bwwww---g---w",
+                        "wsss--------------e----g-----sbw--g-g--w",
+                        "wb-------r---bww------g-g-----ss---g-r-w",
+                        "w----------wwwwwws-----g---------------w",
+                        "w-----------h--sbb---------------------w",
+                        "w----e-----------------------------h---w",
+                        "w--------------g-----------------------w",
+                        "w-----b-------ggg---------bsww---------w",
+                        "w----s---------g---------swwwww-------ww",
+                        "w-------------------e----bbwwws-------ww",
+                        "wss--------------------------sb------sww",
+                        "wss---e----r------------------------swww",
+                        "wbsb----------r---------------------bwww",
+                        "wsssb-rh---bsswwwwbbb-------g--r----swww",
+                        "wbsbbb--sbwwwwwwwwwwsbs----ghg-----bbwww",
+                        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"];
 
 let LEVEL_COINS_NEEDED = [20, 2];
 
@@ -361,9 +361,18 @@ function draw() {
                 graph_nodes.push(new node(tile_width*i + half_tile, tile_width*j + half_tile));
             }
 
-            // 'e' is an enemy
+            // 'e' is a melee enemy
             if (tmap[j][i] === 'e') {
                 enemies.push(new MeleeEnemy(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
+                enemies[enemies.length - 1].frameNum = 50;      // Need to change
+                iNum++;
+                enemies[enemies.length - 1].currNode = graph_nodes[graph_nodes.length - 1];
+                enemies[enemies.length - 1].target = graph_nodes[graph_nodes.length - 1];
+            }
+
+            // 'r' is a ranged enemy
+            if (tmap[j][i] === 'r') {
+                enemies.push(new RangedEnemy(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
                 enemies[enemies.length - 1].frameNum = 50;      // Need to change
                 iNum++;
                 enemies[enemies.length - 1].currNode = graph_nodes[graph_nodes.length - 1];
