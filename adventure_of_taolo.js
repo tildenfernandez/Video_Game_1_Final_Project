@@ -352,6 +352,19 @@ function draw() {
             }
         }
 
+        // number keys will change the weapon equipped
+        if (keyIsDown(49)) {
+            player.currentWeapon = "axe";
+        } else if (keyIsDown(50)) {
+            if (player.bowAcquired == true) {
+                player.currentWeapon = "bow";
+            }
+        } else if (keyIsDown(51)) {
+            if (player.bombAcquired == true) {
+                player.currentWeapon = "bomb";
+            }
+        }
+
         // Draw the player
         player.draw();
 
