@@ -25,10 +25,10 @@ class playerModel {
 
         // Player information to be displayed
         this.health = 5;
-        this.current_weapon = "";
         this.ammo = 10;
         this.coins = 0;
         this.attack_again = true;
+        this.currentWeapon = "bow";
 
         // essentially use a string as an FSM for the player
         this.state = "idle";
@@ -40,7 +40,6 @@ class playerModel {
         this.attackTimer = frameCount;
         this.attackOffset = new p5.Vector(0, 0);
 
-        this.currentWeapon = "bow";
     }
     draw() {
         push();
@@ -49,12 +48,12 @@ class playerModel {
         // fill(255, 0, 255);
         // ellipse(-half_tile, -half_tile, 20, 20);
 
-        // attack is active for 60 frames
+        // attack is active for 30 frames
         if (this.state === "attack" && frameCount - this.attackTimer > 30) {
             this.state = "idle"; 
         }
 
-        // shoot is active for 60 frames
+        // shoot is active for 30 frames
         if (this.state === "shoot" && frameCount - this.attackTimer > 30) {
             this.state = "idle";
         }
@@ -73,7 +72,7 @@ class playerModel {
                 break;
         }
 
-        // cycle to the next image every 10 frames
+        // cycle to the next image every n frames
         if (frameCount - this.frameCount > frameInterval) {
             this.frameCount = frameCount;
 
@@ -240,7 +239,8 @@ class playerModel {
         this.state = "shoot";
 
         // instantiate a new arrow object in the direction based on this.attackOffset
-        arrows.push(new Arrow(this.pos.x + this.attackOffset.x, this.pos.y + this.attackOffset.y, this.direction));
+        arrows.push(new Arrow(this.pos.x + this.attackOffset.x - half_tile, this.pos.y + this.attackOffset.y - half_tile, this.direction));
+
     }
     use_shield() {
         push();

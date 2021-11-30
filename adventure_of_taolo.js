@@ -229,8 +229,8 @@ function draw() {
 
         // draw all arrows
         for (var i = 0; i < arrows.length; i++) {
-            arrows[i].update();
             arrows[i].draw();
+            arrows[i].update();
 
             // if the arrow is done, remove it
             if (arrows[i].done) {
