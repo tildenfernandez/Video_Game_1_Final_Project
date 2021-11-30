@@ -24,7 +24,7 @@ let level1_tilemap = [
     "w                      swwwwws         w",
     "wbbbb         s       wwwsb            w",
     "wswwwss      b         bbb    g        w",
-    "wwwwwwwwwbb                  g     sbbw",
+    "wwwwwwwwwbb                  g      sbbw",
     "wwwwwwwwbs         e        g    swwsbsw",
     "wwwwwbb                       bbwwwwbbsw",
     "wsbb   g                    bbsbwwwbwwww",
@@ -75,16 +75,16 @@ let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
                         "wbsbbb--sbwwwwwwwwwwsbs----ghg-----bbwww",
                         "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"];
 
-let LEVEL_COINS_NEEDED = [20, 2];
+let LEVEL_COINS_NEEDED = [20, 25];
 
 // Define the width of one tile
 let tile_width = 20;
 let half_tile = tile_width / 2;
 
 let MAX_X_OFFSET = 0;
-let MIN_X_OFFSET = -400;
+let MIN_X_OFFSET = [-400, -400];    // min is (# rows - 20)* -20 * think
 let MAX_Y_OFFSET = 0;
-let MIN_Y_OFFSET = -400;
+let MIN_Y_OFFSET = [-400, -140];    // no idea how to calculate play around with it
 
 let DIST_FOR_VIEW_WINDOW_MOVE = 120;
 

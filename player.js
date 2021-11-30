@@ -115,7 +115,7 @@ class playerModel {
         if (!detectWallCollision(this.pos.x+PLAYER_MOVEMENT_SPEED, this.pos.y)) {
             player.pos.x += PLAYER_MOVEMENT_SPEED;
             if (player.pos.x + x_offset > (width - DIST_FOR_VIEW_WINDOW_MOVE) &&
-                x_offset > MIN_X_OFFSET) {
+                x_offset > MIN_X_OFFSET[curr_level-1]) {
                     x_offset -= PLAYER_MOVEMENT_SPEED;
             }
         }
@@ -137,7 +137,7 @@ class playerModel {
         if (!detectWallCollision(this.pos.x, this.pos.y+PLAYER_MOVEMENT_SPEED)) {
             player.pos.y += PLAYER_MOVEMENT_SPEED;
             if (player.pos.y + y_offset > (height - DIST_FOR_VIEW_WINDOW_MOVE) &&
-                y_offset > MIN_Y_OFFSET) {
+                y_offset > MIN_Y_OFFSET[curr_level-1]) {
                     y_offset -= PLAYER_MOVEMENT_SPEED;
             }
         }

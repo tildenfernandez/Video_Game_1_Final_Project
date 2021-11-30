@@ -2,7 +2,7 @@ class LoseScreen {
     constructor() {
         // Characters that chase each other
         this.playerChar = new playerModel(120, 300);
-        this.enemyChar = new enemyModel(80, 293);
+        this.enemyChar = new MeleeEnemy(80, 293);
 
         // Set the current states to be walking
         this.playerChar.state = "walk";
