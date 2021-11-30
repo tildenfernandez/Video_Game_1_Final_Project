@@ -165,6 +165,7 @@ function preload() {
     bush_img = loadImage('images/bush.png');
     stump_img = loadImage('images/stump.png');
     arrow_img = loadImage('sprites/weapons/arrow.png');
+    axe_img = loadImage('sprites/weapons/axe.png');
 
     // Load music
     songs[0] = loadSound('sounds/music/start_screen.mp3');

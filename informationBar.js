@@ -37,6 +37,15 @@ class InformationBar {
         rect(220, height-55, 30, 40, 5);
         rect(180, height-55, 30, 40, 5);
 
+        // draw the images for weapons available
+        // axe is on by default
+        image(axe_img, 190, height-50, 15, 30);
+        
+        // draw bow if it is available
+        if (player.bow_acquired == true) {
+            image(bow_img, 220, height-50, 30, 30);
+        }
+
         fill(255);
 
         textStyle(BOLD);

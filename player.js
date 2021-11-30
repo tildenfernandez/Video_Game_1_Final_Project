@@ -27,6 +27,8 @@ class playerModel {
         this.attackTimer = frameCount;
         this.attackOffset = new p5.Vector(0, 0);
 
+        this.bow_acquired = true;
+
     }
     draw() {
         push();
