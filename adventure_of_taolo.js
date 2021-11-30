@@ -363,7 +363,7 @@ function draw() {
 
             // 'e' is an enemy
             if (tmap[j][i] === 'e') {
-                enemies.push(new enemyModel(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
+                enemies.push(new MeleeEnemy(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
                 enemies[enemies.length - 1].frameNum = 50;      // Need to change
                 iNum++;
                 enemies[enemies.length - 1].currNode = graph_nodes[graph_nodes.length - 1];
