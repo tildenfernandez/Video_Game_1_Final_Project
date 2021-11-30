@@ -14,16 +14,7 @@ class enemyModel {
         this.currState = 0;
 
         // load images
-        this.imageDict = {
-            walkright: loadImageSequence('sprites/orc/walk/right/', 9),
-            walkup: loadImageSequence('sprites/orc/walk/up/', 9),
-            walkdown: loadImageSequence('sprites/orc/walk/down/', 9),
-            walkleft: loadImageSequence('sprites/orc/walk/left/', 9),
-            attackup: loadImageSequence('sprites/orc/attack/up/', 6),
-            attackdown: loadImageSequence('sprites/orc/attack/down/', 6),
-            attackleft: loadImageSequence('sprites/orc/attack/left/', 6),
-            attackright: loadImageSequence('sprites/orc/attack/right/', 6),
-        }
+        this.imageDict = {};
 
         this.imageIndex = 0;
         this.images = this.imageDict.walkright;
@@ -129,6 +120,8 @@ class RangedEnemy extends enemyModel {
     constructor(x, y) {
         super(x, y);
         this.state = [new waitState(), new lineOfSightState(), new rangeAttackState()];
+
+        this.imageDict = ranged_img_dict;
     }
 }
 
@@ -136,5 +129,7 @@ class MeleeEnemy extends enemyModel {
     constructor(x, y) {
         super(x, y);
         this.state = [new waitState(), new chaseState(), new attackState()];
+
+        this.imageDict = melee_img_dict;
     }
 }

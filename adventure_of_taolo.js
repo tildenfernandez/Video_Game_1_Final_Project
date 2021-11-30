@@ -118,6 +118,9 @@ var castle_img;
 var background_img;
 var shield_img;
 
+// Sprite image dicts
+let player_img_dict, melee_img_dict, ranged_img_dict;
+
 var background_tiles = [];
 
 // global var to keep track of font
@@ -158,15 +161,53 @@ function preload() {
     bush_img = loadImage('images/bush.png');
     stump_img = loadImage('images/stump.png');
 
-    // Set up objects from different classes used to organize code
-    infoBar = new InformationBar();
-    win_screen = new WinScreen();
-    lose_screen = new LoseScreen();
-
     // Load music
     songs[0] = loadSound('sounds/music/start_screen.mp3');
     songs[1] = loadSound('sounds/music/level1.mp3');
     songs[2] = loadSound('sounds/music/level1.mp3');
+
+    ////////////// Load image sequences for character models //////////////
+
+    // Player images
+    player_img_dict = {
+        walkright: loadImageSequence('sprites/player/walk/right/', 9),
+        walkup: loadImageSequence('sprites/player/walk/up/', 9),
+        walkdown: loadImageSequence('sprites/player/walk/down/', 9),
+        walkleft: loadImageSequence('sprites/player/walk/left/', 9),
+        attackup: loadImageSequence('sprites/player/attack/up/', 6),
+        attackdown: loadImageSequence('sprites/player/attack/down/', 6),
+        attackleft: loadImageSequence('sprites/player/attack/left/', 6),
+        attackright: loadImageSequence('sprites/player/attack/right/', 6),
+    }
+
+    // Orc models (melee enemies)
+    melee_img_dict = {
+        walkright: loadImageSequence('sprites/orc/walk/right/', 9),
+        walkup: loadImageSequence('sprites/orc/walk/up/', 9),
+        walkdown: loadImageSequence('sprites/orc/walk/down/', 9),
+        walkleft: loadImageSequence('sprites/orc/walk/left/', 9),
+        attackup: loadImageSequence('sprites/orc/attack/up/', 6),
+        attackdown: loadImageSequence('sprites/orc/attack/down/', 6),
+        attackleft: loadImageSequence('sprites/orc/attack/left/', 6),
+        attackright: loadImageSequence('sprites/orc/attack/right/', 6),
+    }
+
+    // Skeleton models (ranged enemies)
+    ranged_img_dict = {
+        walkright: loadImageSequence('sprites/skeleton/walk/walk', 9),
+        walkup: loadImageSequence('sprites/skeleton/walk/walk', 9),
+        walkdown: loadImageSequence('sprites/skeleton/walk/walk', 9),
+        walkleft: loadImageSequence('sprites/skeleton/walk/walk', 9),
+        attackup: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
+        attackdown: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
+        attackleft: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
+        attackright: loadImageSequence('sprites/skeleton/shoot/shoot', 13),
+    }
+
+    // Set up objects from different classes used to organize code
+    infoBar = new InformationBar();
+    win_screen = new WinScreen();
+    lose_screen = new LoseScreen();
 }
 
 function setup() {

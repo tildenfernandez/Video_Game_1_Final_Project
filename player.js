@@ -8,16 +8,7 @@ class playerModel {
         // Player tools available
         this.all_tools = [];
 
-        this.imageDict = {
-            walkright: loadImageSequence('sprites/player/walk/right/', 9),
-            walkup: loadImageSequence('sprites/player/walk/up/', 9),
-            walkdown: loadImageSequence('sprites/player/walk/down/', 9),
-            walkleft: loadImageSequence('sprites/player/walk/left/', 9),
-            attackup: loadImageSequence('sprites/player/attack/up/', 6),
-            attackdown: loadImageSequence('sprites/player/attack/down/', 6),
-            attackleft: loadImageSequence('sprites/player/attack/left/', 6),
-            attackright: loadImageSequence('sprites/player/attack/right/', 6),
-        }
+        this.imageDict = player_img_dict;
 
         // Player information to be displayed
         this.health = 5;
