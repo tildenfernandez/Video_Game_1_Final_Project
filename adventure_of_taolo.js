@@ -130,6 +130,7 @@ var arrows = [];
 // array of bombs
 var bombs = [];
 var bomb_timer = 0;
+var bomb_explosions = [];
 
 // Loaded images
 var bow_img;
@@ -329,6 +330,17 @@ function draw() {
             else {
                 bombs[i].explode();
                 bombs.splice(i, 1);
+            }
+        }
+
+        // Draw all explosions
+        for (var i = 0; i < bomb_explosions.length; i++) {
+            if (bomb_explosions[i].timeLeft > 0) {
+                bomb_explosions[i].execute();
+                bomb_explosions[i].draw();
+            }
+            else {
+                bomb_explosions.splice(i, 1);
             }
         }
 

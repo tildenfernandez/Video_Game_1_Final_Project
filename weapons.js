@@ -69,6 +69,7 @@ class Bomb {
         this.start_frame = frameCount;
         this.e_radius = 50;
         this.e_radius_square = this.e_radius * this.e_radius;
+        this.num_explosion_circles = 50;
     }
     draw() {
         noStroke();
@@ -81,6 +82,9 @@ class Bomb {
     }
     explode() {
         // Draw explosion
+        for (var i = 0; i < this.num_explosion_circles; i++) {
+            bomb_explosions.push(new explosionCirlceObj(this.pos.x, this.pos.y));
+        }
 
         // Remove nearby hearts and gems
         for (var i = 0; i < gems.length; i++) {
@@ -116,4 +120,42 @@ class Bomb {
             player.health -= 3;
         }
     }
+}
+
+var possible_explosion_colors = [[255, 140, 0], [255, 94, 14], [255, 69, 0],
+                                 [255, 140, 0], [226, 99, 16], [237, 145, 33],
+                                 [247, 135, 2], [227, 74, 39], [195, 71, 35],
+                                 [138, 51, 36], [236, 88, 0]];
+
+var explosionCirlceObj = function(x, y) {
+    var xrand = random(-20, 20);
+    var yrand = random(-20, 20);
+    this.pos = new p5.Vector(x+xrand, y+yrand);
+
+    this.size = random(5, 25);
+
+    this.color = possible_explosion_colors[int(random(0, 11))];
+    this.timeLeft = 255;
+
+    this.delay_start = random(-15, 10);
+}
+
+explosionCirlceObj.prototype.draw = function() {
+    if (this.delay_start > 0) {
+        this.delay_start--;
+    }
+    else {
+        noStroke();
+        fill(this.color[0], this.color[1], this.color[2], this.timeLeft);
+        ellipse(this.pos.x+x_offset, this.pos.y+y_offset, this.size, this.size);
+    }
+}
+
+explosionCirlceObj.prototype.execute = function() {
+    for (var i = 0; i < 3; i++) {
+        if (this.color[i] < 255) {
+            this.color[i] += 2;
+        }
+    }
+    this.timeLeft -= 2;
 }
