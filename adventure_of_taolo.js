@@ -127,6 +127,9 @@ var hearts = [];
 // array of arrows
 var arrows = [];
 
+// array of bombs
+var bombs = [];
+
 // Loaded images
 var bow_img;
 var heart_img;
@@ -315,6 +318,19 @@ function draw() {
             }
         }
 
+        // Draw all bombs placed
+        for (var i = 0; i < bombs.length; i++) {
+            // Bomb sits for three seconds after being placed
+            if (frameCount - bombs[i].start_frame < 180) {
+                bombs[i].draw();
+            }
+            // After three seconds, the bomb explodes, then is deleted
+            else {
+                bombs[i].explode();
+                bombs.splice(i, 1);
+            }
+        }
+
         // Draw and implement all gems
         for (var i = 0; i < gems.length; i++) {
             if (gems[i][2] === 1) {
@@ -393,6 +409,12 @@ function draw() {
         // Player can use their shield as long as they aren't attacking
         if (!keyIsDown(32) && keyIsDown(SHIFT)) {
             player.use_shield();
+        }
+
+        // Player can place bombds using b
+        if (keyIsDown(66)) {
+            bombs.push(new Bomb(player.pos.x, player.pos.y));
+            print("check");
         }
 
         // Draw the information bar at the bottom

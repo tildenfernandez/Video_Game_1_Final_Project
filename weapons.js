@@ -73,7 +73,7 @@ class Bomb {
         fill(0);
 
         push();
-        translate(this.pos.x, this.pos.y);
+        translate(this.pos.x + x_offset, this.pos.y + y_offset);
         ellipse(-15, -15, 30, 30);
         pop();
     }
@@ -83,8 +83,15 @@ class Bomb {
         // Remove walls
         for (var i = 0; i < walls.length; i++) {
             if (squaredDist(this.pos.x, this.pos.y, walls[i].pos.x, walls[i].pos.y) < 1600) {
-                
+                walls[i].destroy();
+                walls.splice(i, 1);
             }
         }
+
+        // Damage nearby enemies
+
+        // Remove nearby hearts and gems
+
+        // Damage the player if they are nearby
     }
 }
