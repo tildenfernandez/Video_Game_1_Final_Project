@@ -129,6 +129,7 @@ var arrows = [];
 
 // array of bombs
 var bombs = [];
+var bomb_timer = 0;
 
 // Loaded images
 var bow_img;
@@ -414,8 +415,9 @@ function draw() {
         }
 
         // Player can place bombds using b
-        if (keyIsDown(66)) {
+        if (keyIsDown(66) && frameCount - bomb_timer > 60) {
             bombs.push(new Bomb(player.pos.x, player.pos.y));
+            bomb_timer = frameCount;
         }
 
         // Draw the information bar at the bottom

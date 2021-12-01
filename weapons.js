@@ -84,13 +84,15 @@ class Bomb {
 
         // Remove nearby hearts and gems
         for (var i = 0; i < gems.length; i++) {
-            if (squaredDist(this.pos.x, this.pos.y, gems[i].x, gems[i].y) < this.e_radius_square) {
+            if (squaredDist(this.pos.x, this.pos.y, gems[i][0], gems[i][1]) < this.e_radius_square) {
+                gems[i][2] = 0;
             }
         }
 
         // Remove nearby hearts
         for (var i = 0; i < hearts.length; i++) {
-            if (squaredDist(this.pos.x, this.pos.y, hearts[i].x, hearts[i].y) < this.e_radius_square) {
+            if (squaredDist(this.pos.x, this.pos.y, hearts[i][0], hearts[i][1]) < this.e_radius_square) {
+                hearts[i][2] = 0;
             }
         }
 
@@ -105,12 +107,13 @@ class Bomb {
         // Damage nearby enemies
         for (var i = 0; i < enemies.length; i++) {
             if (squaredDist(this.pos.x, this.pos.y, enemies[i].pos.x, enemies[i].pos.y) < this.e_radius_square) {
+                enemies[i].health -= 3;
             }
         }
 
         // Damage the player if they are nearby
         if (squaredDist(this.pos.x, this.pos.y, player.pos.x, player.pos.y) < this.e_radius_square) {
-
+            player.health -= 3;
         }
     }
 }
