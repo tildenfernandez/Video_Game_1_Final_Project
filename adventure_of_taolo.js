@@ -289,6 +289,9 @@ function draw() {
                 enemies[i].draw();
                 // Execute the current state of the enemy
                 enemies[i].update();
+            } else {
+                enemies[i].kill();
+                enemies.splice(i, 1);
             }
         }
 
