@@ -416,7 +416,6 @@ function draw() {
         // Player can place bombds using b
         if (keyIsDown(66)) {
             bombs.push(new Bomb(player.pos.x, player.pos.y));
-            print("check");
         }
 
         // Draw the information bar at the bottom

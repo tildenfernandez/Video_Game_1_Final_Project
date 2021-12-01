@@ -67,6 +67,8 @@ class Bomb {
     constructor(x, y) {
         this.pos = new p5.Vector(x, y);
         this.start_frame = frameCount;
+        this.e_radius = 50;
+        this.e_radius_square = this.e_radius * this.e_radius;
     }
     draw() {
         noStroke();
@@ -74,24 +76,41 @@ class Bomb {
 
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
-        ellipse(-15, -15, 30, 30);
+        ellipse(0, 0, 30, 30);
         pop();
     }
     explode() {
         // Draw explosion
 
+        // Remove nearby hearts and gems
+        for (var i = 0; i < gems.length; i++) {
+            if (squaredDist(this.pos.x, this.pos.y, gems[i].x, gems[i].y) < this.e_radius_square) {
+            }
+        }
+
+        // Remove nearby hearts
+        for (var i = 0; i < hearts.length; i++) {
+            if (squaredDist(this.pos.x, this.pos.y, hearts[i].x, hearts[i].y) < this.e_radius_square) {
+            }
+        }
+
         // Remove walls
         for (var i = 0; i < walls.length; i++) {
-            if (squaredDist(this.pos.x, this.pos.y, walls[i].pos.x, walls[i].pos.y) < 1600) {
+            if (squaredDist(this.pos.x, this.pos.y, walls[i].pos.x, walls[i].pos.y) < this.e_radius_square) {
                 walls[i].destroy();
                 walls.splice(i, 1);
             }
         }
 
         // Damage nearby enemies
-
-        // Remove nearby hearts and gems
+        for (var i = 0; i < enemies.length; i++) {
+            if (squaredDist(this.pos.x, this.pos.y, enemies[i].pos.x, enemies[i].pos.y) < this.e_radius_square) {
+            }
+        }
 
         // Damage the player if they are nearby
+        if (squaredDist(this.pos.x, this.pos.y, player.pos.x, player.pos.y) < this.e_radius_square) {
+
+        }
     }
 }
