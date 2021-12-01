@@ -122,28 +122,35 @@ class Bomb {
     }
 }
 
+// Set of pre-defined possible colors for an explosion
 var possible_explosion_colors = [[255, 140, 0], [255, 94, 14], [255, 69, 0],
                                  [255, 140, 0], [226, 99, 16], [237, 145, 33],
                                  [247, 135, 2], [227, 74, 39], [195, 71, 35],
                                  [138, 51, 36], [236, 88, 0]];
 
+// Explosion component (basically  a red/orange circle)
 var explosionCirlceObj = function(x, y) {
-    var xrand = random(-20, 20);
-    var yrand = random(-20, 20);
-    this.pos = new p5.Vector(x+xrand, y+yrand);
+    this.pos = new p5.Vector(x+random(-20, 20), y+random(-20, 20));
 
     this.size = random(5, 25);
 
-    this.color = possible_explosion_colors[int(random(0, 11))];
+    this.color = [0, 0, 0];
+    // Need to deep copy memory
+    arrayCopy(possible_explosion_colors[int(random(0, 11))], this.color);
+
     this.timeLeft = 255;
 
+    // Start some circles a bit later
     this.delay_start = random(-15, 10);
 }
 
+// Draw the circle
 explosionCirlceObj.prototype.draw = function() {
+    // Wait if this circle starts later
     if (this.delay_start > 0) {
         this.delay_start--;
     }
+    // Otherwise, make a circle of the set color and position
     else {
         noStroke();
         fill(this.color[0], this.color[1], this.color[2], this.timeLeft);
@@ -151,11 +158,14 @@ explosionCirlceObj.prototype.draw = function() {
     }
 }
 
+// Update each circle
 explosionCirlceObj.prototype.execute = function() {
+    // Make the color fade to white
     for (var i = 0; i < 3; i++) {
         if (this.color[i] < 255) {
-            this.color[i] += 2;
+            this.color[i] += 3;
         }
     }
+    // Circle fades out
     this.timeLeft -= 2;
 }

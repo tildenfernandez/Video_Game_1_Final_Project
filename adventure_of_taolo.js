@@ -492,6 +492,8 @@ function resetGameState(game_level) {
     walls = [];
     boundary_walls = [];
     graph_nodes = [];
+    bombs = [];
+    bomb_explosions = [];
 
     // Reset differently depending on the current level
     switch (game_level) {
