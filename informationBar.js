@@ -31,11 +31,28 @@ class InformationBar {
         line(0, height-54, width, height-54);
 
         // Draw rectangles for items
+        noFill();
         stroke('blue');
         strokeWeight(4);
-        noFill();
         rect(220, height-55, 30, 40, 5);
         rect(180, height-55, 30, 40, 5);
+
+        // highlight the player's currently selected item in gold
+        stroke(color('gold'));
+        if (player.currentWeapon === "axe") {
+            rect(180, height-55, 30, 40, 5);
+        } else if (player.currentWeapon === "bow") {
+            rect(220, height-55, 30, 40, 5);
+        }
+
+        // draw the images for weapons available
+        // axe is on by default
+        image(axe_img, 190, height-50, 15, 30);
+        
+        // draw bow if it is available
+        if (player.bowAcquired == true) {
+            image(bow_img, 220, height-50, 30, 30);
+        }
 
         fill(255);
 

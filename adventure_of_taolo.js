@@ -179,6 +179,7 @@ function preload() {
     bush_img = loadImage('images/bush.png');
     stump_img = loadImage('images/stump.png');
     arrow_img = loadImage('sprites/weapons/arrow.png');
+    axe_img = loadImage('sprites/weapons/axe.png');
 
     // Load music
     songs[0] = loadSound('sounds/music/start_screen.mp3');
@@ -308,6 +309,9 @@ function draw() {
                 enemies[i].draw();
                 // Execute the current state of the enemy
                 enemies[i].update();
+            } else {
+                enemies[i].kill();
+                enemies.splice(i, 1);
             }
         }
 
@@ -367,6 +371,19 @@ function draw() {
             } else {
                 // If the player is not moving, they are animated as idle
                 player.idle();
+            }
+        }
+
+        // number keys will change the weapon equipped
+        if (keyIsDown(49)) {
+            player.currentWeapon = "axe";
+        } else if (keyIsDown(50)) {
+            if (player.bowAcquired == true) {
+                player.currentWeapon = "bow";
+            }
+        } else if (keyIsDown(51)) {
+            if (player.bombAcquired == true) {
+                player.currentWeapon = "bomb";
             }
         }
 

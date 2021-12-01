@@ -107,6 +107,21 @@ class enemyModel {
 
         pop();
     }
+
+    kill() {
+        // randomly produce nothing, a gem, or a heart
+        var rand = Math.floor(Math.random() * 2);
+        switch (rand) {
+            case 0:
+                hearts.push([this.pos.x, this.pos.y - half_tile, 1]);
+                break;
+            case 1:
+                gems.push([this.pos.x, this.pos.y - half_tile, 1]);
+                break;
+        }
+        
+    }
+
     // encapsulate FSM behavior
     update() {
         this.state[this.currState].execute(this);

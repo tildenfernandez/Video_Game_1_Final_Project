@@ -15,7 +15,7 @@ class playerModel {
         this.ammo = 10;
         this.coins = 0;
         this.attack_again = true;
-        this.currentWeapon = "bow";
+        this.currentWeapon = "axe";
 
         // essentially use a string as an FSM for the player
         this.state = "idle";
@@ -26,6 +26,8 @@ class playerModel {
         this.images = this.imageDict.walkright;
         this.attackTimer = frameCount;
         this.attackOffset = new p5.Vector(0, 0);
+
+        this.bowAcquired = true;
 
     }
     draw() {
