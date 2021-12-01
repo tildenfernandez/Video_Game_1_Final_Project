@@ -393,6 +393,8 @@ function draw() {
         // Player can use their shield as long as they aren't attacking
         if (!keyIsDown(32) && keyIsDown(SHIFT)) {
             player.use_shield();
+        } else {
+            player.shielding = false;
         }
 
         // Draw the information bar at the bottom

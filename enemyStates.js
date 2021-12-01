@@ -154,7 +154,7 @@ class attackState {
             attack_animations.push(new AttackAnimation(me.pos.x + me.xOffset, me.pos.y + me.yOffset, me.direction));
 
             // hurt the player if they are close enough and in the right direction
-            if (squaredDist(me.pos.x + me.xOffset, me.pos.y + me.yOffset, player.pos.x, player.pos.y) < 400) {
+            if (squaredDist(me.pos.x + me.xOffset, me.pos.y + me.yOffset, player.pos.x, player.pos.y) < 400 && !player.shielding) {
                 player.health -= 1;
             }
 

@@ -28,6 +28,7 @@ class playerModel {
         this.attackOffset = new p5.Vector(0, 0);
 
         this.bowAcquired = true;
+        this.shielding = false;
 
     }
     draw() {
@@ -233,6 +234,7 @@ class playerModel {
     }
     use_shield() {
         push();
+        this.shielding = true;
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         tint(255, 127);
         image(shield_img, -half_tile-44, -half_tile-50, 90, 90);
