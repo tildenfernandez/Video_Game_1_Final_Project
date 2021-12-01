@@ -8,72 +8,85 @@
 // i.e. start_screen, playing_level_1, win_screen, lose_screen, etc.
 var game_state = "start_screen"
 
+/**
+ * TILE MAP KEY
+ * w = wall (normal, destructable by bombs only)
+ * x = boundary wall (completely indestructable)
+ * b = bush (normal, destructable)
+ * s = shrub (normal, destructable)
+ * h = heart
+ * g = gem
+ * p = player (should have only one per map, or only the last one will appear)
+ * e = melee enemy
+ * r = ranged enemy
+ */
+
 // Tile map of the game
 let level1_tilemap = [
-    "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", 
-    "wwwwb     h               b      wwwwwww",
-    "wbb                         s     swwwww",
-    "w s     p       g    h               s w",
-    "w                                  s   w",
-    "w   s     s                            w",
-    "wwwwwwwwwwwbb         e       g        w",
-    "wwwwwwwwwwbbb                  g       w",
-    "w ss bbb bbb                    g      w",
-    "w             e                        w",
-    "w  gg                    bwwb          w",
-    "w                      swwwwws         w",
-    "wbbbb         s       wwwsb            w",
-    "wswwwss      b         bbb    g        w",
-    "wwwwwwwwwbb                  g      sbbw",
-    "wwwwwwwwbs         e        g    swwsbsw",
-    "wwwwwbb                       bbwwwwbbsw",
-    "wsbb   g                    bbsbwwwbwwww",
-    "w     g    bb               swww       w",
-    "w       wwwww                          w",
-    "w        www b     b               g   w",
-    "w        ssb               e   e  ggg  w",
-    "w   b                              g   w",
-    "w                                      w",
-    "w    b      b             bbwww ww     w",
-    "w                        sss  wwwwwwwwww",
-    "w         s        s      ssssw bbsswbbw",
-    "w                                 bsssww",
-    "w                        s          wwbw",
-    "wwbbss                                 w",
-    "wwwwssbb  s                   w        w",
-    "wwwwwwwwww            b                w",
-    "wwwwwwwwwwb    s                       w",
-    "wwwwwwwwwwsb                   b      bw",
-    "wwwwwwwwwwswsbbb                    sbww",
-    "wwwwwwwwwwwwwsbbb                  swwww",
-    "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww", 
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 
+    "xwwwb     h               b      wwwwwwx",
+    "xbb                         s     swwwwx",
+    "x s     p       g    h               s x",
+    "x                                  s   x",
+    "x   s     s                            x",
+    "xwwwwwwwwwwbb         e       g        x",
+    "xwwwwwwwwwbbb                  g       x",
+    "x ss bbb bbb                    g      x",
+    "x             e                        x",
+    "x  gg                    bwwb          x",
+    "x                      swwwwws         x",
+    "xbbbb         s       wwwsb            x",
+    "xswwwss      b         bbb    g        x",
+    "xwwwwwwwwbb                  g      sbbx",
+    "xwwwwwwwbs         e        g    swwsbsx",
+    "xwwwwbb                       bbwwwwbbsx",
+    "xsbb   g                    bbsbwwwbwwwx",
+    "x     g    bb               swww       x",
+    "x       wwwww                          x",
+    "x        www b     b               g   x",
+    "x        ssb               e   e  ggg  x",
+    "x   b                              g   x",
+    "x                                      x",
+    "x    b      b             bbwww ww     x",
+    "x                        sss  wwwwwwwwwx",
+    "x         s        s      ssssw bbsswbbx",
+    "x                                 bssswx",
+    "x                        s          wwbx",
+    "xwbbss                                 x",
+    "xwwwssbb  s                   w        x",
+    "xwwwwwwwww            b                x",
+    "xwwwwwwwwwb    s                       x",
+    "xwwwwwwwwwsb                   b      bx",
+    "xwwwwwwwwwswsbbb                    sbwx",
+    "xwwwwwwwwwwwwsbbb                  swwwx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", 
 
 ]          
 
-let level2_tilemap =   ["wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww",
-                        "wbb-------wwwwwwwwwwws------------swwwww",
-                        "ws---------------------------------bswww",
-                        "w---h----------p-----------------------w",
-                        "w----------------------------------g---w",
-                        "wwwwsbssbb-------------------bww--g-g--w",
-                        "wwwwwwsbssb----------------sswww---g---w",
-                        "wwwwwbsbb------------------bswww--r----w",
-                        "wwwbsbb--------------------bwwww---g---w",
-                        "wsss--------------e----g-----sbw--g-g--w",
-                        "wb-------r---bww------g-g-----ss---g-r-w",
-                        "w----------wwwwwws-----g---------------w",
-                        "w-----------h--sbb---------------------w",
-                        "w----e-----------------------------h---w",
-                        "w--------------g-----------------------w",
-                        "w-----b-------ggg---------bsww---------w",
-                        "w----s---------g---------swwwww-------ww",
-                        "w-------------------e----bbwwws-------ww",
-                        "wss--------------------------sb------sww",
-                        "wss---e----r------------------------swww",
-                        "wbsb----------r---------------------bwww",
-                        "wsssb-rh---bsswwwwbbb-------g--r----swww",
-                        "wbsbbb--sbwwwwwwwwwwsbs----ghg-----bbwww",
-                        "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"];
+let level2_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                        "xbb-------wwwwwwwwwwws------------swwwwx",
+                        "xs---------------------------------bswwx",
+                        "x---h----------p-----------------------x",
+                        "x----------------------------------g---x",
+                        "xwwwsbssbb-------------------bww--g-g--x",
+                        "xwwwwwsbssb----------------sswww---g---x",
+                        "xwwwwbsbb------------------bswww--r----x",
+                        "xwwbsbb--------------------bwwww---g---x",
+                        "xsss--------------e----g-----sbw--g-g--x",
+                        "xb-------r---bww------g-g-----ss---g-r-x",
+                        "x----------wwwwwws-----g---------------x",
+                        "x-----------h--sbb---------------------x",
+                        "x----e-----------------------------h---x",
+                        "x--------------g-----------------------x",
+                        "x-----b-------ggg---------bsww---------x",
+                        "x----s---------g---------swwwww-------wx",
+                        "x-------------------e----bbwwws-------wx",
+                        "xss--------------------------sb------swx",
+                        "xss---e----r------------------------swwx",
+                        "xbsb----------r---------------------bwwx",
+                        "xsssb-rh---bsswwwwbbb-------g--r----swwx",
+                        "xbsbbb--sbwwwwwwwwwwsbs----ghg-----bbwwx",
+                        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"];
 
 let LEVEL_COINS_NEEDED = [20, 25];
 
@@ -102,6 +115,7 @@ var enemies = [];
 
 // Array of where wall (x, y) positions
 var walls = [];
+var boundary_walls = [];
 var wall_img;
 
 // Array of gems (p5 vector of position)
@@ -262,6 +276,11 @@ function draw() {
             walls[i].draw();
         }
 
+        // Draw all the boundary walls
+        for (var i = 0; i < boundary_walls.length; i++) {
+            boundary_walls[i].draw();
+        }
+
         // draw all attack animations
         for (var i = 0; i < attack_animations.length; i++) {
             attack_animations[i].draw();
@@ -417,6 +436,7 @@ function resetGameState(game_level) {
     enemies = [];
     gems = [];
     walls = [];
+    boundary_walls = [];
     graph_nodes = [];
 
     // Reset differently depending on the current level

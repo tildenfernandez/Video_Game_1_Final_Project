@@ -62,3 +62,29 @@ class Arrow {
         pop();
     }
 }
+
+class Bomb {
+    constructor(x, y) {
+        this.pos = new p5.Vector(x, y);
+        this.start_frame = frameCount;
+    }
+    draw() {
+        noStroke();
+        fill(0);
+
+        push();
+        translate(this.pos.x, this.pos.y);
+        ellipse(-15, -15, 30, 30);
+        pop();
+    }
+    explode() {
+        // Draw explosion
+
+        // Remove walls
+        for (var i = 0; i < walls.length; i++) {
+            if (squaredDist(this.pos.x, this.pos.y, walls[i].pos.x, walls[i].pos.y) < 1600) {
+                
+            }
+        }
+    }
+}

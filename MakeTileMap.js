@@ -15,6 +15,9 @@
             } else if (tmap[j][i] === 'b') {
                 // bush
                 walls.push(new destructableWallModel(tile_width*i + half_tile, tile_width*j + half_tile, bush_img));
+            } else if (tmap[j][i] === 'x') {
+                // Boundary wall (indestructable)
+                boundary_walls.push(new wallModel(tile_width*i + half_tile, tile_width*j + half_tile, wall_img));
             } else {
                 // Add all non-wall tiles to the graph for astar search
                 graph_nodes.push(new node(tile_width*i + half_tile, tile_width*j + half_tile));
@@ -23,7 +26,7 @@
             // 'e' is a melee enemy
             if (tmap[j][i] === 'e') {
                 enemies.push(new MeleeEnemy(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
-                enemies[enemies.length - 1].frameNum = 50;      // Need to change
+                enemies[enemies.length - 1].frameNum = i * j % 100;      // Might need to change
                 iNum++;
                 enemies[enemies.length - 1].currNode = graph_nodes[graph_nodes.length - 1];
                 enemies[enemies.length - 1].target = graph_nodes[graph_nodes.length - 1];
