@@ -135,11 +135,11 @@ class Bomb {
     }
     draw() {
         noStroke();
-        fill(0);
+        fill(255, 0, 255);
 
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
-        ellipse(0, 0, 30, 30);
+        image(bomb_img, -15, -15, 60, 30);
         pop();
     }
     explode() {
