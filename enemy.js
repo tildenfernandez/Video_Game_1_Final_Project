@@ -151,11 +151,11 @@ class MeleeEnemy extends enemyModel {
     }
 }
 
-class Boss extends enemyModel {
+class BossEnemy extends enemyModel {
     constructor(x, y) {
         super(x, y);
         this.state = [new waitState(), new chaseState, new attackState()];
 
-        this.imageDict = melee_img_dict;
+        this.imageDict = boss_img_dict;
     }
 }
