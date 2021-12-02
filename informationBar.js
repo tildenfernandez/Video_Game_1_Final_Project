@@ -34,24 +34,32 @@ class InformationBar {
         noFill();
         stroke('blue');
         strokeWeight(4);
-        rect(220, height-55, 30, 40, 5);
-        rect(180, height-55, 30, 40, 5);
+        rect(230, height-55, 30, 40, 5);
+        rect(190, height-55, 30, 40, 5);
+        rect(150, height-55, 30, 40, 5);
 
         // highlight the player's currently selected item in gold
-        stroke(color('gold'));
+        stroke(240);
+        strokeWeight(3);
         if (player.currentWeapon === "axe") {
-            rect(180, height-55, 30, 40, 5);
+            rect(148, height-57, 34, 44, 5);
         } else if (player.currentWeapon === "bow") {
-            rect(220, height-55, 30, 40, 5);
+            rect(188, height-57, 34, 44, 5);
+        } else if (player.currentWeapon === "bomb") {
+            rect(228, height-57, 34, 44, 5);
         }
 
         // draw the images for weapons available
         // axe is on by default
-        image(axe_img, 190, height-50, 15, 30);
+        image(axe_img, 160, height-50, 15, 30);
         
         // draw bow if it is available
-        if (player.bowAcquired == true) {
-            image(bow_img, 220, height-50, 30, 30);
+        if (player.bowAcquired === true) {
+            image(bow_img, 190, height-50, 30, 30);
+        }
+
+        if (player.bowAcquired === true) {
+            image(bomb_img, 230, height-50, 60, 30);
         }
 
         fill(255);
@@ -63,15 +71,18 @@ class InformationBar {
         // Draw the number of coins the player has
         stroke(0);
         strokeWeight(2);
-        text(player.coins, 80, 375);
-        text("x", 60, 375);
-        text("/20", 110, 375);
+        text(player.coins, 60, 375);
+        text("x", 40, 375);
+        text("/", 90, 375);
+        text(LEVEL_COINS_NEEDED[curr_level-1], 97, 375)
 
         // Label the two item boxes
         textSize(32);
         textFont('Georgia');
-        text("1", 187, height-5);
-        text("2", 227, height-5);
+        text("1", 157, height-5);
+        text("2", 197, height-5);
+        textSize(28);
+        text("3", 237, height-7);
 
         // Draw a health box
         stroke('red');
@@ -95,6 +106,6 @@ class InformationBar {
         }
         
         // Draw a gem by the coin information
-        drawGem(50, 350, 25, 30);
+        drawGem(30, 350, 25, 30);
     }
 }
