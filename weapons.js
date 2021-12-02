@@ -43,10 +43,68 @@ class Arrow {
         // check if the arrow has hit a wall
         // assume a rectangular hitbox
         for (var i = 0; i < walls.length; i++) {
-            if (squaredDist(this.x, this.y, walls[i].pos.x, walls[i].pos.y) < 800) {
-                this.done = true;
+            // two rectangle collision that depends upon the direction of the arrow
+            if (this.dir == "up" || this.dir == "down") {
+                if (this.x + this.halfheight > walls[i].pos.x - half_tile &&
+                    this.x - this.halfheight < walls[i].pos.x + half_tile &&
+                    this.y - this.halfwidth < walls[i].pos.y + half_tile &&
+                    this.y + this.halfwidth > walls[i].pos.y - half_tile) {
+                    this.done = true;
+                }
+            } else {
+                if (this.x + this.halfheight > walls[i].pos.x - half_tile &&
+                    this.x - this.halfheight < walls[i].pos.x + half_tile &&
+                    this.y - this.halfwidth < walls[i].pos.y + half_tile &&
+                    this.y + this.halfwidth > walls[i].pos.y - half_tile) {
+                    this.done = true;
+                }
             }
         }
+
+        // check if the arrow has hit a boundary wall
+        // assume a rectangular hitbox
+        for (var i = 0; i < boundary_walls.length; i++) {
+            // two rectangle collision that depends upon the direction of the arrow
+            if (this.dir == "up" || this.dir == "down") {
+                if (this.x + this.halfheight > boundary_walls[i].pos.x - half_tile &&
+                    this.x - this.halfheight < boundary_walls[i].pos.x + half_tile &&
+                    this.y - this.halfwidth < boundary_walls[i].pos.y + half_tile &&
+                    this.y + this.halfwidth > boundary_walls[i].pos.y - half_tile) {
+                    this.done = true;
+                }
+            } else {
+                if (this.x + this.halfheight > boundary_walls[i].pos.x - half_tile &&
+                    this.x - this.halfheight < boundary_walls[i].pos.x + half_tile &&
+                    this.y - this.halfwidth < boundary_walls[i].pos.y + half_tile &&
+                    this.y + this.halfwidth > boundary_walls[i].pos.y - half_tile) {
+                    this.done = true;
+                }
+            }
+        }
+
+        // check if the arrow has hit an enemy
+        // assume a rectangular hitbox
+        for (var i = 0; i < enemies.length; i++) {
+            // two rectangle collision that depends upon the direction of the arrow
+            if (this.dir == "up" || this.dir == "down") {
+                if (this.x + this.halfheight > enemies[i].pos.x - half_tile &&
+                    this.x - this.halfheight < enemies[i].pos.x + half_tile &&
+                    this.y - this.halfwidth < enemies[i].pos.y + tile_width &&
+                    this.y + this.halfwidth > enemies[i].pos.y - tile_width) {
+                    this.done = true;
+                    enemies[i].health -= this.damage;
+                }
+            } else {
+                if (this.x + this.halfheight > enemies[i].pos.x - half_tile &&
+                    this.x - this.halfheight < enemies[i].pos.x + half_tile &&
+                    this.y - this.halfwidth < enemies[i].pos.y + tile_width &&
+                    this.y + this.halfwidth > enemies[i].pos.y - tile_width) {
+                    this.done = true;
+                    enemies[i].health -= this.damage;
+                }
+            }
+        }
+
 
     }
 
@@ -57,6 +115,10 @@ class Arrow {
         // translate(this.x + this.halfwidth + x_offset, this.y + this.halfheight + y_offset);
         translate(this.x + this.halfwidth + x_offset - half_tile, this.y + this.halfheight + y_offset - half_tile);
         rotate(this.dir == "right" ? 0 : this.dir == "left" ? PI : this.dir == "up" ? -PI / 2 : PI / 2);
+
+        // circle for debugging
+        fill(color('red'));
+        circle(0, 0, 4);
 
         image(arrow_img, -this.halfwidth, -this.halfheight, this.width, this.height);
         pop();
