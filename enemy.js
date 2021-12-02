@@ -1,5 +1,5 @@
 /**
- * Enemy model object, has methods for doing everything the enemy should do
+ * Enemy model object, base enemy can move, attack,change state, and die. Also has method to draw the enemy
  */
 class enemyModel {
     constructor(x, y) {
@@ -19,6 +19,7 @@ class enemyModel {
         this.imageIndex = 0;
         this.images = this.imageDict.walkright;
 
+        // Animation variables
         this.direction = "right";
         this.stateName = "idle";
 
@@ -35,13 +36,12 @@ class enemyModel {
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         noStroke();
-        // fill("blue");
-        // ellipse(0, 0, 20, 20);
 
         // offset for slashing animations
         this.xOffset = 0;
         this.yOffset = 0;
 
+        // Determine animation state
         var frameInterval;
         switch (this.stateName) {
             case "idle":
@@ -87,6 +87,7 @@ class enemyModel {
             tempState = "walk";
         }
 
+        // get the correct images from the big image dictionary
         this.images = this.imageDict[tempState + this.direction];
 
         // error handling
@@ -95,6 +96,7 @@ class enemyModel {
             this.imageIndex = this.images.length - 1;
         }
 
+        // Draw the enemy
         image(this.images[this.imageIndex], -half_tile-10, -half_tile-23, 40, 40);
 
         // display hearts over enemy's head if game is not over
@@ -107,7 +109,7 @@ class enemyModel {
 
         pop();
     }
-
+    // ACtions to take if the enemy dies
     kill() {
         // randomly produce nothing, a gem, or a heart
         var rand = Math.floor(Math.random() * 2);
@@ -126,11 +128,13 @@ class enemyModel {
     update() {
         this.state[this.currState].execute(this);
     }
+    // FSM state change
     changeState(newState) {
         this.currState = newState;
     }
 }
 
+// Ranged enemies are a type of enemy. They astar search differently, and have a different image
 class RangedEnemy extends enemyModel {
     constructor(x, y) {
         super(x, y);
@@ -140,6 +144,7 @@ class RangedEnemy extends enemyModel {
     }
 }
 
+// Melee enemies are a type of enemy. They use the default astar search, and have a different image
 class MeleeEnemy extends enemyModel {
     constructor(x, y) {
         super(x, y);

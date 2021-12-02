@@ -27,7 +27,11 @@ class playerModel {
         this.attackTimer = frameCount;
         this.attackOffset = new p5.Vector(0, 0);
 
+        // Note if the player has access to different weapons
         this.bowAcquired = true;
+        this.bombAcquired = true;
+
+        // Note if the player is shielding or not
         this.shielding = false;
 
     }
@@ -35,8 +39,6 @@ class playerModel {
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         noStroke();
-        // fill(255, 0, 255);
-        // ellipse(-half_tile, -half_tile, 20, 20);
 
         // attack is active for 30 frames
         if (this.state === "attack" && frameCount - this.attackTimer > 30) {
@@ -168,7 +170,7 @@ class playerModel {
         this.direction = "up"; 
     }
     attack() {
-        if (this.attack_again) {
+        if (this.attack_again || true) {
             this.attackTimer = frameCount;
             this.attack_again = false;
 
@@ -190,12 +192,17 @@ class playerModel {
                     break;
             }
 
+            // Player attacks depending on what weapon they are currently using
             if (this.currentWeapon === "bow") {
-                this.shoot();
+                this.shoot();   // bow shoots arrows
+            } else if (this.currentWeapon === "bomb") {
+                // bomb drops a bomb
+                bombs.push(new Bomb(player.pos.x - half_tile, player.pos.y - half_tile));
             } else {
                 // swing the axe
                 this.state = "attack";
 
+                // Hurt any enemies within range
                 for (var i = 0; i < enemies.length; i++) {
                     if (squaredDist(this.pos.x + this.attackOffset.x, this.pos.y + this.attackOffset.y, enemies[i].pos.x, enemies[i].pos.y) < 800) {
                         enemies[i].health--;
@@ -217,12 +224,10 @@ class playerModel {
                 }
 
             }
-
         } 
     }
     attack_done() {
         this.attack_again = true;
-        // this.imageIndex = 0;
     }
     shoot() {
         // this is called if you press the space bar and you have the bow currently equipped
@@ -232,9 +237,12 @@ class playerModel {
         arrows.push(new Arrow(this.pos.x + this.attackOffset.x - half_tile, this.pos.y + this.attackOffset.y - half_tile, this.direction));
 
     }
+    // Use the player's shield
     use_shield() {
         push();
+        // Note that the player has their shield up
         this.shielding = true;
+        // Draw the shield
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         tint(255, 127);
         image(shield_img, -half_tile-44, -half_tile-50, 90, 90);
@@ -242,6 +250,7 @@ class playerModel {
     }
 }
 
+// Animation for the player attacking
 class AttackAnimation {
     constructor(x, y, direction) {
         this.pos = createVector(x, y, direction);

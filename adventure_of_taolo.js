@@ -129,8 +129,12 @@ var arrows = [];
 
 // array of bombs
 var bombs = [];
-var bomb_timer = 0;
 var bomb_explosions = [];
+
+// Delays between attacking for each weapon
+var attack_times = [60, 30, 90];
+var attack_counter = 0;
+var weapon_ind = 0;
 
 // Loaded images
 var bow_img;
@@ -150,6 +154,7 @@ var background_tiles = [];
 // global var to keep track of font
 var font 
 
+// Global variables for classes that display screens
 var startScreen;
 var instructionsScreen;
 var infoBar;
@@ -244,11 +249,12 @@ function preload() {
 function setup() {
     createCanvas(400, 400);
 
+    // Make the shield image
     dcircle(200, 200, 200, 27, 224, 216, 20);
-
     shield_img = get(0, 0, width, height);
     clear();
     
+    // Set the font
     textFont(font);
     
     // initialize grass images
@@ -264,7 +270,6 @@ function setup() {
     gravity = new p5.Vector(0, 0.3);
     // Start the music
     songs[0].play();
-
 }
 
 function draw() {
@@ -337,10 +342,12 @@ function draw() {
 
         // Draw all explosions
         for (var i = 0; i < bomb_explosions.length; i++) {
+            // If the bomb is in the process of 'exploding', draw and update the animation
             if (bomb_explosions[i].timeLeft > 0) {
                 bomb_explosions[i].execute();
                 bomb_explosions[i].draw();
             }
+            // If the bomb is finished 'exploding' remove the objects
             else {
                 bomb_explosions.splice(i, 1);
             }
@@ -381,12 +388,11 @@ function draw() {
 
 
         // Player can use space to attack
-        if (keyIsDown(32)) {
-            player.attack();
+        if (keyIsDown(32) && (frameCount - attack_counter > attack_times[weapon_ind])) {
+                player.attack();
+                attack_counter = frameCount
         }
         else {
-            player.attack_done();
-            
             // The player moves with the arrow keys
             if (keyIsDown(LEFT_ARROW)) {
                 player.moveLeft()
@@ -405,16 +411,20 @@ function draw() {
             }
         }
 
-        // number keys will change the weapon equipped
-        if (keyIsDown(49)) {
+        // number keys will change the weapon equipped,
+        // but only if the player has access to these items
+        if (keyIsDown(49)) {    // 1 changes to the ax
             player.currentWeapon = "axe";
-        } else if (keyIsDown(50)) {
+            weapon_ind = 0;
+        } else if (keyIsDown(50)) { // 2 changes to the bow
             if (player.bowAcquired == true) {
                 player.currentWeapon = "bow";
+                weapon_ind = 1;
             }
-        } else if (keyIsDown(51)) {
+        } else if (keyIsDown(51)) { // 3 changes to the bomb
             if (player.bombAcquired == true) {
                 player.currentWeapon = "bomb";
+                weapon_ind = 2;
             }
         }
 
@@ -426,12 +436,6 @@ function draw() {
             player.use_shield();
         } else {
             player.shielding = false;
-        }
-
-        // Player can place bombds using b
-        if (keyIsDown(66) && frameCount - bomb_timer > 60) {
-            bombs.push(new Bomb(player.pos.x - half_tile, player.pos.y - half_tile));
-            bomb_timer = frameCount;
         }
 
         // Draw the information bar at the bottom
@@ -515,11 +519,13 @@ function resetGameState(game_level) {
     for (var i = 0; i < graph_nodes.length; i++) {
         for (var j = 0; j < graph_nodes.length; j++) {
             // If the nodes are adjacent, note it
+            // Check for vertical nodes
             if (graph_nodes[i].pos.x - graph_nodes[j].pos.x === 0 &&
                 graph_nodes[i].pos.y - graph_nodes[j].pos.y != 0 &&
                 abs(graph_nodes[i].pos.y - graph_nodes[j].pos.y) <= 30) {
                     graph_nodes[i].adjacent_nodes.push(graph_nodes[j]);
             }
+            // Check for horizontal nodes
             if (graph_nodes[i].pos.y - graph_nodes[j].pos.y === 0 &&
                 graph_nodes[i].pos.x - graph_nodes[j].pos.x != 0 &&
                 abs(graph_nodes[i].pos.x - graph_nodes[j].pos.x) <= 30) {
