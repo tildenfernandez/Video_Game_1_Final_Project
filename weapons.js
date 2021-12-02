@@ -40,12 +40,56 @@ class Arrow {
             this.done = true;
         } 
 
+
+
         // check if the arrow has hit a wall
         // assume a rectangular hitbox
         for (var i = 0; i < walls.length; i++) {
-            if (squaredDist(this.x, this.y, walls[i].pos.x, walls[i].pos.y) < 800) {
-                this.done = true;
+            // if (squaredDist(this.x, this.y, walls[i].pos.x, walls[i].pos.y) < 800) {
+            //     this.done = true;
+            // }
+
+            // two rectangle collision that depends upon the direction of the arrow
+            if (this.dir == "up" || this.dir == "down") {
+                // draw arrow hitbox
+                push();
+                noFill();
+                stroke(color('red'));
+                strokeWeight(4);
+                rect(this.x - this.halfheight, this.y - this.halfwidth, this.height, this.width);
+                pop();
+                if (this.x + this.halfheight > walls[i].pos.x - half_tile&&
+                    this.x - this.halfheight < walls[i].pos.x + half_tile &&
+                    this.y - this.halfwidth < walls[i].pos.y + half_tile &&
+                    this.y + this.halfwidth > walls[i].pos.y - half_tile) {
+                    push();
+                    noFill();
+                    stroke(color('red'));
+                    rect(walls[i].pos.x, walls[i].pos.y, tile_width, tile_width);
+                    pop();
+                    this.done = true;
+                }
+            } else {
+                // draw arrow hitbox
+                push();
+                noFill();
+                stroke(color('red'));
+                strokeWeight(4);
+                rect(this.x - this.halfwidth, this.y - this.halfheight, this.width, this.height);
+                pop();
+                if (this.x + this.halfheight > walls[i].pos.x - half_tile &&
+                    this.x - this.halfheight < walls[i].pos.x + half_tile &&
+                    this.y - this.halfwidth < walls[i].pos.y + half_tile &&
+                    this.y + this.halfwidth > walls[i].pos.y - half_tile) {
+                    push();
+                    noFill();
+                    stroke(color('red'));
+                    rect(walls[i].pos.x, walls[i].pos.y, tile_width, tile_width);
+                    pop();
+                    this.done = true;
+                }
             }
+
         }
 
     }
@@ -57,6 +101,10 @@ class Arrow {
         // translate(this.x + this.halfwidth + x_offset, this.y + this.halfheight + y_offset);
         translate(this.x + this.halfwidth + x_offset - half_tile, this.y + this.halfheight + y_offset - half_tile);
         rotate(this.dir == "right" ? 0 : this.dir == "left" ? PI : this.dir == "up" ? -PI / 2 : PI / 2);
+
+        // circle for debugging
+        fill(color('red'));
+        circle(0, 0, 4);
 
         image(arrow_img, -this.halfwidth, -this.halfheight, this.width, this.height);
         pop();
