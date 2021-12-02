@@ -88,6 +88,31 @@ let level2_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                         "xbsbbb--sbwwwwwwwwwwsbs----ghg-----bbwwx",
                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"];
 
+let level4_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                  b                   x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                  p                   x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "x                                      x",
+                        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"];
+
 let LEVEL_COINS_NEEDED = [20, 25];
 
 // Define the width of one tile
@@ -156,9 +181,6 @@ var infoBar;
 var win_screen;
 var lose_screen;
 
-// gravity affects some items
-var gravity;
-
 // graph nodes for a* BFS
 var graph_nodes = [];
 
@@ -192,6 +214,8 @@ function preload() {
     songs[0] = loadSound('sounds/music/start_screen.mp3');
     songs[1] = loadSound('sounds/music/level1.mp3');
     songs[2] = loadSound('sounds/music/level1.mp3');
+    songs[3] = loadSound('sounds/music/level1.mp3');
+    songs[4] = loadSound('sounds/music/level1.mp3'); // TODO: add boss level music
 
     ////////////// Load image sequences for character models //////////////
 
@@ -271,8 +295,6 @@ function setup() {
     startScreen  = new StartScreen();
     instructionsScreen = new InstructionsScreen();
 
-    // Initialize gravity for some objects
-    gravity = new p5.Vector(0, 0.3);
     // Start the music
     songs[0].play();
 
@@ -285,7 +307,9 @@ function draw() {
     }
     // Display level 1
     else if (game_state === "playing_level_1" ||
-             game_state === "playing_level_2") {
+             game_state === "playing_level_2" || 
+             game_state === "playing_level_3" || 
+             game_state === "playing_level_4") {
 
         // Use an image with random noise for the background
         image(grass_img[1], x_offset, y_offset, 800, 800);
@@ -517,6 +541,16 @@ function resetGameState(game_level) {
             break;
         case 2:
             makeTileMap(level2_tilemap);
+            x_offset = 0;
+            y_offset = 0;
+            break;
+        // case 3:
+        //     makeTileMap(level3_tilemap);
+        //     x_offset = 0;
+        //     y_offset = 0;
+        //     break;
+        case 4:
+            makeTileMap(level4_tilemap);
             x_offset = 0;
             y_offset = 0;
             break;
