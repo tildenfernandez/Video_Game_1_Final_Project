@@ -140,6 +140,7 @@ var castle_img;
 var background_img;
 var shield_img;
 var arrow_img;
+var bomb_img;
 
 // Sprite image dicts
 let player_img_dict, melee_img_dict, ranged_img_dict;
@@ -185,6 +186,7 @@ function preload() {
     stump_img = loadImage('images/stump.png');
     arrow_img = loadImage('sprites/weapons/arrow.png');
     axe_img = loadImage('sprites/weapons/axe.png');
+    bomb_img = loadImage('images/bomb.png');
 
     // Load music
     songs[0] = loadSound('sounds/music/start_screen.mp3');
@@ -428,7 +430,7 @@ function draw() {
 
         // Player can place bombds using b
         if (keyIsDown(66) && frameCount - bomb_timer > 60) {
-            bombs.push(new Bomb(player.pos.x, player.pos.y));
+            bombs.push(new Bomb(player.pos.x - half_tile, player.pos.y - half_tile));
             bomb_timer = frameCount;
         }
 
