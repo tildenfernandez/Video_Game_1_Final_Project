@@ -2,3 +2,4 @@ libraries/
 jsconfig.json
 # style.css
 .vscode/
+*.zip
