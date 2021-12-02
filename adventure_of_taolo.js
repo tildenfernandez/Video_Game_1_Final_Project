@@ -143,7 +143,7 @@ var arrow_img;
 var bomb_img;
 
 // Sprite image dicts
-let player_img_dict, melee_img_dict, ranged_img_dict;
+let player_img_dict, melee_img_dict, ranged_img_dict, boss_img_dict;
 
 var background_tiles = [];
 
@@ -233,6 +233,17 @@ function preload() {
         attackdown: loadImageSequence('sprites/skeleton/shoot/down/', 13),
         attackleft: loadImageSequence('sprites/skeleton/shoot/left/', 13),
         attackright: loadImageSequence('sprites/skeleton/shoot/right/', 13),
+    }
+
+    boss_img_dict = {
+        walkright: loadImageSequence('sprites/boss/walk/right/', 9),
+        walkup: loadImageSequence('sprites/boss/walk/up/', 9),
+        walkdown: loadImageSequence('sprites/boss/walk/down/', 9),
+        walkleft: loadImageSequence('sprites/boss/walk/left/', 9),
+        attackup: loadImageSequence('sprites/boss/attack/up/', 6),
+        attackdown: loadImageSequence('sprites/boss/attack/down/', 6),
+        attackleft: loadImageSequence('sprites/boss/attack/left/', 6),
+        attackright: loadImageSequence('sprites/boss/attack/right/', 6),
     }
 
     // Set up objects from different classes used to organize code
