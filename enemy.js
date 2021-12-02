@@ -32,6 +32,7 @@ class enemyModel {
         this.target = 0;
 
         this.spriteOffset = new p5.Vector(-10, -23);
+        this.spriteSize = new p5.Vector(40, 40);
     }
     draw() {
         push();
@@ -97,7 +98,7 @@ class enemyModel {
             this.imageIndex = this.images.length - 1;
         }
 
-        image(this.images[this.imageIndex], -half_tile + this.spriteOffset.x, -half_tile + this.spriteOffset.y, 40, 40);
+        image(this.images[this.imageIndex], -half_tile + this.spriteOffset.x, -half_tile + this.spriteOffset.y, this.spriteSize.x, this.spriteSize.y);
 
         // display hearts over enemy's head if game is not over
         if (game_state !== "win_screen" && game_state !== "lose_screen") {
@@ -154,7 +155,7 @@ class MeleeEnemy extends enemyModel {
 class BossEnemy extends enemyModel {
     constructor(x, y) {
         super(x, y);
-        this.state = [new waitState(), new chaseState, new attackState()];
+        this.state = [new waitState(), new chaseState(), new attackState()];
 
         this.imageDict = boss_img_dict;
     }
