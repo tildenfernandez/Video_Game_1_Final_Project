@@ -131,18 +131,36 @@ class enemyModel {
 
 
         image(this.images[this.imageIndex], -half_tile + this.spriteOffset.x, -half_tile + this.spriteOffset.y, this.spriteSize.x, this.spriteSize.y);
-        fill(color('red'));
-        circle(0, 0, 10);
+        // fill(color('red'));
+        // circle(0, 0, 10);
 
-        // display hearts over enemy's head if game is not over
-        if (game_state !== "win_screen" && game_state !== "lose_screen") {
-            for (var i = 0; i < this.health; i++) {
-                image(heart_img, -half_tile-5 + i * 10, -half_tile - 20, 10, 10);
-                // image(heart_img, 290 + (20*i), height-40, 20, 20);
+        if (!this.boss) {
+            // display hearts over enemy's head if game is not over
+            if (game_state !== "win_screen" && game_state !== "lose_screen") {
+                for (var i = 0; i < this.health; i++) {
+                    image(heart_img, -half_tile-5 + i * 10, -half_tile - 20, 10, 10);
+                    // image(heart_img, 290 + (20*i), height-40, 20, 20);
+                }
             }
+            pop();
+
+        } else {
+            pop();
+            // display the boss's health bar above the info bar
+            var healthBarWidth = this.health * 10;
+            var healthBarHeight = 10;
+            var healthBarX = 10;
+            var healthBarY = height - 80;
+            push();
+            fill(color('black'));
+            text("The Minotaur", 10, height - 90);
+
+            fill(color('red'));
+            rect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+            pop();
+
         }
 
-        pop();
     }
 
     kill() {
@@ -193,7 +211,7 @@ class BossEnemy extends enemyModel {
 
         this.imageDict = boss_img_dict;
 
-        this.health = 10;
+        this.health = 35;
 
         this.attackRange = 7000;
         this.playerDetectRange = 100000;
@@ -202,5 +220,9 @@ class BossEnemy extends enemyModel {
 
         this.spriteSize = new p5.Vector(80, 80);
         this.boss = true;
+    }
+
+    kill() {
+        // produce a prize since the boss is dead
     }
 }
