@@ -390,6 +390,7 @@ function draw() {
                 player.attack();
                 attack_counter = frameCount
         }
+        // Player can only move while not attacking
         else {
             // The player moves with the arrow keys
             if (keyIsDown(LEFT_ARROW)) {

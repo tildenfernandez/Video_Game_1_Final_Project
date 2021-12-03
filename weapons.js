@@ -1,15 +1,23 @@
-
+/**
+ * Class for the arrows that the player and ranged enemies can shoot.
+ * Includes update and draw methods that accomplish all of the arrow functionality
+ */
 class Arrow {
     constructor(x, y, dir) {
+        // Position
         this.x = x;
         this.y = y;
+        // Direction arrow flies
         this.dir = dir;
         this.speed = 5;
+        // arrow dimensions
         this.width = 20;
         this.halfwidth = this.width / 2;
         this.height = 8;
         this.halfheight = this.height / 2;
+        // Arrow damage
         this.damage = 1;
+        // Arrow hitbox
         this.hitbox = {
             x: this.x,
             y: this.y,
@@ -21,8 +29,9 @@ class Arrow {
         this.duration = 60;
         this.done = false;
     }
-
+    // Update all characteristics of an arrow
     update() {
+        // Move the arrow a set speed based on its current direction
         if (this.dir == "up") {
             this.y -= this.speed;
         } else if (this.dir == "down") {
@@ -32,6 +41,8 @@ class Arrow {
         } else if (this.dir == "right") {
             this.x += this.speed;
         }
+
+        // Update the hitbox
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;
 
@@ -44,6 +55,7 @@ class Arrow {
         // assume a rectangular hitbox
         for (var i = 0; i < walls.length; i++) {
             // two rectangle collision that depends upon the direction of the arrow
+            // Check collisions for vertically moving arrows
             if (this.dir == "up" || this.dir == "down") {
                 if (this.x + this.halfheight > walls[i].pos.x - half_tile &&
                     this.x - this.halfheight < walls[i].pos.x + half_tile &&
@@ -51,7 +63,9 @@ class Arrow {
                     this.y + this.halfwidth > walls[i].pos.y - half_tile) {
                     this.done = true;
                 }
-            } else {
+            }
+            // Check collisions for horizontally moving arrows
+            else {
                 if (this.x + this.halfheight > walls[i].pos.x - half_tile &&
                     this.x - this.halfheight < walls[i].pos.x + half_tile &&
                     this.y - this.halfwidth < walls[i].pos.y + half_tile &&
@@ -65,6 +79,7 @@ class Arrow {
         // assume a rectangular hitbox
         for (var i = 0; i < boundary_walls.length; i++) {
             // two rectangle collision that depends upon the direction of the arrow
+            // Check collisions for horizontally moving arrows
             if (this.dir == "up" || this.dir == "down") {
                 if (this.x + this.halfheight > boundary_walls[i].pos.x - half_tile &&
                     this.x - this.halfheight < boundary_walls[i].pos.x + half_tile &&
@@ -72,7 +87,9 @@ class Arrow {
                     this.y + this.halfwidth > boundary_walls[i].pos.y - half_tile) {
                     this.done = true;
                 }
-            } else {
+            }
+            // Check collisions for horizontally moving arrows
+            else {
                 if (this.x + this.halfheight > boundary_walls[i].pos.x - half_tile &&
                     this.x - this.halfheight < boundary_walls[i].pos.x + half_tile &&
                     this.y - this.halfwidth < boundary_walls[i].pos.y + half_tile &&
@@ -86,6 +103,7 @@ class Arrow {
         // assume a rectangular hitbox
         for (var i = 0; i < enemies.length; i++) {
             // two rectangle collision that depends upon the direction of the arrow
+            // Check collisions for horizontally moving arrows
             if (this.dir == "up" || this.dir == "down") {
                 if (this.x + this.halfheight > enemies[i].pos.x - half_tile &&
                     this.x - this.halfheight < enemies[i].pos.x + half_tile &&
@@ -94,7 +112,9 @@ class Arrow {
                     this.done = true;
                     enemies[i].health -= this.damage;
                 }
-            } else {
+            }
+            // Check collisions for horizontally moving arrows
+            else {
                 if (this.x + this.halfheight > enemies[i].pos.x - half_tile &&
                     this.x - this.halfheight < enemies[i].pos.x + half_tile &&
                     this.y - this.halfwidth < enemies[i].pos.y + tile_width &&
@@ -104,17 +124,15 @@ class Arrow {
                 }
             }
         }
-
-
     }
 
+    // draw the arrow image
     draw() {
-        // draw the arrow image
         // right facing is 0 degrees
         push();
         // translate(this.x + this.halfwidth + x_offset, this.y + this.halfheight + y_offset);
         translate(this.x + this.halfwidth + x_offset - half_tile, this.y + this.halfheight + y_offset - half_tile);
-        rotate(this.dir == "right" ? 0 : this.dir == "left" ? PI : this.dir == "up" ? -PI / 2 : PI / 2);
+        rotate(this.dir === "right" ? 0 : this.dir === "left" ? PI : this.dir === "up" ? -PI / 2 : PI / 2);
 
         // circle for debugging
         fill(color('red'));
@@ -125,6 +143,9 @@ class Arrow {
     }
 }
 
+/**
+ * Class for bomb objects, includes functionality to draw bombs and deal with them exploding
+ */
 class Bomb {
     constructor(x, y) {
         this.pos = new p5.Vector(x, y);
@@ -132,16 +153,17 @@ class Bomb {
         this.e_radius = 50;
         this.e_radius_square = this.e_radius * this.e_radius;
         this.num_explosion_circles = 50;
+        this.tint_val = 0;
     }
+    // Draw the bomb image wherever it was placed
     draw() {
-        noStroke();
-        fill(255, 0, 255);
-
         push();
         translate(this.pos.x + x_offset, this.pos.y + y_offset);
         image(bomb_img, -15, -15, 60, 30);
+        this.tint_val += 2;
         pop();
     }
+    // Calculate the explosion of a bomb and draw the explosion animation
     explode() {
         // Draw explosion
         for (var i = 0; i < this.num_explosion_circles; i++) {
