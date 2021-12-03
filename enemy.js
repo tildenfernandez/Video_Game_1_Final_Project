@@ -35,6 +35,9 @@ class enemyModel {
         this.spriteSize = new p5.Vector(40, 40);
         
         this.boss = false;
+
+        this.attackRange = 800;
+        this.playerDetectRange = 20000;
     }
     draw() {
         push();
@@ -105,13 +108,13 @@ class enemyModel {
             if (this.stateName === "attack") {
                 this.spriteSize.x = 240;
                 this.spriteSize.y = 240;
-                this.spriteOffset.x = -85;
-                this.spriteOffset.y = -103;
+                this.spriteOffset.x = -110;
+                this.spriteOffset.y = -140;
             } else {
                 this.spriteSize.x = 80;
                 this.spriteSize.y = 80;
-                this.spriteOffset.x = -10;
-                this.spriteOffset.y = -23;
+                this.spriteOffset.x = -30;
+                this.spriteOffset.y = -58;
             }
         } else {
             this.spriteSize.x = 40;
@@ -120,12 +123,10 @@ class enemyModel {
             this.spriteOffset.y = -23;
         }
 
-        push();
-        fill(color('red'));
-        circle(0, 0, 10);
-        pop();
 
         image(this.images[this.imageIndex], -half_tile + this.spriteOffset.x, -half_tile + this.spriteOffset.y, this.spriteSize.x, this.spriteSize.y);
+        fill(color('red'));
+        circle(0, 0, 10);
 
         // display hearts over enemy's head if game is not over
         if (game_state !== "win_screen" && game_state !== "lose_screen") {
@@ -187,6 +188,9 @@ class BossEnemy extends enemyModel {
         this.imageDict = boss_img_dict;
 
         this.health = 10;
+
+        this.attackRange = 20000;
+        this.playerDetectRange = 100000;
 
         this.spriteSize = new p5.Vector(80, 80);
         this.boss = true;

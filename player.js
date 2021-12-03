@@ -247,6 +247,8 @@ class AttackAnimation {
         this.pos = createVector(x, y, direction);
         this.direction = direction;
         this.startTime = frameCount;
+
+        this.radius = 30;
         
         // how long the attack lasts
         this.duration = 10;
@@ -290,7 +292,7 @@ class AttackAnimation {
         fill(color('white'));
         stroke(255);
         strokeWeight(2);
-        arc(0, 0, 30, 30, startAngle, currentAngle);
+        arc(0, 0, this.radius, this.radius, startAngle, currentAngle);
         pop();
 
     }
@@ -311,3 +313,12 @@ function lerpAngle(current, required, speed) {
     }
 }
 
+class BossAttackAnimation extends AttackAnimation {
+    constructor(x, y, direction) {
+        super(x, y, direction);
+        this.duration = 20;
+
+        this.radius = 120;
+    }
+
+}
