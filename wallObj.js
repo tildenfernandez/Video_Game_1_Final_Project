@@ -51,14 +51,16 @@ class destructableWallModel extends wallModel {
 
     destroy() {
         // randomly produce nothing, a gem, or a heart
-        var rand = Math.floor(Math.random() * 3);
+        var rand = Math.floor(Math.random() * 5);
         switch (rand) {
             case 0:
-                break;
             case 1:
-                gems.push([this.pos.x, this.pos.y - half_tile, 1]);
                 break;
             case 2:
+            case 3:
+                gems.push([this.pos.x, this.pos.y - half_tile, 1]);
+                break;
+            case 4:
                 hearts.push([this.pos.x, this.pos.y - half_tile, 1]);
                 break;
         }
