@@ -135,7 +135,9 @@ class Arrow {
                     this.y - this.halfwidth < player.pos.y + tile_width &&
                     this.y + this.halfwidth > player.pos.y - tile_width) {
                     this.done = true;
-                    player.health -= this.damage;
+                    if (!player.shielding) {
+                        player.health -= this.damage;
+                    }
                 }
             }
             // Check collisions for horizontally moving arrows
@@ -145,7 +147,9 @@ class Arrow {
                     this.y - this.halfwidth < player.pos.y + tile_width &&
                     this.y + this.halfwidth > player.pos.y - tile_width) {
                     this.done = true;
-                    player.health -= this.damage;
+                    if (!player.shielding) {
+                        player.health -= this.damage;
+                    }
                 }
             }
         }
