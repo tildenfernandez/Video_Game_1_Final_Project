@@ -33,6 +33,8 @@ class enemyModel {
 
         this.spriteOffset = new p5.Vector(-10, -23);
         this.spriteSize = new p5.Vector(40, 40);
+        
+        this.boss = false;
     }
     draw() {
         push();
@@ -98,6 +100,31 @@ class enemyModel {
             this.imageIndex = this.images.length - 1;
         }
 
+        // if this is an attacking boss, the sprite size and offset are different
+        if (this.boss) {
+            if (this.stateName === "attack") {
+                this.spriteSize.x = 240;
+                this.spriteSize.y = 240;
+                this.spriteOffset.x = -85;
+                this.spriteOffset.y = -103;
+            } else {
+                this.spriteSize.x = 80;
+                this.spriteSize.y = 80;
+                this.spriteOffset.x = -10;
+                this.spriteOffset.y = -23;
+            }
+        } else {
+            this.spriteSize.x = 40;
+            this.spriteSize.y = 40;
+            this.spriteOffset.x = -10;
+            this.spriteOffset.y = -23;
+        }
+
+        push();
+        fill(color('red'));
+        circle(0, 0, 10);
+        pop();
+
         image(this.images[this.imageIndex], -half_tile + this.spriteOffset.x, -half_tile + this.spriteOffset.y, this.spriteSize.x, this.spriteSize.y);
 
         // display hearts over enemy's head if game is not over
@@ -158,5 +185,10 @@ class BossEnemy extends enemyModel {
         this.state = [new waitState(), new chaseState(), new attackState()];
 
         this.imageDict = boss_img_dict;
+
+        this.health = 10;
+
+        this.spriteSize = new p5.Vector(80, 80);
+        this.boss = true;
     }
 }
