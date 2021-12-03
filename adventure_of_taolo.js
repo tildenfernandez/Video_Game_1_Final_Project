@@ -89,31 +89,33 @@ let level2_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"];
 
 let level4_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x     p                       m        x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
-                        "x                                      x",
+                        "x                   bbswwssb        sbbx",
+                        "x   p                 bwwsbsb        sbx",
+                        "x                      wwb             x",
+                        "xwwwwwwwwwwwwwwwww     wwwwwwwwwww     x",
+                        "xsb                           ssww     x",
+                        "xb                             bww     x",
+                        "x      wwwwwwwwwwwwwwwwww       ww     x",
+                        "x            wwsb               ww     x",
+                        "xs           ww                 ww     x",
+                        "xww   wwww   ww    wwwwwwwwwwwwwww     x",
+                        "xww   wwww   ww    wwsbs               x",
+                        "xb           ww    ww                  x",
+                        "x            ww    ww    wwwwwwwwww    x",
+                        "x    wwwwwwwwww                        x",
+                        "x    wwwwwwwwww                        x",
+                        "x      swwwsb        wwwwwwwwww    wwwwx",
+                        "x      bwww              sw           wx",
+                        "x       wwwb              w           wx",
+                        "x       wwwwwwwwwwwww                  x",
+                        "x          ww                   m      x",
+                        "x          ww                          x",
+                        "x     w    ww       wwwwwww           wx",
+                        "x s   w                 ssw           wx",
+                        "xbb   w               ssbbwwww     wwwwx",
                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"];
 
-let LEVEL_COINS_NEEDED = [20, 25];
+let LEVEL_COINS_NEEDED = [15, 20];
 
 // Define the width of one tile
 let tile_width = 20;
@@ -122,7 +124,7 @@ let half_tile = tile_width / 2;
 let MAX_X_OFFSET = 0;
 let MIN_X_OFFSET = [-400, -400, -400, -400];    // min is (# rows - 20)* -20 * think
 let MAX_Y_OFFSET = 0;
-let MIN_Y_OFFSET = [-400, -140, -400, -400];    // no idea how to calculate play around with it
+let MIN_Y_OFFSET = [-400, -140, -400, -180];    // no idea how to calculate play around with it
 
 let DIST_FOR_VIEW_WINDOW_MOVE = 120;
 
