@@ -45,7 +45,7 @@ class waitState {
 
             // State changes can only occur when we are on a node to avoid going off the paths
             // If the player gets near, change to chase state
-            if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) < 20000) {
+            if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) < me.playerDetectRange) {
                 // me.changeState(ENEMY_CHASE_IDX);
                 me.changeState(ENEMY_LOS_IDX);
                 me.target = me.currNode;
@@ -114,11 +114,11 @@ class chaseState {
                 var dist_to_player = squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y)
 
                 // If we chase close enough to the player, go to attack state
-                if (dist_to_player < 800) {
+                if (dist_to_player < me.attackRange) {
                     me.changeState(ENEMY_ATTACK_IDX);
                 }
                 // If the player gets too far away, go to the waiting state
-                if (dist_to_player > 20000) {
+                if (dist_to_player > me.playerDetectRange) {
                     me.changeState(ENEMY_WAIT_IDX);
                 }
             }
@@ -148,21 +148,25 @@ class attackState {
                 break;
         }
 
-        // create a new slash animation every 30 seconds
-        if (frameCount - this.frameCount > 30) {
+        // create a new slash animation every 30 frames
+        if (frameCount - this.frameCount > 40) {
             this.frameCount = frameCount;
-            attack_animations.push(new AttackAnimation(me.pos.x + me.xOffset, me.pos.y + me.yOffset, me.direction));
-
-            // hurt the player if they are close enough and in the right direction
-            if (squaredDist(me.pos.x + me.xOffset, me.pos.y + me.yOffset, player.pos.x, player.pos.y) < 400 && !player.shielding) {
-                player.health -= 1;
+            if (!me.boss) {
+                attack_animations.push(new AttackAnimation(me.pos.x + me.xOffset, me.pos.y + me.yOffset, me.direction));
+            } else {
+                me.xOffset *= 2;
+                me.yOffset *= 2;
+                attack_animations.push(new BossAttackAnimation(me.pos.x + me.xOffset, me.pos.y + me.yOffset, me.direction));
             }
 
-
+            // hurt the player if they are close enough and in the right direction
+            if (squaredDist(me.pos.x + me.xOffset, me.pos.y + me.yOffset, player.pos.x, player.pos.y) < me.attackHitboxRange && !player.shielding) {
+                player.health -= me.damage;
+            }
         }
 
         // If the player gets too far away, go to the chase state
-        if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) > 800) {
+        if (squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y) > me.attackRange) {
             me.changeState(ENEMY_CHASE_IDX);
         }
     }
@@ -243,7 +247,7 @@ class lineOfSightState {
                     }                    
                 }
                 // If the player gets too far away, go to the waiting state
-                if (dist_to_player > 25000) {
+                if (dist_to_player > me.playerDetectRange) {
                     me.changeState(ENEMY_WAIT_IDX);
                 }
             }

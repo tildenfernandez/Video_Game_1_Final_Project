@@ -88,16 +88,43 @@ let level2_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                         "xbsbbb--sbwwwwwwwwwwsbs----ghg-----bbwwx",
                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"];
 
-let LEVEL_COINS_NEEDED = [20, 25];
+let level4_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                        "x                   bbswwssb        sbbx",
+                        "x   p                 bwwsbsb        sbx",
+                        "x                      wwb             x",
+                        "xwwwwwwwwwwwwwwwww     wwwwwwwwwww     x",
+                        "xsb                           ssww     x",
+                        "xb                             bww     x",
+                        "x      wwwwwwwwwwwwwwwwww       ww     x",
+                        "x            wwsb               ww     x",
+                        "xs           ww                 ww     x",
+                        "xww   wwww   ww    wwwwwwwwwwwwwww     x",
+                        "xww   wwww   ww    wwsbs               x",
+                        "xb           ww    ww                  x",
+                        "x            ww    ww    wwwwwwwwww    x",
+                        "x    wwwwwwwwww                        x",
+                        "x    wwwwwwwwww                        x",
+                        "x      swwwsb        wwwwwwwwww    wwwwx",
+                        "x      bwww              sw           wx",
+                        "x       wwwb              w           wx",
+                        "x       wwwwwwwwwwwww                  x",
+                        "x          ww                   m      x",
+                        "x          ww                          x",
+                        "x     w    ww       wwwwwww           wx",
+                        "x s   w                 ssw           wx",
+                        "xbb   w               ssbbwwww     wwwwx",
+                        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"];
+
+let LEVEL_COINS_NEEDED = [15, 20];
 
 // Define the width of one tile
 let tile_width = 20;
 let half_tile = tile_width / 2;
 
 let MAX_X_OFFSET = 0;
-let MIN_X_OFFSET = [-400, -400];    // min is (# rows - 20)* -20 * think
+let MIN_X_OFFSET = [-400, -400, -400, -400];    // min is (# rows - 20)* -20 * think
 let MAX_Y_OFFSET = 0;
-let MIN_Y_OFFSET = [-400, -140];    // no idea how to calculate play around with it
+let MIN_Y_OFFSET = [-400, -140, -400, -180];    // no idea how to calculate play around with it
 
 let DIST_FOR_VIEW_WINDOW_MOVE = 120;
 
@@ -147,7 +174,7 @@ var arrow_img;
 var bomb_img;
 
 // Sprite image dicts
-let player_img_dict, melee_img_dict, ranged_img_dict;
+let player_img_dict, melee_img_dict, ranged_img_dict, boss_img_dict;
 
 var background_tiles = [];
 
@@ -159,9 +186,6 @@ var startScreen;
 var instructionsScreen;
 var win_screen;
 var lose_screen;
-
-// gravity affects some items
-var gravity;
 
 // graph nodes for a* BFS
 var graph_nodes = [];
@@ -196,6 +220,8 @@ function preload() {
     songs[0] = loadSound('sounds/music/start_screen.mp3');
     songs[1] = loadSound('sounds/music/level1.mp3');
     songs[2] = loadSound('sounds/music/level1.mp3');
+    songs[3] = loadSound('sounds/music/level1.mp3');
+    songs[4] = loadSound('sounds/music/level1.mp3'); // TODO: add boss level music
 
     ////////////// Load image sequences for character models //////////////
 
@@ -239,6 +265,17 @@ function preload() {
         attackright: loadImageSequence('sprites/skeleton/shoot/right/', 13),
     }
 
+    boss_img_dict = {
+        walkright: loadImageSequence('sprites/boss/walk/right/', 9),
+        walkup: loadImageSequence('sprites/boss/walk/up/', 9),
+        walkdown: loadImageSequence('sprites/boss/walk/down/', 9),
+        walkleft: loadImageSequence('sprites/boss/walk/left/', 9),
+        attackup: loadImageSequence('sprites/boss/attack/up/', 6),
+        attackdown: loadImageSequence('sprites/boss/attack/down/', 6),
+        attackleft: loadImageSequence('sprites/boss/attack/left/', 6),
+        attackright: loadImageSequence('sprites/boss/attack/right/', 6),
+    }
+
     // Set up objects from different classes used to organize code
     win_screen = new WinScreen();
     lose_screen = new LoseScreen();
@@ -264,8 +301,6 @@ function setup() {
     startScreen  = new StartScreen();
     instructionsScreen = new InstructionsScreen();
 
-    // Initialize gravity for some objects
-    gravity = new p5.Vector(0, 0.3);
     // Start the music
     songs[0].play();
 }
@@ -277,7 +312,9 @@ function draw() {
     }
     // Display level 1
     else if (game_state === "playing_level_1" ||
-             game_state === "playing_level_2") {
+             game_state === "playing_level_2" || 
+             game_state === "playing_level_3" || 
+             game_state === "playing_level_4") {
 
         // Use an image with random noise for the background
         image(grass_img[1], x_offset, y_offset, 800, 800);
@@ -509,6 +546,16 @@ function resetGameState(game_level) {
             break;
         case 2:
             makeTileMap(level2_tilemap);
+            x_offset = 0;
+            y_offset = 0;
+            break;
+        // case 3:
+        //     makeTileMap(level3_tilemap);
+        //     x_offset = 0;
+        //     y_offset = 0;
+        //     break;
+        case 4:
+            makeTileMap(level4_tilemap);
             x_offset = 0;
             y_offset = 0;
             break;
