@@ -31,6 +31,16 @@ class enemyModel {
         this.firstChaseLoop = false;
         this.path = 0;
         this.target = 0;
+
+        this.spriteOffset = new p5.Vector(-10, -23);
+        this.spriteSize = new p5.Vector(40, 40);
+        
+        this.boss = false;
+
+        this.attackRange = 800;
+        this.attackHitboxRange = 400;
+        this.damage = 1;
+        this.playerDetectRange = 25000;
     }
     draw() {
         push();
@@ -49,7 +59,11 @@ class enemyModel {
                 frameInterval = 10;
                 break;
             case "attack":
-                frameInterval = 4;
+                if (this.boss) {
+                    frameInterval = 6;
+                } else {
+                    frameInterval = 4;
+                }
                 break;
         }
 
@@ -96,18 +110,58 @@ class enemyModel {
             this.imageIndex = this.images.length - 1;
         }
 
-        // Draw the enemy
-        image(this.images[this.imageIndex], -half_tile-10, -half_tile-23, 40, 40);
-
-        // display hearts over enemy's head if game is not over
-        if (game_state !== "win_screen" && game_state !== "lose_screen") {
-            for (var i = 0; i < this.health; i++) {
-                image(heart_img, -half_tile-5 + i * 10, -half_tile - 20, 10, 10);
-                // image(heart_img, 290 + (20*i), height-40, 20, 20);
+        // if this is an attacking boss, the sprite size and offset are different
+        if (this.boss) {
+            if (this.stateName === "attack") {
+                this.spriteSize.x = 240;
+                this.spriteSize.y = 240;
+                this.spriteOffset.x = -110;
+                this.spriteOffset.y = -140;
+            } else {
+                this.spriteSize.x = 80;
+                this.spriteSize.y = 80;
+                this.spriteOffset.x = -30;
+                this.spriteOffset.y = -58;
             }
+        } else {
+            this.spriteSize.x = 40;
+            this.spriteSize.y = 40;
+            this.spriteOffset.x = -10;
+            this.spriteOffset.y = -23;
         }
 
-        pop();
+
+        image(this.images[this.imageIndex], -half_tile + this.spriteOffset.x, -half_tile + this.spriteOffset.y, this.spriteSize.x, this.spriteSize.y);
+        // fill(color('red'));
+        // circle(0, 0, 10);
+
+        if (!this.boss) {
+            // display hearts over enemy's head if game is not over
+            if (game_state !== "win_screen" && game_state !== "lose_screen") {
+                for (var i = 0; i < this.health; i++) {
+                    image(heart_img, -half_tile-5 + i * 10, -half_tile - 20, 10, 10);
+                    // image(heart_img, 290 + (20*i), height-40, 20, 20);
+                }
+            }
+            pop();
+
+        } else {
+            pop();
+            // display the boss's health bar above the info bar
+            var healthBarWidth = this.health * 10;
+            var healthBarHeight = 10;
+            var healthBarX = 10;
+            var healthBarY = height - 80;
+            push();
+            fill(color('black'));
+            text("The Minotaur", 10, height - 90);
+
+            fill(color('red'));
+            rect(healthBarX, healthBarY, healthBarWidth, healthBarHeight);
+            pop();
+
+        }
+
     }
     // ACtions to take if the enemy dies
     kill() {
@@ -151,5 +205,29 @@ class MeleeEnemy extends enemyModel {
         this.state = [new waitState(), new chaseState(), new attackState()];
 
         this.imageDict = melee_img_dict;
+    }
+}
+
+class BossEnemy extends enemyModel {
+    constructor(x, y) {
+        super(x, y);
+        this.state = [new waitState(), new chaseState(), new attackState()];
+
+        this.imageDict = boss_img_dict;
+
+        this.health = 35;
+
+        this.attackRange = 7000;
+        this.playerDetectRange = 100000;
+        this.attackHitboxRange = 3700;
+        this.damage = 2;
+
+        this.spriteSize = new p5.Vector(80, 80);
+        this.boss = true;
+    }
+
+    kill() {
+        // game over when the boss is dead
+        game_state = "win_screen";
     }
 }

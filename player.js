@@ -263,6 +263,8 @@ class AttackAnimation {
         this.pos = createVector(x, y, direction);
         this.direction = direction;
         this.startTime = frameCount;
+
+        this.radius = 30;
         
         // how long the attack lasts
         this.duration = 10;
@@ -297,9 +299,7 @@ class AttackAnimation {
                 break;
         }
 
-        var currentAngle = lerp(angleOffset, angleOffset + PI/2, framesPassed/this.duration);
 
-        var startAngle = max(angleOffset, currentAngle - PI/4);
 
         // Draw an arc when the player attacks
         push();
@@ -307,7 +307,17 @@ class AttackAnimation {
         fill(color('white'));
         stroke(255);
         strokeWeight(2);
-        arc(0, 0, 30, 30, startAngle, currentAngle);
+        if (this.direction === "left" || this.direction === "up") {
+            var currentAngle = lerp(angleOffset, angleOffset + PI/2, framesPassed/this.duration);
+            var startAngle = max(angleOffset, currentAngle - PI/4);
+            arc(0, 0, this.radius, this.radius, startAngle, currentAngle);
+        } else {
+            // reverse rotation direction if facing down or right
+            var currentAngle = lerp(angleOffset + PI/2, angleOffset, framesPassed/this.duration);
+            var startAngle = min(angleOffset + PI/2, currentAngle + PI/4);
+            arc(0, 0, this.radius, this.radius, currentAngle, startAngle);
+        }
+
         pop();
 
     }
@@ -328,3 +338,12 @@ function lerpAngle(current, required, speed) {
     }
 }
 
+class BossAttackAnimation extends AttackAnimation {
+    constructor(x, y, direction) {
+        super(x, y, direction);
+        this.duration = 20;
+
+        this.radius = 120;
+    }
+
+}
