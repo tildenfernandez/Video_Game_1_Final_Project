@@ -132,7 +132,7 @@ var bombs = [];
 var bomb_explosions = [];
 
 // Delays between attacking for each weapon
-let attack_times = [60, 30, 90];
+let attack_times = [30, 15, 60];
 var attack_counter = 0;
 var weapon_ind = 0;
 
