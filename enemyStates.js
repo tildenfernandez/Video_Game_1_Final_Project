@@ -85,16 +85,16 @@ class chaseState {
                     me.flipImage = true;
                     me.direction = "left";
                 }
-                if (xDiff > 0) {
+                else if (xDiff > 0) {
                     me.pos.x++;
                     me.flipImage = false;
                     me.direction = "right";
                 }
-                if (yDiff < 0) {
+                else if (yDiff < 0) {
                     me.pos.y--;
                     me.direction = "up";
                 }
-                if (yDiff > 0) {
+                else if (yDiff > 0) {
                     me.pos.y++;
                     me.direction = "down";
                 }
@@ -198,16 +198,16 @@ class lineOfSightState {
                     me.flipImage = true;
                     me.direction = "left";
                 }
-                if (xDiff > 0) {
+                else if (xDiff > 0) {
                     me.pos.x++;
                     me.flipImage = false;
                     me.direction = "right";
                 }
-                if (yDiff < 0) {
+                else if (yDiff < 0) {
                     me.pos.y--;
                     me.direction = "up";
                 }
-                if (yDiff > 0) {
+                else if (yDiff > 0) {
                     me.pos.y++;
                     me.direction = "down";
                 }
@@ -226,33 +226,13 @@ class lineOfSightState {
                 // Can only change state when I am at a node to avoid going off the paths
                 var dist_to_player = squaredDist(me.pos.x, me.pos.y, player.pos.x, player.pos.y)
 
-                // If we chase close enough to the player, go to attack state
-                if (dist_to_player < 5000) {
+                // If we chase close enough to the player and we are in line with the player, go to attack state
+                if (dist_to_player < 10000) {
                     // If we are in line with the player
                     var xDiff = player.pos.x - me.pos.x - half_tile;
                     var yDiff = player.pos.y - me.pos.y - half_tile;
 
-                    // var lineOfSight = true;
-                    
                     if (xDiff <= 10 && xDiff >= -10) {
-
-                        // if (xDiff < 0) {
-                        //     for (var j = 0; j > xDiff; j -= 10) {
-                        //         // For each wall, check if the (x, y) is near the wall
-                        //         for (var i = 0; i < walls.length; i++) {
-                        //             if (walls[i].pos.x - x + half_tile < tile_width-1 && walls[i].pos.x - x + half_tile > -tile_width+1 &&
-                        //                 walls[i].pos.y - y + half_tile < tile_width-1 && walls[i].pos.y - y + half_tile > -tile_width+1) {
-                        //                     return true;
-                        //                 }
-                        //         }
-                        //     }
-                        // }
-                        // else {
-                        //     for (var i = 0; i > xDiff; i -= 10) {
-                                
-                        //     }
-                        // }
-
                         me.changeState(ENEMY_RANGE_IDX);
                     }
                     if (yDiff <= 10 && yDiff >= -10) {
@@ -260,7 +240,7 @@ class lineOfSightState {
                     }                    
                 }
                 // If the player gets too far away, go to the waiting state
-                if (dist_to_player > 20000) {
+                if (dist_to_player > 25000) {
                     me.changeState(ENEMY_WAIT_IDX);
                 }
             }
@@ -270,14 +250,63 @@ class lineOfSightState {
 
 class rangeAttackState {
     constructor() {
-
+        this.frameCount = frameCount;
     }
     execute(me) {
-        strokeWeight(1);
-        stroke(255, 0, 255);
-        line(me.pos.x+x_offset, me.pos.y+y_offset, player.pos.x+x_offset-half_tile, player.pos.y+y_offset-half_tile);
+        let xDiff = me.pos.x - player.pos.x;
+        let yDiff = me.pos.y - player.pos.y;
 
-        if (squaredDist(me.pos.x, me.pos.y, player.pos.x - half_tile, player.pos.y - half_tile) > 15000 ||
+        // Make the enemy face towards the player
+        // Check whether the horizontal or vertical distance is greater
+        if (abs(xDiff) > abs(yDiff)) {
+            // Player has lower x val -> they are to my left
+            if (xDiff > 0) {
+                me.direction = "left";
+            }
+            // Face right
+            else {
+                me.direction = "right";
+            }
+        }
+        else {
+            // Player has lower y val -> they are above me
+            if (yDiff > 0) {
+                me.direction = "up";
+            }
+            // Face down
+            else {
+                me.direction = "down";
+            }
+        }
+
+        // Calculate the arrow offset
+        let arrow_offset = [0,0];
+         // Set offset based on direction player is facing
+         switch (me.direction) {
+            case "up":
+                arrow_offset[0] = 10;
+                arrow_offset[1] = -10;
+                break;
+            case "down":
+                arrow_offset[0] = 10;
+                arrow_offset[1] = 10;
+                break;
+            case "right":
+                arrow_offset[0] = 10;
+                break;
+            case "left":
+                arrow_offset[0] = -10;
+                break;
+        }
+
+        if (frameCount - this.frameCount > 18) {
+        // Shoot an arrow
+            arrows.push(new Arrow(me.pos.x + arrow_offset[0] - half_tile, me.pos.y + arrow_offset[1] - half_tile, me.direction));
+            this.frameCount = frameCount;
+        }
+
+        // If the enemy is too far away or no longer straight ahead, go to the chase state
+        if (squaredDist(me.pos.x, me.pos.y, player.pos.x - half_tile, player.pos.y - half_tile) > 20000 ||
             ((player.pos.x - half_tile - me.pos.x > 10 || player.pos.x - half_tile - me.pos.x < -10) &&
             ( player.pos.y - half_tile - me.pos.y > 10 || player.pos.y - half_tile - me.pos.y < -10))) {
             me.changeState(ENEMY_LOS_IDX);
