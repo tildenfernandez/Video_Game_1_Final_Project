@@ -169,10 +169,10 @@ class enemyModel {
         var rand = Math.floor(Math.random() * 2);
         switch (rand) {
             case 0:
-                hearts.push([this.pos.x, this.pos.y - half_tile, 1]);
+                hearts.push([this.pos.x, this.pos.y, 1]);
                 break;
             case 1:
-                gems.push([this.pos.x, this.pos.y - half_tile, 1]);
+                gems.push([this.pos.x, this.pos.y, 1]);
                 break;
         }
         

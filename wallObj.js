@@ -42,13 +42,6 @@ class destructableWallModel extends wallModel {
         super(x, y, image);
         this.destructable = true;
     }
-    // draw() {
-    //     push();
-    //     translate(this.pos.x + x_offset, this.pos.y + y_offset);
-    //     image(this.image, -half_tile, -half_tile, tile_width, tile_width);
-    //     pop();
-    // }
-
     destroy() {
         // randomly produce nothing, a gem, or a heart
         var rand = Math.floor(Math.random() * 5);
@@ -58,10 +51,10 @@ class destructableWallModel extends wallModel {
                 break;
             case 2:
             case 3:
-                gems.push([this.pos.x, this.pos.y - half_tile, 1]);
+                gems.push([this.pos.x, this.pos.y, 1]);
                 break;
             case 4:
-                hearts.push([this.pos.x, this.pos.y - half_tile, 1]);
+                hearts.push([this.pos.x, this.pos.y, 1]);
                 break;
         }
 

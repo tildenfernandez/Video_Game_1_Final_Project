@@ -106,5 +106,5 @@ function drawInformationBar() {
     }
     
     // Draw a gem by the coin information
-    drawGem(30, 350, 25, 30);
+    drawGem(30, 370, 25, 30);
 }
