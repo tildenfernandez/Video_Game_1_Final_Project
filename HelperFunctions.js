@@ -30,6 +30,7 @@ function detectWallCollision(x, y) {
                 return true;
             }
     }
+    // Check boundary walls as well
     for (var i = 0; i < boundary_walls.length; i++) {
         if (boundary_walls[i].pos.x - x + half_tile < tile_width-1 && boundary_walls[i].pos.x - x + half_tile > -tile_width+1 &&
             boundary_walls[i].pos.y - y + half_tile < tile_width-1 && boundary_walls[i].pos.y - y + half_tile > -tile_width+1) {

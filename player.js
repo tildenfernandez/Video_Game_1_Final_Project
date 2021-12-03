@@ -1,5 +1,5 @@
 /**
- * Player model object, has methods for doing everything the player should do
+ * Player model object, includes drawing, moving, attacking, and shielding
  */
 class playerModel {
     constructor(x, y) {
@@ -21,6 +21,7 @@ class playerModel {
         this.state = "idle";
         this.direction = "right";
 
+        // Animation variables
         this.frameCount = frameCount;
         this.imageIndex = 0;
         this.images = this.imageDict.walkright;
@@ -126,6 +127,7 @@ class playerModel {
     }
     // Player movement functions
     moveRight() {
+        // only move if theres no wall collision
         if (!detectWallCollision(this.pos.x+PLAYER_MOVEMENT_SPEED, this.pos.y)) {
             player.pos.x += PLAYER_MOVEMENT_SPEED;
             if (player.pos.x + x_offset > (width - DIST_FOR_VIEW_WINDOW_MOVE) &&
@@ -137,6 +139,7 @@ class playerModel {
         this.direction = "right";
     }
     moveLeft() {
+        // only move if theres no wall collision
         if (!detectWallCollision(this.pos.x-PLAYER_MOVEMENT_SPEED, this.pos.y)) {
             player.pos.x -= PLAYER_MOVEMENT_SPEED;
             if (player.pos.x + x_offset < DIST_FOR_VIEW_WINDOW_MOVE &&
@@ -148,6 +151,7 @@ class playerModel {
         this.direction = "left";
     }
     moveDown() {
+        // only move if theres no wall collision
         if (!detectWallCollision(this.pos.x, this.pos.y+PLAYER_MOVEMENT_SPEED)) {
             player.pos.y += PLAYER_MOVEMENT_SPEED;
             if (player.pos.y + y_offset > (height - DIST_FOR_VIEW_WINDOW_MOVE) &&
@@ -159,6 +163,7 @@ class playerModel {
         this.direction = "down";
     }
     moveUp() {
+        // only move if theres no wall collision
         if (!detectWallCollision(this.pos.x, this.pos.y-PLAYER_MOVEMENT_SPEED)) {
             player.pos.y -= PLAYER_MOVEMENT_SPEED;
             if (player.pos.y + y_offset < DIST_FOR_VIEW_WINDOW_MOVE &&
@@ -170,6 +175,7 @@ class playerModel {
         this.direction = "up"; 
     }
     attack() {
+        // Control when the player can attack again
         if (this.attack_again || true) {
             this.attackTimer = frameCount;
             this.attack_again = false;
@@ -177,6 +183,7 @@ class playerModel {
             this.attackOffset.x = 0;
             this.attackOffset.y = 0;
 
+            // Set offset based on direction player is facing
             switch (this.direction) {
                 case "up":
                     this.attackOffset.y = -10;
@@ -274,6 +281,7 @@ class AttackAnimation {
             this.done = true;
         }
 
+        // Set offset based on direction player is facing
         switch (this.direction) {
             case "right":
                 angleOffset = -PI/4;

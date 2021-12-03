@@ -157,7 +157,6 @@ var font
 // Global variables for classes that display screens
 var startScreen;
 var instructionsScreen;
-var infoBar;
 var win_screen;
 var lose_screen;
 
@@ -241,7 +240,6 @@ function preload() {
     }
 
     // Set up objects from different classes used to organize code
-    infoBar = new InformationBar();
     win_screen = new WinScreen();
     lose_screen = new LoseScreen();
 }
@@ -439,7 +437,7 @@ function draw() {
         }
 
         // Draw the information bar at the bottom
-        infoBar.draw();
+        drawInformationBar();
 
         // If the player is out of health, they lose the level
         if (player.health <= 0) {
