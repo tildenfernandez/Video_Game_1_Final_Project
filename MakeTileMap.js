@@ -41,8 +41,8 @@
                 enemies[enemies.length - 1].target = graph_nodes[graph_nodes.length - 1];
             }
 
-            // 'b' is the boss
-            if (tmap[j][i] === 'b') {
+            // 'm' is the boss
+            if (tmap[j][i] === 'm') {
                 enemies.push(new BossEnemy(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
                 enemies[enemies.length - 1].frameNum = 50;      // Need to change
                 iNum++;
