@@ -227,6 +227,7 @@ class BossEnemy extends enemyModel {
     }
 
     kill() {
-        // produce a prize since the boss is dead
+        // game over when the boss is dead
+        game_state = "win_screen";
     }
 }
