@@ -149,11 +149,13 @@ class attackState {
         }
 
         // create a new slash animation every 30 frames
-        if (frameCount - this.frameCount > 30) {
+        if (frameCount - this.frameCount > 40) {
             this.frameCount = frameCount;
             if (!me.boss) {
                 attack_animations.push(new AttackAnimation(me.pos.x + me.xOffset, me.pos.y + me.yOffset, me.direction));
             } else {
+                me.xOffset *= 2;
+                me.yOffset *= 2;
                 attack_animations.push(new BossAttackAnimation(me.pos.x + me.xOffset, me.pos.y + me.yOffset, me.direction));
             }
 
@@ -161,8 +163,6 @@ class attackState {
             if (squaredDist(me.pos.x + me.xOffset, me.pos.y + me.yOffset, player.pos.x, player.pos.y) < 400 && !player.shielding) {
                 player.health -= 1;
             }
-
-
         }
 
         // If the player gets too far away, go to the chase state
