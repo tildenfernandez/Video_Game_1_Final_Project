@@ -19,6 +19,7 @@ var game_state = "start_screen"
  * p = player (should have only one per map, or only the last one will appear)
  * e = melee enemy
  * r = ranged enemy
+ * m = boss
  */
 
 // Tile map of the game
@@ -356,6 +357,14 @@ function draw() {
                 enemies[i].draw();
                 // Execute the current state of the enemy
                 enemies[i].update();
+
+                // the boss is able to summon enemies
+                if (enemies[i].boss) {
+                    // randomly summon other enemies 1/100 times
+                    if (int(random(500)) === 42) {
+                        enemies[i].summon_others();
+                    }
+                }
             } else {
                 enemies[i].kill();
                 enemies.splice(i, 1);
