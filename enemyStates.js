@@ -499,30 +499,32 @@ function range_astar_search(me) {
                     let node_is_good = true;
                     // check if each node is in line of sight to the player
 
-                    for (let m = new_leaf_nodes[i].pos.y-10; m < player.pos.y; m += 10) {
-                        if (detectWallCollision(new_leaf_nodes[i].pos.x-10, m)) {
-                            node_is_good = false;
-                            break;
+                    if (squaredDist([player.pos.x, player.pos.y, new_leaf_nodes[i].pos.x, new_leaf_nodes[i].pos.y]) > 100) {
+                        for (let m = new_leaf_nodes[i].pos.y; m < player.pos.y; m += 10) {
+                            if (detectWallCollision(new_leaf_nodes[i].pos.x, m)) {
+                                node_is_good = false;
+                                break;
+                            }
                         }
-                    }
 
-                    for (let m = new_leaf_nodes[i].pos.y-10; m > player.pos.y; m -= 10) {
-                        if (detectWallCollision(new_leaf_nodes[i].pos.x-10, m)) {
-                            node_is_good = false;
-                            break;
+                        for (let m = new_leaf_nodes[i].pos.y; m > player.pos.y; m -= 10) {
+                            if (detectWallCollision(new_leaf_nodes[i].pos.x, m)) {
+                                node_is_good = false;
+                                break;
+                            }
                         }
-                    }
-                    
-                    for (let m = new_leaf_nodes[i].pos.x-10; m < player.pos.x; m += 10) {
-                        if (detectWallCollision(m, new_leaf_nodes[i].pos.y-10)) {
-                            node_is_good = false;
-                            break;
+                        
+                        for (let m = new_leaf_nodes[i].pos.x; m < player.pos.x; m += 10) {
+                            if (detectWallCollision(m, new_leaf_nodes[i].pos.y)) {
+                                node_is_good = false;
+                                break;
+                            }
                         }
-                    }
-                    for (let m = new_leaf_nodes[i].pos.x-10; m > player.pos.x; m -= 10) {
-                        if (detectWallCollision(m, new_leaf_nodes[i].pos.y-10)) {
-                            node_is_good = false;
-                            break;
+                        for (let m = new_leaf_nodes[i].pos.x; m > player.pos.x; m -= 10) {
+                            if (detectWallCollision(m, new_leaf_nodes[i].pos.y)) {
+                                node_is_good = false;
+                                break;
+                            }
                         }
                     }
 
