@@ -42,7 +42,7 @@
             fill(219, 84, 46);
             text("Level 1", 175, 120);
 
-            drawGem(30, 100, 25, 30);
+            drawGem(30, 110, 25, 30);
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
@@ -53,7 +53,7 @@
             fill(219, 84, 46);
             text("Level 2", 175, 170);
 
-            drawGem(30, 150, 25, 30);
+            drawGem(30, 160, 25, 30);
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
@@ -64,7 +64,7 @@
             fill(219, 84, 46);
             text("Level 3", 175, 220);
 
-            drawGem(30, 200, 25, 30);
+            drawGem(30, 210, 25, 30);
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
@@ -75,7 +75,7 @@
             fill(219, 84, 46);
             text("Level 4", 175, 270);
 
-            drawGem(30, 250, 25, 30);
+            drawGem(30, 260, 25, 30);
     }
 
     if (mouseX >= 50 && mouseX <= 350 &&
@@ -86,6 +86,6 @@
             fill(219, 84, 46);
             text("Return to Main Menu", 125, 370);
 
-            drawGem(30, 350, 25, 30);
+            drawGem(30, 360, 25, 30);
     }
 }
