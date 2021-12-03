@@ -215,7 +215,7 @@ class BossEnemy extends enemyModel {
 
         this.attackRange = 7000;
         this.playerDetectRange = 100000;
-        this.attackHitboxRange = 3500;
+        this.attackHitboxRange = 3700;
         this.damage = 2;
 
         this.spriteSize = new p5.Vector(80, 80);
