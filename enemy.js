@@ -57,7 +57,11 @@ class enemyModel {
                 frameInterval = 10;
                 break;
             case "attack":
-                frameInterval = 4;
+                if (this.boss) {
+                    frameInterval = 6;
+                } else {
+                    frameInterval = 4;
+                }
                 break;
         }
 
@@ -189,7 +193,7 @@ class BossEnemy extends enemyModel {
 
         this.health = 10;
 
-        this.attackRange = 20000;
+        this.attackRange = 7000;
         this.playerDetectRange = 100000;
 
         this.spriteSize = new p5.Vector(80, 80);
