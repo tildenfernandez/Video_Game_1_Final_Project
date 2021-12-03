@@ -89,6 +89,26 @@ let level2_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                         "xbsbbb--sbwwwwwwwwwwsbs----ghg-----bbwwx",
                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"];
 
+let level3_tilemap = [
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "xwww---------ssbbwwwwwwwwwwwwwwwwwsbb-eee-----------------bsbsbsbsbbsbsbbbsbsbbx",
+    "xwbs-----p-------bsssswwwwwwwwsbssbs------r--------r----------bbsbbbsbsbsbssbbsx",
+    "xb-------------------sbsbbssbssbbs-----------------------r-----------sssbsbbsbbx",
+    "x--------------------------------------------------c---------------------h-bsbbx",
+    "x--------------------------------------------------e-----------w---------------x",
+    "x--------------------------------------------r----------------swbs-------------x",
+    "x---sb-------------------------------------------------g------swwww-----g------x",
+    "x-sbsssb------------------b----------------ss---e-----g-g-------bsww---ggg-----x",
+    "xbbsb----------------sb---------------r---sbwwwb-------g-------e--------g----e-x",
+    "xbsbsbss--e---------bwsb--e-------------bswwwwwwwb----h------------------------x",
+    "xbsbsbbbbs-----------wwws---------h-----wwwwwwss-------------------------------x",
+    "xbsbbbsbsbb-e---r-----------------------b--------------------e-----r---------bsx",
+    "xssbbs-b----g---------r------------------------g-----e----------e------------wwx",
+    "xbss-----r-ggg-------sb-s----ss---bsb---------g-g---------r---------sbb----wwwwx",
+    "xbbsbbsbs----g---swwwwwwwwwwwwwwwwwwwwbssbs-----g-------------h--bwwwwwwwwwwwwwwx",
+    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+]
+
 let level4_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                         "x                   bbswwssb        sbbx",
                         "x   p                 bwwsbsb        sbx",
@@ -116,16 +136,16 @@ let level4_tilemap =   ["xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
                         "xbb   w               ssbbwwww     wwwwx",
                         "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"];
 
-let LEVEL_COINS_NEEDED = [15, 20];
+let LEVEL_COINS_NEEDED = [15, 20, 25];
 
 // Define the width of one tile
 let tile_width = 20;
 let half_tile = tile_width / 2;
 
 let MAX_X_OFFSET = 0;
-let MIN_X_OFFSET = [-400, -400, -400, -400];    // min is (# rows - 20)* -20 * think
+let MIN_X_OFFSET = [-400, -400, -1200, -400];    // min is (# rows - 20)* -20 * think
 let MAX_Y_OFFSET = 0;
-let MIN_Y_OFFSET = [-400, -140, -400, -180];    // no idea how to calculate play around with it
+let MIN_Y_OFFSET = [-400, -140, 0, -180];
 
 let DIST_FOR_VIEW_WINDOW_MOVE = 120;
 
@@ -317,8 +337,15 @@ function draw() {
              game_state === "playing_level_3" || 
              game_state === "playing_level_4") {
 
-        // Use an image with random noise for the background
-        image(grass_img[1], x_offset, y_offset, 800, 800);
+        
+        // The third level is extra long and narrow
+        if (curr_level === 3) {
+            image(grass_img[curr_level-1], x_offset, y_offset, 1600, 400);
+        }
+        else {
+            // Use an image with random noise for the background
+            image(grass_img[curr_level-1], x_offset, y_offset, 800, 800);
+        }
 
         // Draw all the walls
         for (var i = 0; i < walls.length; i++) {
@@ -492,7 +519,8 @@ function draw() {
         }
 
         // if the player collects enough coins, they win the level
-        if (player.coins >= LEVEL_COINS_NEEDED[curr_level-1]) {
+        // the final level can only be won by killing the boss
+        if (curr_level < 4 && player.coins >= LEVEL_COINS_NEEDED[curr_level-1]) {
             game_state = "win_screen";
         }
     }
@@ -558,11 +586,11 @@ function resetGameState(game_level) {
             x_offset = 0;
             y_offset = 0;
             break;
-        // case 3:
-        //     makeTileMap(level3_tilemap);
-        //     x_offset = 0;
-        //     y_offset = 0;
-        //     break;
+        case 3:
+            makeTileMap(level3_tilemap);
+            x_offset = 0;
+            y_offset = 0;
+            break;
         case 4:
             makeTileMap(level4_tilemap);
             x_offset = 0;
