@@ -172,6 +172,9 @@ class lineOfSightState {
     constructor() {
     }
     execute(me) {
+        // set my state to walking
+        me.stateName = "walk";
+        
         // If this is my frame to search, or I just started chasing, calculate a path using a star search
         if (!(frameCount & me.frameNum) || me.firstChaseLoop) {
             me.path = range_astar_search(me);
@@ -253,6 +256,8 @@ class rangeAttackState {
         this.frameCount = frameCount;
     }
     execute(me) {
+        me.stateName = "attack";
+
         let xDiff = me.pos.x - player.pos.x;
         let yDiff = me.pos.y - player.pos.y;
 
