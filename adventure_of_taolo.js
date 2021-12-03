@@ -120,9 +120,9 @@ let tile_width = 20;
 let half_tile = tile_width / 2;
 
 let MAX_X_OFFSET = 0;
-let MIN_X_OFFSET = [-400, -400];    // min is (# rows - 20)* -20 * think
+let MIN_X_OFFSET = [-400, -400, -400, -400];    // min is (# rows - 20)* -20 * think
 let MAX_Y_OFFSET = 0;
-let MIN_Y_OFFSET = [-400, -140];    // no idea how to calculate play around with it
+let MIN_Y_OFFSET = [-400, -140, -400, -400];    // no idea how to calculate play around with it
 
 let DIST_FOR_VIEW_WINDOW_MOVE = 120;
 
