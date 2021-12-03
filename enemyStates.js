@@ -275,11 +275,7 @@ class lineOfSightState {
                     }                    
                 }
                 // If the player gets too far away, go to the waiting state
-<<<<<<< HEAD
-                if (dist_to_player > 35000) {
-=======
                 if (dist_to_player > me.playerDetectRange) {
->>>>>>> 5a736d57fe4b2396e46fb044a84c49452f5b4af5
                     me.changeState(ENEMY_WAIT_IDX);
                 }
             }
