@@ -160,8 +160,8 @@ class attackState {
             }
 
             // hurt the player if they are close enough and in the right direction
-            if (squaredDist(me.pos.x + me.xOffset, me.pos.y + me.yOffset, player.pos.x, player.pos.y) < 400 && !player.shielding) {
-                player.health -= 1;
+            if (squaredDist(me.pos.x + me.xOffset, me.pos.y + me.yOffset, player.pos.x, player.pos.y) < me.attackHitboxRange && !player.shielding) {
+                player.health -= me.damage;
             }
         }
 

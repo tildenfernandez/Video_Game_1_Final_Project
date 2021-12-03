@@ -37,6 +37,8 @@ class enemyModel {
         this.boss = false;
 
         this.attackRange = 800;
+        this.attackHitboxRange = 400;
+        this.damage = 1;
         this.playerDetectRange = 20000;
     }
     draw() {
@@ -195,6 +197,8 @@ class BossEnemy extends enemyModel {
 
         this.attackRange = 7000;
         this.playerDetectRange = 100000;
+        this.attackHitboxRange = 3500;
+        this.damage = 2;
 
         this.spriteSize = new p5.Vector(80, 80);
         this.boss = true;
