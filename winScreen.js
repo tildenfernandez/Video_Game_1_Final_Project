@@ -38,6 +38,32 @@ class WinScreen {
         textAlign(CENTER);
         text("You Win!", 200, 200);
         textSize(20);
+
+        // Button rectangles
+        noStroke();
+        fill(color('gray'));
+        rect(155, 300, 100, 30);
+
+        // Button text
+        fill(255);
+        textAlign(LEFT);
+        textSize(16);
+        text("Main Menu", 165, 320);
+
+
+        // Highlight buttons when the mouse is over them
+        noFill();
+        stroke(219, 84, 46);
+        strokeWeight(3);
+        if (mouseX >= 155 && mouseX <= 255 &&
+            mouseY >= 300 && mouseY <= 330) {
+                rect(155, 300, 100, 30);
+
+                noStroke();
+                fill(219, 84, 46);
+                text("Main Menu", 165, 320);
+        }
+
         
     }
 }

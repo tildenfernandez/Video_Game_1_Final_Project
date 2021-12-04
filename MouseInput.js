@@ -71,7 +71,7 @@
     // Mouse input on the win screen
     else if (game_state === "win_screen") {
         // First button returns to the main menu
-        if (mouseX >= 75 && mouseX <= 175 &&
+        if (mouseX >= 155 && mouseX <= 255 &&
             mouseY >= 300 && mouseY <= 330) {
                 game_state = "start_screen"
         }
