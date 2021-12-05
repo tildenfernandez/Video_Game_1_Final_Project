@@ -300,6 +300,7 @@ function preload() {
     // Set up objects from different classes used to organize code
     win_screen = new WinScreen();
     lose_screen = new LoseScreen();
+    next_level_screen = new NextLevelScreen();
 }
 
 function setup() {
@@ -521,8 +522,12 @@ function draw() {
         // if the player collects enough coins, they win the level
         // the final level can only be won by killing the boss
         if (curr_level < 4 && player.coins >= LEVEL_COINS_NEEDED[curr_level-1]) {
-            game_state = "win_screen";
+            game_state = "next_level_screen";
         }
+    }
+    // display next level screen
+    else if (game_state === "next_level_screen") {
+        next_level_screen.draw();
     }
     // Display win screen
     else if (game_state === "win_screen") {

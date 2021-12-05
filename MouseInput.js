@@ -68,6 +68,33 @@
                 game_state = "start_screen";
         }
     }
+    // Mouse input on the next level screen
+    else if (game_state === "next_level_screen") {
+        // First button returns to the main menu
+        if (mouseX >= 155 && mouseX <= 255 &&
+            mouseY >= 300 && mouseY <= 330) {
+                game_state = "start_screen"
+        }
+        // Second button redirects to the next level
+        if (mouseX >= 225 && mouseX <= 325 &&
+            mouseY >= 300 && mouseY <= 330) {
+                // Redirect to different levels based on the current level
+                switch (curr_level) {
+                    case 1:
+                        game_state = "playing_level_2";
+                        resetGameState(2);
+                        break;
+                    case 2:
+                        game_state = "playing_level_3";
+                        resetGameState(3);
+                        break;
+                    case 3:
+                        game_state = "playing_level_4";
+                        resetGameState(4);
+                        break;
+                }
+        }
+    }
     // Mouse input on the win screen
     else if (game_state === "win_screen") {
         // First button returns to the main menu
