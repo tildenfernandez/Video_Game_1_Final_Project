@@ -3,7 +3,7 @@
  * Includes update and draw methods that accomplish all of the arrow functionality
  */
 class Arrow {
-    constructor(x, y, dir) {
+    constructor(x, y, dir, playerArrow) {
         // Position
         this.x = x;
         this.y = y;
@@ -28,6 +28,7 @@ class Arrow {
         // arrow will be removed after 1 seconds
         this.duration = 60;
         this.done = false;
+        this.playerArrow = playerArrow;
     }
     // Update all characteristics of an arrow
     update() {
@@ -101,57 +102,60 @@ class Arrow {
 
         // Check if the arrow hurts a player or enemy after a a few frames
         if (frameCount - this.startFrame > 5) {
-            // check if the arrow has hit an enemy
-            // assume a rectangular hitbox
-            for (var i = 0; i < enemies.length; i++) {
-                // two rectangle collision that depends upon the direction of the arrow
-                // Check collisions for horizontally moving arrows
+            if (this.playerArrow) {
+                // check if the arrow has hit an enemy
+                // assume a rectangular hitbox
+                for (var i = 0; i < enemies.length; i++) {
+                    // two rectangle collision that depends upon the direction of the arrow
+                    // Check collisions for horizontally moving arrows
+                    if (this.dir == "up" || this.dir == "down") {
+                        if (this.x + this.halfheight > enemies[i].pos.x - half_tile &&
+                            this.x - this.halfheight < enemies[i].pos.x + half_tile &&
+                            this.y - this.halfwidth < enemies[i].pos.y + tile_width &&
+                            this.y + this.halfwidth > enemies[i].pos.y - tile_width) {
+                            this.done = true;
+                            enemies[i].health -= this.damage;
+                        }
+                    }
+                    // Check collisions for horizontally moving arrows
+                    else {
+                        if (this.x + this.halfheight > enemies[i].pos.x - half_tile &&
+                            this.x - this.halfheight < enemies[i].pos.x + half_tile &&
+                            this.y - this.halfwidth < enemies[i].pos.y + tile_width &&
+                            this.y + this.halfwidth > enemies[i].pos.y - tile_width) {
+                            this.done = true;
+                            enemies[i].health -= this.damage;
+                        }
+                    }
+                }
+            } else {
+                // Check if the arrow has hit the player
+                // Check collisions for vertically moving arrows
                 if (this.dir == "up" || this.dir == "down") {
-                    if (this.x + this.halfheight > enemies[i].pos.x - half_tile &&
-                        this.x - this.halfheight < enemies[i].pos.x + half_tile &&
-                        this.y - this.halfwidth < enemies[i].pos.y + tile_width &&
-                        this.y + this.halfwidth > enemies[i].pos.y - tile_width) {
+                    if (this.x + this.halfheight > player.pos.x - half_tile &&
+                        this.x - this.halfheight < player.pos.x + half_tile &&
+                        this.y - this.halfwidth < player.pos.y + tile_width &&
+                        this.y + this.halfwidth > player.pos.y - tile_width) {
                         this.done = true;
-                        enemies[i].health -= this.damage;
+                        if (!player.shielding) {
+                            player.health -= this.damage;
+                        }
                     }
                 }
                 // Check collisions for horizontally moving arrows
                 else {
-                    if (this.x + this.halfheight > enemies[i].pos.x - half_tile &&
-                        this.x - this.halfheight < enemies[i].pos.x + half_tile &&
-                        this.y - this.halfwidth < enemies[i].pos.y + tile_width &&
-                        this.y + this.halfwidth > enemies[i].pos.y - tile_width) {
+                    if (this.x + this.halfheight > player.pos.x - half_tile &&
+                        this.x - this.halfheight < player.pos.x + half_tile &&
+                        this.y - this.halfwidth < player.pos.y + tile_width &&
+                        this.y + this.halfwidth > player.pos.y - tile_width) {
                         this.done = true;
-                        enemies[i].health -= this.damage;
+                        if (!player.shielding) {
+                            player.health -= this.damage;
+                        }
                     }
                 }
             }
-
-            // Check if the arrow has hit the player
-            // Check collisions for vertically moving arrows
-            if (this.dir == "up" || this.dir == "down") {
-                if (this.x + this.halfheight > player.pos.x - half_tile &&
-                    this.x - this.halfheight < player.pos.x + half_tile &&
-                    this.y - this.halfwidth < player.pos.y + tile_width &&
-                    this.y + this.halfwidth > player.pos.y - tile_width) {
-                    this.done = true;
-                    if (!player.shielding) {
-                        player.health -= this.damage;
-                    }
-                }
-            }
-            // Check collisions for horizontally moving arrows
-            else {
-                if (this.x + this.halfheight > player.pos.x - half_tile &&
-                    this.x - this.halfheight < player.pos.x + half_tile &&
-                    this.y - this.halfwidth < player.pos.y + tile_width &&
-                    this.y + this.halfwidth > player.pos.y - tile_width) {
-                    this.done = true;
-                    if (!player.shielding) {
-                        player.health -= this.damage;
-                    }
-                }
-            }
+           
         }
     }
 

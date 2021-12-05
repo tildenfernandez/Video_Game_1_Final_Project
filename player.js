@@ -241,7 +241,7 @@ class playerModel {
         this.state = "shoot";
 
         // instantiate a new arrow object in the direction based on this.attackOffset
-        arrows.push(new Arrow(this.pos.x + this.attackOffset.x - half_tile, this.pos.y + this.attackOffset.y - half_tile, this.direction));
+        arrows.push(new Arrow(this.pos.x + this.attackOffset.x - half_tile, this.pos.y + this.attackOffset.y - half_tile, this.direction, true));
 
     }
     // Use the player's shield

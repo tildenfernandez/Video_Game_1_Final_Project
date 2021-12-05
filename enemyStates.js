@@ -310,7 +310,7 @@ class rangeAttackState {
 
         if (frameCount - this.frameCount > 18) {
         // Shoot an arrow
-            arrows.push(new Arrow(me.pos.x + arrow_offset[0] - half_tile, me.pos.y + arrow_offset[1] - half_tile, me.direction));
+            arrows.push(new Arrow(me.pos.x + arrow_offset[0] - half_tile, me.pos.y + arrow_offset[1] - half_tile, me.direction, false));
             this.frameCount = frameCount;
         }
 
