@@ -115,7 +115,6 @@ class playerModel {
         }
 
         image(this.images[this.imageIndex], -half_tile-18, -half_tile-30, 40, 40);
-
         
         pop();
     }
@@ -317,9 +316,7 @@ class AttackAnimation {
             var startAngle = min(angleOffset + PI/2, currentAngle + PI/4);
             arc(0, 0, this.radius, this.radius, currentAngle, startAngle);
         }
-
         pop();
-
     }
 }
 

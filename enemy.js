@@ -169,10 +169,10 @@ class enemyModel {
         var rand = Math.floor(Math.random() * 2);
         switch (rand) {
             case 0:
-                hearts.push([this.pos.x, this.pos.y - half_tile, 1]);
+                hearts.push([this.pos.x, this.pos.y, 1]);
                 break;
             case 1:
-                gems.push([this.pos.x, this.pos.y - half_tile, 1]);
+                gems.push([this.pos.x, this.pos.y, 1]);
                 break;
         }
         
@@ -229,5 +229,29 @@ class BossEnemy extends enemyModel {
     kill() {
         // game over when the boss is dead
         game_state = "win_screen";
+    }
+    summon_others() {
+        // Check all nodes
+        for (let z = 0; z < graph_nodes.length; z++) {
+            // If the node is close to the boss
+            if (squaredDist(graph_nodes[z].pos.x, graph_nodes[z].pos.y, this.pos.x, this.pos.y) < 500) {
+                // theres a one in four chance an enemy appears there
+                let c = int(random(8));
+                // 1/8 chance of melee enemy
+                if (c === 1) {
+                    enemies.push(new MeleeEnemy(graph_nodes[z].pos.x, graph_nodes[z].pos.y, 0));
+                    enemies[enemies.length - 1].frameNum = z % 100;      // Need to change
+                    enemies[enemies.length - 1].currNode = graph_nodes[z];
+                    enemies[enemies.length - 1].target = graph_nodes[z];
+                }
+                // 1/8 chance of a ranged enemy
+                if (c === 2) {
+                    enemies.push(new RangedEnemy(graph_nodes[z].pos.x, graph_nodes[z].pos.y, 0));
+                    enemies[enemies.length - 1].frameNum = z % 100;      // Need to change
+                    enemies[enemies.length - 1].currNode = graph_nodes[z];
+                    enemies[enemies.length - 1].target = graph_nodes[z];
+                }
+            }
+        }
     }
 }

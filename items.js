@@ -14,7 +14,7 @@
  */
  function drawGem(x, y, w, h) {
     push()
-    translate(x, y);
+    translate(x, y-half_tile);
     scale(cos(frameCount/10), 1);
     image(gem_img, -(floor(w>>1)), 0, w, h);
     pop()
@@ -29,7 +29,7 @@
  */
 function drawHeart(x, y, w, h) {
     push()
-    translate(x, y);
+    translate(x, y-half_tile);
     scale(cos(frameCount/10), 1);
     image(heart_img, -(floor(w>>1)), 0, w, h);
     pop()

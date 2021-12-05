@@ -70,8 +70,11 @@ function drawInformationBar() {
     strokeWeight(2);
     text(player.coins, 60, 375);
     text("x", 40, 375);
-    text("/", 90, 375);
-    text(LEVEL_COINS_NEEDED[curr_level-1], 97, 375)
+    // final level does not have a number of coins needed to pass the level
+    if (curr_level < 4) {
+        text("/", 90, 375);
+        text(LEVEL_COINS_NEEDED[curr_level-1], 97, 375)
+    }
 
     // Label the two item boxes
     textSize(32);
@@ -103,5 +106,5 @@ function drawInformationBar() {
     }
     
     // Draw a gem by the coin information
-    drawGem(30, 350, 25, 30);
+    drawGem(30, 370, 25, 30);
 }

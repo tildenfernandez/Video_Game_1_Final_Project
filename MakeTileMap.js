@@ -35,7 +35,7 @@
             // 'r' is a ranged enemy
             if (tmap[j][i] === 'r') {
                 enemies.push(new RangedEnemy(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
-                enemies[enemies.length - 1].frameNum = 50;      // Need to change
+                enemies[enemies.length - 1].frameNum = i * j % 100;      // Need to change
                 iNum++;
                 enemies[enemies.length - 1].currNode = graph_nodes[graph_nodes.length - 1];
                 enemies[enemies.length - 1].target = graph_nodes[graph_nodes.length - 1];
@@ -44,7 +44,7 @@
             // 'm' is the boss
             if (tmap[j][i] === 'm') {
                 enemies.push(new BossEnemy(tile_width*i + half_tile, tile_width*j + half_tile, iNum));
-                enemies[enemies.length - 1].frameNum = 50;      // Need to change
+                enemies[enemies.length - 1].frameNum = i * j % 100;      // Need to change
                 iNum++;
                 enemies[enemies.length - 1].currNode = graph_nodes[graph_nodes.length - 1];
                 enemies[enemies.length - 1].target = graph_nodes[graph_nodes.length - 1];
